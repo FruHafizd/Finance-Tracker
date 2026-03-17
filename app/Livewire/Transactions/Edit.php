@@ -4,18 +4,22 @@ namespace App\Livewire\Transactions;
 
 use App\Models\Transaction;
 use Livewire\Component;
+use App\Models\Category as Categories;
 
 class Edit extends Component
-{   
+{
     public $transactionsId;
     public $amount;
     public $type;
     public $date;
     public $name;
+    public $categories = [];
+    public $category_id;
 
     protected $listeners = [
         'edit-transaction' => 'loadTransaction',
         'close-edit-modal' => 'resetForm',
+        'category-created' => 'loadCategories'
     ];
 
     protected $rules = [
@@ -36,6 +40,16 @@ class Edit extends Component
         'name.min' => 'Nama minimal 3 karakter',
     ];
 
+    public function loadCategories()
+    {
+        $this->categories = Categories::where('user_id', auth()->id())->get();
+    }
+
+    public function mount()
+    {
+        $this->categories = Categories::where('user_id', auth()->id())->get();
+    }
+
     public function loadTransaction($id)  {
 
         $transaction = Transaction::where('id',$id)
@@ -43,9 +57,10 @@ class Edit extends Component
                         ->firstOrFail();
         $this->transactionsId = $transaction->id;
         $this->amount = $transaction->amount;
-        $this->type = $transaction->type;   
+        $this->type = $transaction->type;
         $this->date = $transaction->date->format('Y-m-d');
         $this->name = $transaction->name;
+        $this->category_id = $transaction->category_id;
     }
 
     public function resetForm()  {
@@ -54,7 +69,8 @@ class Edit extends Component
             'amount',
             'type',
             'date',
-            'name'
+            'name',
+            'category_id'
         ]);
     }
 
@@ -71,7 +87,8 @@ class Edit extends Component
                         'amount' => $this->amount,
                         'type' => $this->type,
                         'date' => $this->date,
-                        'name' => $this->name
+                        'name' => $this->name,
+                        'category_id' => $this->category_id,
                     ]);
         $this->resetForm();
         $this->dispatch('transaction-updated');

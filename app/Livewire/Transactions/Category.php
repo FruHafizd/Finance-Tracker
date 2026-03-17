@@ -9,6 +9,7 @@ class Category extends Component
     public $categories;
     public $name;
     public $color = '#6366f1';
+    public string $errorMessage = '';
 
     public $editId = null;
 
@@ -37,6 +38,7 @@ class Category extends Component
         ]);
 
         $this->reset(['name']);
+        $this->dispatch('category-created');
         $this->loadCategories();
     }
 
@@ -59,13 +61,23 @@ class Category extends Component
         ]);
 
         $this->reset(['name','editId']);
+        $this->dispatch('category-created');
         $this->loadCategories();
     }
 
     public function delete($id)
     {
-        Categories::find($id)->delete();
-        $this->loadCategories();
+        $this->errorMessage = '';
+        try {
+            Categories::find($id)->delete();
+            $this->loadCategories();
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() === '23000') {
+                $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi.';
+            } else {
+                $this->errorMessage = 'Terjadi kesalahan, kategori gagal dihapus.';
+            }
+        }
     }
 
     public function render()

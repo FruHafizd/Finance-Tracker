@@ -18,7 +18,8 @@ class Transaction extends Model
         'amount',
         'type',
         'date',
-        'recurring_transactions_id'
+        'recurring_transactions_id',
+        'category_id',
     ];
 
     public function user()  {
@@ -30,7 +31,7 @@ class Transaction extends Model
         return $this->belongsTo(RecurringTransaction::class);
     }
 
-    public function categories()
+    public function category()
     {
         return $this->belongsTo(Category::class);
     }

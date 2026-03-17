@@ -59,7 +59,7 @@ class Index extends Component
         if ($this->filterType) {
             $query->where('type', $this->filterType);
         }
-
+        
         return $query->orderBy('date', 'desc')->paginate(10);
     }
 

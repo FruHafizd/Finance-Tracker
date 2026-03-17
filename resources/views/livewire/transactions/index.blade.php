@@ -188,7 +188,15 @@
                                 </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Type
+                                    Tipe
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Kategori
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Kategori
                                 </th>
                                 <th
                                     class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -213,6 +221,13 @@
                                         <span
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $item['type'] === 'income' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                             {{ $item['type'] === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                            style="background-color: {{ $item->category->color }}20; color: {{ $item->category->color }}">
+                                                {{ $item->category->name }}
                                         </span>
                                     </td>
                                     <td
