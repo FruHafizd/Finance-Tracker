@@ -20,6 +20,8 @@ class Index extends Component
     public $filterYear;
     public $filterMonth;
     public $filterType = '';
+    public $startDate;
+    public $endDate;
 
     public function mount() {
         $this->filterYear = date('Y');
@@ -42,6 +44,8 @@ class Index extends Component
         $this->filterYear = '';
         $this->filterMonth = '';
         $this->filterType = '';
+        $this->startDate = '';
+        $this->endDate = '';
         $this->resetPage();
     }
 
@@ -59,7 +63,14 @@ class Index extends Component
         if ($this->filterType) {
             $query->where('type', $this->filterType);
         }
-        
+
+        if ($this->startDate && $this->endDate) {
+            $query->whereBetween('date', [
+                $this->startDate,
+                $this->endDate,
+            ]);
+        }
+
         return $query->orderBy('date', 'desc')->paginate(10);
     }
 
