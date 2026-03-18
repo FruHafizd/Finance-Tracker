@@ -34,6 +34,7 @@ class Create extends Component
         'type.in' => 'Type tidak valid',
         'date.date' => 'Format tanggal tidak valid',
         'name.min' => 'Nama minimal 3 karakter',
+        'category_id'=> 'Kategori tidak boleh kosong'
     ];
 
     public function loadCategories()
@@ -59,6 +60,7 @@ class Create extends Component
             'name' => $this->name
         ]);
         $this->reset();
+        $this->dispatch('transaction-changed');
         $this->dispatch('close-modal', 'modal-create');
         $this->dispatch('transaction-created');
     }

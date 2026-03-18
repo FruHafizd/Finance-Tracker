@@ -110,7 +110,7 @@
                         <div class="border-t border-gray-100"></div>
 
                         <!-- Filter Controls -->
-                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 items-end">
 
                             <!-- Filter Tahun -->
                             <div>
@@ -167,6 +167,17 @@
                                     <option value="">Semua</option>
                                     <option value="income">Pemasukan</option>
                                     <option value="expense">Pengeluaran</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">Kategori</label>
+                                <select wire:model.live="filterCategory"
+                                    class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:bg-white transition">
+                                    <option value="">Semua</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 

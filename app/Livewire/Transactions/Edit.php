@@ -26,7 +26,8 @@ class Edit extends Component
         'amount' => 'required|numeric|min:1',
         'type' => 'required|in:income,expense',
         'date' => 'required|date',
-        'name' => 'required|string|min:3'
+        'name' => 'required|string|min:3',
+        'category_id' => 'required'
     ];
 
     protected $messages = [
@@ -38,6 +39,7 @@ class Edit extends Component
         'type.in' => 'Type tidak valid',
         'date.date' => 'Format tanggal tidak valid',
         'name.min' => 'Nama minimal 3 karakter',
+        'category_id'=> 'Kategori tidak boleh kosong'
     ];
 
     public function loadCategories()
@@ -90,6 +92,7 @@ class Edit extends Component
                         'name' => $this->name,
                         'category_id' => $this->category_id,
                     ]);
+        $this->dispatch('transaction-changed');
         $this->resetForm();
         $this->dispatch('transaction-updated');
         $this->dispatch('close-modal','modal-edit');

@@ -13,7 +13,6 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-
         <!-- Livewire Styles -->
         @livewireStyles
     </head>
@@ -36,5 +35,9 @@
             </main>
         </div>
         @livewireScripts
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        @stack('scripts')
     </body>
 </html>
