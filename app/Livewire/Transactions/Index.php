@@ -108,7 +108,6 @@ class Index extends Component
     {
         return Category::orderBy('name')->get();
     }
-    
     public function render()
     {
         return view('livewire.transactions.index', [
