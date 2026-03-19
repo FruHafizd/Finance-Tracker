@@ -3,66 +3,65 @@
 namespace App\Livewire\Home;
 
 use Livewire\Component;
-use Livewire\Attributes\On;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 
 class Index extends Component
 {
-    public $startDate;
-    public $endDate;
-    public $chartData = [];
+    public string $startDate = '';
+    public string $endDate = '';
 
-    public function mount()
+    public function mount(): void
     {
         $this->startDate = now()->startOfMonth()->format('Y-m-d');
-        $this->endDate   = now()->format('Y-m-d');
-        $this->loadChartData();
+        $this->endDate   = now()->endOfMonth()->format('Y-m-d');
     }
 
-    public function updatedStartDate() { $this->loadChartData(); }
-    public function updatedEndDate()   { $this->loadChartData(); }
-
-    // ✅ Dengarkan event dari komponen transaksi manapun
-    #[On('transaction-changed')]
-    public function refreshChart()
+    public function getChartData(): array
     {
-        $this->loadChartData(); // loadChartData sudah dispatch update-chart di dalamnya
-    }
+        $query = Transaction::query()
+            ->join('categories', 'transactions.category_id', '=', 'categories.id')
+            ->select(
+                'categories.name as category',
+                'categories.color',
+                DB::raw('SUM(transactions.amount) as total')
+            )
+            ->where('transactions.type', 'expense')
+            ->groupBy('categories.id', 'categories.name', 'categories.color')
+            ->orderByDesc('total');
 
-    private function loadChartData()
-    {
-        if (!$this->startDate || !$this->endDate || $this->startDate > $this->endDate) {
-            $this->chartData = ['labels' => [], 'values' => [], 'colors' => []];
-            $this->dispatch('update-chart', labels: [], values: [], colors: []);
-            return;
+        if ($this->startDate) {
+            $query->whereDate('transactions.date', '>=', $this->startDate);
         }
 
-        $data = Transaction::selectRaw('category_id, SUM(amount) as total')
-            ->where('type', 'expense')
-            ->whereBetween('date', [$this->startDate, $this->endDate])
-            ->with('category')
-            ->groupBy('category_id')
-            ->orderByDesc('total')
-            ->get();
+        if ($this->endDate) {
+            $query->whereDate('transactions.date', '<=', $this->endDate);
+        }
 
-        // 🔥 TAMPILKAN SEMUA (BUKAN TOP 5 DULU)
-        $labels = $data->map(fn($t) => $t->category->name ?? 'Tidak Diketahui')->toArray();
-        $values = $data->map(fn($t) => (float) $t->total)->toArray();
-        $colors = $data->map(fn($t) => $t->category->color ?? '#6366f1')->toArray();
+        $results = $query->get();
 
-        $this->chartData = compact('labels', 'values', 'colors');
+        return [
+            'labels' => $results->pluck('category')->toArray(),
+            'colors' => $results->pluck('color')
+                                ->map(fn($c) => $c ?? '#6366f1')
+                                ->toArray(),
+            'data'   => $results->pluck('total')
+                                ->map(fn($v) => (float) $v)
+                                ->toArray(),
+        ];
+    }
 
-        $this->dispatch('update-chart',
-            labels: $labels,
-            values: $values,
-            colors: $colors
-        );
+    public function updated($property): void
+    {
+        if (in_array($property, ['startDate', 'endDate'])) {
+            $this->dispatch('chartUpdated', ...$this->getChartData());
+        }
     }
 
     public function render()
     {
-        return view('livewire.home.index')->layout('layouts.app', [
-            'title' => 'Beranda'
-        ]);
+        return view('livewire.home.index', [
+            'chartData' => $this->getChartData(),
+        ])->layout('layouts.app', ['title' => 'Beranda']);
     }
 }
