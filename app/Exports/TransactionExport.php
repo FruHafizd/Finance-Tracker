@@ -39,17 +39,22 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
         $data[] = [];
 
         //Header
-        $data[] = ['Tanggal', 'Kategori', 'Nama Transaksi', 'Jumlah'];
+        $data[] = ['Tanggal', 'Kategori', 'Nama Transaksi','Tipe Transaksi', 'Jumlah'];
 
         $total = 0;
 
         foreach ($transactions as $item) {
-            $total += $item->amount;
 
+            if ($item->type === 'income') {
+                $total += $item->amount;
+            }else {
+                $total -= $item->amount;
+            }
             $data[] = [
                 Carbon::parse($item->date)->format('d-m-Y'),
                 $item->category->name ?? '-',
                 $item->name ?? '-',
+                $item->type === 'income' ? 'Pemasukan' : 'Pengeluaran',
                 $item->amount,
             ];
         }
@@ -57,6 +62,7 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
         $data[] = [];
 
         $data[] = [
+            '',
             '',
             '',
             'Total',
@@ -85,20 +91,20 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
                 $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal('center');
 
                 //Bold header
-                $sheet->getStyle('A3:D3')->getFont()->setBold(true);
+                $sheet->getStyle('A3:E3')->getFont()->setBold(true);
 
                 // Format angka
-                $sheet->getStyle("D4:D{$lastRow}")
+               $sheet->getStyle("E4:E{$lastRow}")
                     ->getNumberFormat()
-                    ->setFormatCode('"Rp" #,##0');
+                    ->setFormatCode('[$Rp-421] #,##0');
 
                 // Align kanan jumlah
-                $sheet->getStyle("D4:D{$lastRow}")
+                $sheet->getStyle("E5:E{$lastRow}")
                     ->getAlignment()
                     ->setHorizontal('right');
 
                 // Border semua tabel
-                $sheet->getStyle("A3:D{$lastRow}")
+                $sheet->getStyle("A3:E{$lastRow}")
                     ->applyFromArray([
                         'borders' => [
                             'allBorders' => [
@@ -108,7 +114,7 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
                     ]);
 
                 // Bold TOTAL
-                $sheet->getStyle("C{$lastRow}:D{$lastRow}")
+                $sheet->getStyle("D{$lastRow}:E{$lastRow}")
                     ->getFont()
                     ->setBold(true);
             },
