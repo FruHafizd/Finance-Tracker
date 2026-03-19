@@ -30,7 +30,6 @@ class Delete extends Component
         Transaction::where('id', $this->transactionId)
                             ->where('user_id', auth()->id())
                             ->delete();
-        $this->dispatch('transaction-changed');
         $this->dispatch('transaction-deleted');
         $this->dispatch('close-modal','modal-delete');
     }

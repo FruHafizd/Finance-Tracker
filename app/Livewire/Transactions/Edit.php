@@ -92,7 +92,6 @@ class Edit extends Component
                         'name' => $this->name,
                         'category_id' => $this->category_id,
                     ]);
-        $this->dispatch('transaction-changed');
         $this->resetForm();
         $this->dispatch('transaction-updated');
         $this->dispatch('close-modal','modal-edit');

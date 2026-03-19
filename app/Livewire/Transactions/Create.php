@@ -60,7 +60,6 @@ class Create extends Component
             'name' => $this->name
         ]);
         $this->reset(['amount', 'type', 'date', 'name', 'category_id']);
-        $this->dispatch('transaction-changed');
         $this->dispatch('close-modal', 'modal-create');
         $this->dispatch('transaction-created');
     }
