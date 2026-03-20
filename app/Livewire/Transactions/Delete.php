@@ -6,7 +6,7 @@ use App\Models\Transaction;
 use Livewire\Component;
 
 class Delete extends Component
-{   
+{
     public $transactionId;
 
     protected $listeners = [
@@ -17,7 +17,7 @@ class Delete extends Component
     public function setTransaction($id) {
         $this->transactionId = $id;
     }
-    
+
     public function resetState()
     {
         $this->reset('transactionId');

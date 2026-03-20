@@ -34,14 +34,14 @@ new class extends Component
                         {{ __('Beranda') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('history')" :active="request()->routeIs('history')" wire:navigate>
+                    <x-nav-link :href="route('transaction.index')" :active="request()->routeIs('transaction.index')" wire:navigate>
                         {{ __('Riwayat Transaksi') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
+                    {{-- <x-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
                         {{ __('Transaksi Berulang') }}
-                    </x-nav-link>
-                    
+                    </x-nav-link> --}}
+
                 </div>
             </div>
 
@@ -93,12 +93,12 @@ new class extends Component
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate>
                 {{ __('Beranda') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('history')" :active="request()->routeIs('history')" wire:navigate>
+            <x-responsive-nav-link :href="route('transaction.index')" :active="request()->routeIs('history')" wire:navigate>
                 {{ __('Riwayat Transaksi') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
+            {{-- <x-responsive-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
                 {{ __('Transaksi Berulang') }}
-            </x-responsive-nav-link>
+            </x-responsive-nav-link> --}} 
         </div>
 
         <!-- Responsive Settings Options -->
