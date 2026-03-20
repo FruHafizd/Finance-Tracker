@@ -3,8 +3,6 @@
 namespace App\Livewire\Home;
 
 use Livewire\Component;
-use App\Models\Transaction;
-use Illuminate\Support\Facades\DB;
 
 class Index extends Component
 {
