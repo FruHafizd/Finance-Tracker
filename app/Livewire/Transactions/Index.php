@@ -9,113 +9,134 @@ use Livewire\WithPagination;
 
 class Index extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'tailwind';
+
+    public $filterYear    = '';
+    public $filterMonth   = '';
+    public $filterType    = '';
+    public $filterCategory = '';
+    public $startDate     = '';
+    public $endDate       = '';
+
     protected $listeners = [
         'transaction-created' => '$refresh',
         'transaction-deleted' => '$refresh',
         'transaction-updated' => '$refresh',
     ];
 
-    use WithPagination;
-    protected $paginationTheme = 'tailwind';
-    public $filterYear;
-    public $filterMonth;
-    public $filterType = '';
-    public $filterCategory = '';
-    public $startDate;
-    public $endDate;
-
-    public function mount()
+    public function mount(): void
     {
-        $this->filterYear = date('Y');
+        $this->filterYear  = date('Y');
         $this->filterMonth = date('n');
     }
 
-    public function updatingFilterYear()
+    public function updatedFilterYear(): void
     {
-        $this->resetPage();
-    }
-
-    public function updatingFilterMonth()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFilterType()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFilterCategory()
-    {
-        $this->resetPage();
-    }
-
-    public function resetFilters()
-    {
-        $this->filterYear = '';
-        $this->filterMonth = '';
-        $this->filterType = '';
-        $this->filterCategory = '';
         $this->startDate = '';
-        $this->endDate = '';
+        $this->endDate   = '';
         $this->resetPage();
+    }
+
+    public function updatedFilterMonth(): void
+    {
+        $this->startDate = '';
+        $this->endDate   = '';
+        $this->resetPage();
+    }
+
+    public function updatedStartDate(): void
+    {
+        $this->filterYear  = '';
+        $this->filterMonth = '';
+        $this->resetPage();
+    }
+
+    public function updatedEndDate(): void
+    {
+        $this->filterYear  = '';
+        $this->filterMonth = '';
+        $this->resetPage();
+    }
+
+    public function updatedFilterType(): void     { $this->resetPage(); }
+    public function updatedFilterCategory(): void { $this->resetPage(); }
+
+    public function resetFilters(): void
+    {
+        $this->filterYear     = date('Y');
+        $this->filterMonth    = date('n');
+        $this->filterType     = '';
+        $this->filterCategory = '';
+        $this->startDate      = '';
+        $this->endDate        = '';
+        $this->resetPage();
+    }
+
+    private function baseQuery()
+    {
+        $query = Transaction::where('user_id', auth()->id())
+            ->with('category');
+
+        // Kalau pakai range tanggal → abaikan filterYear & filterMonth
+        if ($this->startDate && $this->endDate) {
+            $query->whereBetween('date', [$this->startDate, $this->endDate]);
+        } elseif ($this->startDate) {
+            $query->whereDate('date', '>=', $this->startDate);
+        } elseif ($this->endDate) {
+            $query->whereDate('date', '<=', $this->endDate);
+        } else {
+            // Pakai filter tahun/bulan kalau tidak ada range
+            if ($this->filterYear)  $query->whereYear('date', $this->filterYear);
+            if ($this->filterMonth) $query->whereMonth('date', $this->filterMonth);
+        }
+
+        if ($this->filterType)     $query->where('type', $this->filterType);
+        if ($this->filterCategory) $query->where('category_id', $this->filterCategory);
+
+        return $query;
     }
 
     public function getTransactionsProperty()
     {
-        $query = Transaction::where('user_id', auth()->id());
-        if ($this->filterYear) {
-            $query->whereYear('date', $this->filterYear);
-        }
-        if ($this->filterMonth) {
-            $query->whereMonth('date', $this->filterMonth);
-        }
-        if ($this->filterType) {
-            $query->where('type', $this->filterType);
-        }
-        if ($this->filterCategory) {
-            $query->where('category_id', $this->filterCategory);
-        }
-        if ($this->startDate && $this->endDate) {
-            $query->whereBetween('date', [
-                $this->startDate,
-                $this->endDate,
-            ]);
-        }
-        return $query->orderBy('date', 'desc')->paginate(10);
+        return $this->baseQuery()
+            ->orderBy('date', 'desc')
+            ->paginate(10);
     }
 
-    public function getSummaryProperty()
+    public function getSummaryProperty(): array
     {
-        $query = Transaction::where('user_id', auth()->id());
-        if ($this->filterYear) {
-            $query->whereYear('date', $this->filterYear);
-        }
-        if ($this->filterMonth) {
-            $query->whereMonth('date', $this->filterMonth);
-        }
-        $transactions = $query->select('type', 'amount')->get();
-        $income = $transactions->where('type', 'income')->sum('amount');
-        $expense = $transactions->where('type', 'expense')->sum('amount');
+        $data = $this->baseQuery()
+            ->selectRaw("
+                SUM(CASE WHEN type = 'income'  THEN amount ELSE 0 END) as income,
+                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expense
+            ")
+            ->first();
+
+        $income  = (float) ($data->income  ?? 0);
+        $expense = (float) ($data->expense ?? 0);
+
         return [
-            'income' => $income,
-            'expense' => $expense,
-            'difference' => $income - $expense
+            'income'     => $income,
+            'expense'    => $expense,
+            'difference' => $income - $expense,
         ];
     }
 
     public function getCategoriesProperty()
     {
-        return Category::orderBy('name')->get();
+        return Category::where('user_id', auth()->id())
+            ->orderBy('name')
+            ->get();
     }
+
     public function render()
     {
         return view('livewire.transactions.index', [
             'transactions' => $this->transactions,
-            'summary' => $this->summary,
-            'categories' => $this->categories,
-        ])->layout('layouts.app', [
-            'title' => 'Riwayat Transaksi'
-        ]);
+            'summary'      => $this->summary,
+            'categories'   => $this->categories,
+        ])->layout('layouts.app', ['title' => 'Riwayat Transaksi']);
     }
 }

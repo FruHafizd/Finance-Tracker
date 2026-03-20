@@ -202,6 +202,17 @@
                             </div>
 
                         </div>
+                        @if($startDate || $endDate)
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-xs text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full font-medium">
+                                    📅 Range aktif:
+                                    {{ $startDate ? \Carbon\Carbon::parse($startDate)->format('d M Y') : '...' }}
+                                    –
+                                    {{ $endDate ? \Carbon\Carbon::parse($endDate)->format('d M Y') : '...' }}
+                                </span>
+                                <span class="text-xs text-gray-400">Filter tahun/bulan dinonaktifkan</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
