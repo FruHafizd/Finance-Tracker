@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TransactionFilterTest extends TestCase
@@ -53,7 +54,7 @@ class TransactionFilterTest extends TestCase
     // 1. Load awal
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function load_awal_filter_default_bulan_ini(): void
     {
         Livewire::actingAs($this->user)
@@ -64,7 +65,7 @@ class TransactionFilterTest extends TestCase
             ->assertSet('endDate',     '');
     }
 
-    /** @test */
+    #[Test]
     public function load_awal_hanya_tampilkan_transaksi_bulan_ini(): void
     {
         $this->income(1_000_000, now()->format('Y-m-d'));
@@ -76,7 +77,7 @@ class TransactionFilterTest extends TestCase
             ->assertDontSee('999.000');
     }
 
-    /** @test */
+    #[Test]
     public function tidak_tampil_transaksi_user_lain(): void
     {
         $userLain = User::factory()->create();
@@ -102,7 +103,7 @@ class TransactionFilterTest extends TestCase
     // 2. Filter Tahun & Bulan
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function filter_tahun_menampilkan_data_tahun_itu(): void
     {
         $this->income(1_000_000, '2025-06-10');
@@ -116,7 +117,7 @@ class TransactionFilterTest extends TestCase
             ->assertDontSee('2.000.000');
     }
 
-    /** @test */
+    #[Test]
     public function filter_bulan_menampilkan_data_bulan_itu(): void
     {
         $tahun = date('Y');
@@ -131,7 +132,7 @@ class TransactionFilterTest extends TestCase
             ->assertDontSee('2.000.000');
     }
 
-    /** @test */
+    #[Test]
     public function ubah_filter_tahun_mengosongkan_range_tanggal(): void
     {
         Livewire::actingAs($this->user)
@@ -143,7 +144,7 @@ class TransactionFilterTest extends TestCase
             ->assertSet('endDate',   '');
     }
 
-    /** @test */
+    #[Test]
     public function ubah_filter_bulan_mengosongkan_range_tanggal(): void
     {
         Livewire::actingAs($this->user)
@@ -159,7 +160,7 @@ class TransactionFilterTest extends TestCase
     // 3. Filter Range Tanggal
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function filter_range_tampilkan_data_dalam_range(): void
     {
         $this->income(1_000_000, '2025-03-10');
@@ -175,7 +176,7 @@ class TransactionFilterTest extends TestCase
             ->assertDontSee('3.000.000');
     }
 
-    /** @test */
+    #[Test]
     public function ubah_start_date_mengosongkan_filter_tahun_bulan(): void
     {
         Livewire::actingAs($this->user)
@@ -187,7 +188,7 @@ class TransactionFilterTest extends TestCase
             ->assertSet('filterMonth', '');
     }
 
-    /** @test */
+    #[Test]
     public function ubah_end_date_mengosongkan_filter_tahun_bulan(): void
     {
         Livewire::actingAs($this->user)
@@ -199,7 +200,7 @@ class TransactionFilterTest extends TestCase
             ->assertSet('filterMonth', '');
     }
 
-    /** @test */
+    #[Test]
     public function start_date_saja_tanpa_end_date_bekerja(): void
     {
         $this->income(1_000_000, '2025-06-15');
@@ -216,7 +217,7 @@ class TransactionFilterTest extends TestCase
     // 4. Summary mengikuti filter
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function summary_sesuai_filter_bulan_ini(): void
     {
         $this->income(5_000_000,  now()->format('Y-m-d'));
@@ -231,7 +232,7 @@ class TransactionFilterTest extends TestCase
         $this->assertEquals(4_000_000, $summary['difference']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_ikut_filter_range_tanggal(): void
     {
         $this->income(5_000_000,  '2025-02-10');
@@ -249,7 +250,7 @@ class TransactionFilterTest extends TestCase
         $this->assertEquals(4_000_000, $summary['difference']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_tidak_tampil_data_user_lain(): void
     {
         $userLain = User::factory()->create();
@@ -272,7 +273,7 @@ class TransactionFilterTest extends TestCase
         $this->assertEquals(1_000_000, $summary['income']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_kosong_jika_tidak_ada_transaksi(): void
     {
         $summary = Livewire::actingAs($this->user)
@@ -288,7 +289,7 @@ class TransactionFilterTest extends TestCase
     // 5. Filter Tipe
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function filter_tipe_income_hanya_tampilkan_pemasukan(): void
     {
         $this->income(1_000_000,  now()->format('Y-m-d'));
@@ -301,7 +302,7 @@ class TransactionFilterTest extends TestCase
             ->assertDontSee('500.000');
     }
 
-    /** @test */
+    #[Test]
     public function filter_tipe_expense_hanya_tampilkan_pengeluaran(): void
     {
         $this->income(1_000_000, now()->format('Y-m-d'));
@@ -318,7 +319,7 @@ class TransactionFilterTest extends TestCase
     // 6. Filter Kategori
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function filter_kategori_hanya_tampilkan_kategori_tersebut(): void
     {
         $this->expense(300_000, now()->format('Y-m-d'), $this->catMakan);
@@ -335,7 +336,7 @@ class TransactionFilterTest extends TestCase
     // 7. Kombinasi filter
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function kombinasi_range_tipe_kategori_bekerja_bersamaan(): void
     {
         $this->expense(200_000, '2025-03-10', $this->catMakan);     // lolos semua filter
@@ -359,7 +360,7 @@ class TransactionFilterTest extends TestCase
     // 8. Reset Filter
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function reset_filter_kembali_ke_bulan_ini(): void
     {
         Livewire::actingAs($this->user)
@@ -381,7 +382,7 @@ class TransactionFilterTest extends TestCase
     // 9. Paginasi
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function paginasi_halaman_2_tetap_pakai_filter_aktif(): void
     {
         // 15 transaksi bulan ini
@@ -405,7 +406,7 @@ class TransactionFilterTest extends TestCase
     // 10. Auth
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function guest_diredirect_ke_login(): void
     {
         $this->get(route('transaction.index'))

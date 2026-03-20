@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TransactionCrudTest extends TestCase
@@ -35,7 +36,7 @@ class TransactionCrudTest extends TestCase
     // Create — method: save()
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function bisa_tambah_transaksi_income(): void
     {
         Livewire::actingAs($this->user)
@@ -56,7 +57,7 @@ class TransactionCrudTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function bisa_tambah_transaksi_expense(): void
     {
         Livewire::actingAs($this->user)
@@ -76,7 +77,7 @@ class TransactionCrudTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function setelah_save_form_direset(): void
     {
         Livewire::actingAs($this->user)
@@ -93,7 +94,7 @@ class TransactionCrudTest extends TestCase
             ->assertSet('category_id', '');
     }
 
-    /** @test */
+    #[Test]
     public function validasi_name_wajib_diisi(): void
     {
         Livewire::actingAs($this->user)
@@ -107,7 +108,7 @@ class TransactionCrudTest extends TestCase
             ->assertHasErrors(['name' => 'required']);
     }
 
-    /** @test */
+    #[Test]
     public function validasi_name_minimal_3_karakter(): void
     {
         Livewire::actingAs($this->user)
@@ -121,7 +122,7 @@ class TransactionCrudTest extends TestCase
             ->assertHasErrors(['name' => 'min']);
     }
 
-    /** @test */
+    #[Test]
     public function validasi_amount_wajib_diisi(): void
     {
         Livewire::actingAs($this->user)
@@ -135,7 +136,7 @@ class TransactionCrudTest extends TestCase
             ->assertHasErrors(['amount' => 'required']);
     }
 
-    /** @test */
+    #[Test]
     public function validasi_amount_minimal_1(): void
     {
         Livewire::actingAs($this->user)
@@ -149,7 +150,7 @@ class TransactionCrudTest extends TestCase
             ->assertHasErrors(['amount' => 'min']);
     }
 
-    /** @test */
+    #[Test]
     public function validasi_kategori_wajib_dipilih(): void
     {
         Livewire::actingAs($this->user)
@@ -163,7 +164,7 @@ class TransactionCrudTest extends TestCase
             ->assertHasErrors(['category_id']);
     }
 
-    /** @test */
+    #[Test]
     public function validasi_tipe_harus_income_atau_expense(): void
     {
         Livewire::actingAs($this->user)
@@ -177,7 +178,7 @@ class TransactionCrudTest extends TestCase
             ->assertHasErrors(['type' => 'in']);
     }
 
-    /** @test */
+    #[Test]
     public function validasi_tanggal_wajib_diisi(): void
     {
         Livewire::actingAs($this->user)
@@ -195,7 +196,7 @@ class TransactionCrudTest extends TestCase
     // Edit — method: loadTransaction($id), update()
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function bisa_load_transaksi_untuk_diedit(): void
     {
         $trx = Transaction::factory()->create([
@@ -216,7 +217,7 @@ class TransactionCrudTest extends TestCase
             ->assertSet('type',           'expense');
     }
 
-    /** @test */
+    #[Test]
     public function bisa_update_transaksi(): void
     {
         $trx = Transaction::factory()->create([
@@ -243,7 +244,7 @@ class TransactionCrudTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function tidak_bisa_update_tanpa_load_transaksi_dulu(): void
     {
         Livewire::actingAs($this->user)
@@ -255,7 +256,7 @@ class TransactionCrudTest extends TestCase
         $this->assertDatabaseCount('transactions', 0);
     }
 
-    /** @test */
+    #[Test]
     public function tidak_bisa_load_transaksi_user_lain(): void
     {
         $userLain = User::factory()->create();
@@ -278,7 +279,7 @@ class TransactionCrudTest extends TestCase
             ->call('loadTransaction', $trx->id);
     }
 
-    /** @test */
+    #[Test]
     public function validasi_edit_name_minimal_3_karakter(): void
     {
         $trx = Transaction::factory()->create([
@@ -298,7 +299,7 @@ class TransactionCrudTest extends TestCase
             ->assertHasErrors(['name' => 'min']);
     }
 
-    /** @test */
+    #[Test]
     public function reset_form_mengosongkan_semua_field(): void
     {
         $trx = Transaction::factory()->create([
@@ -324,7 +325,7 @@ class TransactionCrudTest extends TestCase
     // Delete — method: setTransaction($id), delete()
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function bisa_hapus_transaksi_sendiri(): void
     {
         $trx = Transaction::factory()->create([
@@ -345,7 +346,7 @@ class TransactionCrudTest extends TestCase
         $this->assertDatabaseMissing('transactions', ['id' => $trx->id]);
     }
 
-    /** @test */
+    #[Test]
     public function tidak_bisa_hapus_transaksi_user_lain(): void
     {
         $userLain = User::factory()->create();
@@ -368,7 +369,7 @@ class TransactionCrudTest extends TestCase
         $this->assertDatabaseHas('transactions', ['id' => $trx->id]);
     }
 
-    /** @test */
+    #[Test]
     public function delete_tanpa_set_transaction_tidak_melakukan_apapun(): void
     {
         Transaction::factory()->create([

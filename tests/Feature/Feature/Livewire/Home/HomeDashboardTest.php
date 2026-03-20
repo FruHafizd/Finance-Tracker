@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class HomeDashboardTest extends TestCase
@@ -56,7 +57,7 @@ class HomeDashboardTest extends TestCase
     // SummaryCards — method: getData()
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function summary_tampil_data_bulan_ini(): void
     {
         $this->income(5_000_000,  now()->format('Y-m-d'));
@@ -71,7 +72,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEquals(4_000_000, $summary['balance']['current']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_tidak_tampil_data_bulan_lalu(): void
     {
         $this->income(9_000_000, now()->subMonth()->format('Y-m-d'));
@@ -84,7 +85,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEquals(1_000_000, $summary['income']['current']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_hasPrev_false_jika_tidak_ada_data_bulan_lalu(): void
     {
         $this->income(1_000_000, now()->format('Y-m-d'));
@@ -98,7 +99,7 @@ class HomeDashboardTest extends TestCase
         $this->assertFalse($summary['balance']['hasPrev']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_hasPrev_true_jika_ada_data_bulan_lalu(): void
     {
         $this->income(5_000_000, now()->format('Y-m-d'));
@@ -111,7 +112,7 @@ class HomeDashboardTest extends TestCase
         $this->assertTrue($summary['income']['hasPrev']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_persentase_perubahan_dihitung_benar(): void
     {
         // Bulan lalu 4jt, bulan ini 5jt → naik 25%
@@ -125,7 +126,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEquals(25.0, $summary['income']['change']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_change_null_jika_bulan_lalu_nol(): void
     {
         // Ada data bulan lalu tapi income = 0, expense = 100rb
@@ -140,7 +141,7 @@ class HomeDashboardTest extends TestCase
         $this->assertNull($summary['income']['change']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_tidak_tampil_data_user_lain(): void
     {
         $userLain = User::factory()->create();
@@ -163,7 +164,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEquals(1_000_000, $summary['income']['current']);
     }
 
-    /** @test */
+    #[Test]
     public function summary_semua_nol_jika_tidak_ada_transaksi(): void
     {
         $summary = Livewire::actingAs($this->user)
@@ -179,7 +180,7 @@ class HomeDashboardTest extends TestCase
     // ExpenseChart — method: getChartData()
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function chart_tampil_pengeluaran_bulan_ini(): void
     {
         $this->expense(300_000, now()->format('Y-m-d'));
@@ -193,7 +194,7 @@ class HomeDashboardTest extends TestCase
         $this->assertContains('#f97316', $chartData['colors']);
     }
 
-    /** @test */
+    #[Test]
     public function chart_tidak_tampil_transaksi_income(): void
     {
         $this->income(5_000_000, now()->format('Y-m-d'));
@@ -205,7 +206,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEmpty($chartData['data']);
     }
 
-    /** @test */
+    #[Test]
     public function chart_tidak_tampil_data_bulan_lalu(): void
     {
         $this->expense(500_000, now()->subMonth()->format('Y-m-d'));
@@ -217,7 +218,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEmpty($chartData['data']);
     }
 
-    /** @test */
+    #[Test]
     public function chart_diurutkan_terbesar_ke_terkecil(): void
     {
         $catBelanja = Category::factory()->create([
@@ -246,7 +247,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEquals(500_000.0, $chartData['data'][0]);
     }
 
-    /** @test */
+    #[Test]
     public function chart_tidak_tampil_data_user_lain(): void
     {
         $userLain = User::factory()->create();
@@ -267,7 +268,7 @@ class HomeDashboardTest extends TestCase
         $this->assertEmpty($chartData['data']);
     }
 
-    /** @test */
+    #[Test]
     public function chart_fallback_warna_jika_kategori_tidak_punya_warna(): void
     {
         // Category tanpa warna (null)
@@ -297,7 +298,7 @@ class HomeDashboardTest extends TestCase
     // Auth
     // =========================================================================
 
-    /** @test */
+    #[Test]
     public function guest_diredirect_ke_login_dari_beranda(): void
     {
         $this->get(route('home'))
