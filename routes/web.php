@@ -9,7 +9,7 @@ Route::redirect('/', '/login');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', Home::class)->name('home');
     Route::get('/transaction', Transaction::class)->name('transaction.index');
-    Route::get('/recurring-transactions', RecurringIndex::class)->name('recurring-transactions');
+    // Route::get('/recurring-transactions', RecurringIndex::class)->name('recurring-transactions'); //disable 
 
 
     Route::get('/export-excel', function (\Illuminate\Http\Request $request) {
