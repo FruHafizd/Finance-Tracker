@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -23,6 +24,7 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
     public function array(): array
     {
         $transactions = Transaction::with('category')
+            ->where('user_id', Auth::id())
             ->whereBetween('date', [$this->start, $this->end])
             ->get();
 
