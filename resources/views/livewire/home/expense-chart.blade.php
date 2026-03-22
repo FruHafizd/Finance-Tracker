@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/home/expense-chart.blade.php --}}
 <style>
 .ec-card { background:#fff; border:1px solid #e8eaf0; border-radius:18px; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,.05); font-family:'Plus Jakarta Sans',sans-serif; }
 .ec-head { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; gap:12px; }
