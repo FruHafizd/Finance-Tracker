@@ -98,13 +98,6 @@ class Index extends Component
         return $query;
     }
 
-    public function getTransactionsProperty()
-    {
-        return $this->baseQuery()
-            ->orderBy('date', 'desc')
-            ->paginate(10);
-    }
-
     public function getSummaryProperty(): array
     {
         $data = $this->baseQuery()
@@ -133,8 +126,12 @@ class Index extends Component
 
     public function render()
     {
+        $transactions = $this->baseQuery()
+            ->orderBy('date', 'desc')
+            ->paginate(10);
+
         return view('livewire.transactions.index', [
-            'transactions' => $this->transactions,
+            'transactions' => $transactions,
             'summary'      => $this->summary,
             'categories'   => $this->categories,
         ])->layout('layouts.app', ['title' => 'Riwayat Transaksi']);

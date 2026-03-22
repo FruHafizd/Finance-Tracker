@@ -400,17 +400,55 @@
                                     </svg>
                                 </button>
 
-                                <!-- Page Numbers (Desktop) -->
                                 <div class="hidden sm:flex">
-                                    @foreach ($transactions->getUrlRange(1, $transactions->lastPage()) as $page => $url)
+                                    @php
+                                        $currentPage = $transactions->currentPage();
+                                        $lastPage    = $transactions->lastPage();
+                                        $onEachSide  = 2;
+
+                                        $start = max(1, $currentPage - $onEachSide);
+                                        $end   = min($lastPage, $currentPage + $onEachSide);
+
+                                        $showStartDots = $start > 2;
+                                        $showEndDots   = $end < $lastPage - 1;
+                                    @endphp
+
+                                    {{-- Halaman pertama --}}
+                                    @if ($start > 1)
+                                        <button wire:click='gotoPage(1)'
+                                            class="relative inline-flex items-center px-4 py-2 text-sm font-medium border-r border-gray-200
+                                                {{ 1 === $currentPage ? 'bg-blue-50 text-blue-600 font-semibold' : 'bg-white text-gray-600 hover:bg-gray-50' }}">
+                                            1
+                                        </button>
+                                        @if ($showStartDots)
+                                            <span class="relative inline-flex items-center px-3 py-2 text-sm text-gray-400 border-r border-gray-200 bg-white">
+                                                ...
+                                            </span>
+                                        @endif
+                                    @endif
+
+                                    {{-- Window tengah --}}
+                                    @for ($page = $start; $page <= $end; $page++)
                                         <button wire:click='gotoPage({{ $page }})'
                                             class="relative inline-flex items-center px-4 py-2 text-sm font-medium border-r border-gray-200
-                                                {{ $page === $transactions->currentPage()
-                                                    ? 'bg-blue-50 text-blue-600 font-semibold'
-                                                    : 'bg-white text-gray-600 hover:bg-gray-50' }}">
+                                                {{ $page === $currentPage ? 'bg-blue-50 text-blue-600 font-semibold' : 'bg-white text-gray-600 hover:bg-gray-50' }}">
                                             {{ $page }}
                                         </button>
-                                    @endforeach
+                                    @endfor
+
+                                    {{-- Halaman terakhir --}}
+                                    @if ($end < $lastPage)
+                                        @if ($showEndDots)
+                                            <span class="relative inline-flex items-center px-3 py-2 text-sm text-gray-400 border-r border-gray-200 bg-white">
+                                                ...
+                                            </span>
+                                        @endif
+                                        <button wire:click='gotoPage({{ $lastPage }})'
+                                            class="relative inline-flex items-center px-4 py-2 text-sm font-medium border-r border-gray-200
+                                                {{ $lastPage === $currentPage ? 'bg-blue-50 text-blue-600 font-semibold' : 'bg-white text-gray-600 hover:bg-gray-50' }}">
+                                            {{ $lastPage }}
+                                        </button>
+                                    @endif
                                 </div>
 
                                 <!-- Current Page (Mobile) -->
