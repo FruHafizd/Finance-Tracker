@@ -34,9 +34,9 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
         $data[] = ['LAPORAN TRANSAKSI'];
         $data[] = [
             'Periode: ' .
-                Carbon::parse($this->start)->format('d-m-Y') .
+                 Carbon::parse($this->start)->locale('id')->isoFormat('DD-MMMM-YYYY') .
                 ' s/d ' .
-                Carbon::parse($this->end)->format('d-m-Y')
+                Carbon::parse($this->end)->locale('id')->isoFormat('DD-MMMM-YYYY')
         ];
         $data[] = [];
 
@@ -53,7 +53,7 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
                 $total -= $item->amount;
             }
             $data[] = [
-                Carbon::parse($item->date)->format('d-m-Y'),
+                Carbon::parse($item->date)->locale('id')->isoFormat('DD-MMMM-YYYY'),
                 $item->category->name ?? '-',
                 $item->name ?? '-',
                 $item->type === 'income' ? 'Pemasukan' : 'Pengeluaran',
