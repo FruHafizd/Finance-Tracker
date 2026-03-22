@@ -12,7 +12,6 @@ class Export extends Component
 
     public function getExportUrl()
     {
-        $this->errorMessage = '';
        if (! $this->startDate || ! $this->endDate) {
             throw new \Exception('Tanggal wajib diisi.');
         }
