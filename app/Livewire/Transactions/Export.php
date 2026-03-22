@@ -9,19 +9,16 @@ class Export extends Component
 {
     public $startDate;
     public $endDate;
-    public string $errorMessage = '';
 
     public function getExportUrl()
     {
         $this->errorMessage = '';
-        if (!$this->startDate || !$this->endDate) {
-            $this->errorMessage = 'Tanggal wajib diisi';
-            return;
-            }
+       if (! $this->startDate || ! $this->endDate) {
+            throw new \Exception('Tanggal wajib diisi.');
+        }
 
         if ($this->startDate > $this->endDate) {
-            $this->errorMessage = 'Range tanggal salah';
-            return;
+            throw new \Exception('Tanggal awal tidak boleh lebih dari tanggal akhir.');
         }
 
         return \URL::temporarySignedRoute(
