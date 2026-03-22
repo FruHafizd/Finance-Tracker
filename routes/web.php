@@ -13,14 +13,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::get('/export-excel', function (\Illuminate\Http\Request $request) {
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\TransactionExport(
-                $request->start,
-                $request->end
-            ),
-            'laporan-transaksi.xlsx'
+
+        // Validasi input
+        $request->validate([
+            'start' => ['required', 'date'],
+            'end'   => ['required', 'date', 'after_or_equal:start'],
+        ]);
+
+        $writer = \Maatwebsite\Excel\Facades\Excel::raw(
+            new \App\Exports\TransactionExport($request->start, $request->end),
+            \Maatwebsite\Excel\Excel::XLSX
         );
-    })->name('export.excel');
+
+        $fileName = 'laporan-transaksi-' . $request->start . '-sd-' . $request->end . '.xlsx';
+
+        return response($writer, 200, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+            'Content-Length'      => strlen($writer),
+            'Cache-Control'       => 'no-cache, no-store',
+        ]);
+
+    })->middleware('signed')->name('export.excel');
 });
 
 

@@ -2,9 +2,7 @@
 
 namespace App\Livewire\Transactions;
 
-use App\Exports\TransactionExport;
 use Livewire\Component;
-use Maatwebsite\Excel\Facades\Excel;
 
 
 class Export extends Component
@@ -13,7 +11,7 @@ class Export extends Component
     public $endDate;
     public string $errorMessage = '';
 
-    public function exportExcel()
+    public function getExportUrl()
     {
         $this->errorMessage = '';
         if (!$this->startDate || !$this->endDate) {
@@ -26,10 +24,14 @@ class Export extends Component
             return;
         }
 
-        return redirect()->route('export.excel', [
-            'start' => $this->startDate,
-            'end'   => $this->endDate,
-        ]);
+        return \URL::temporarySignedRoute(
+            'export.excel',
+            now()->addMinutes(5),
+            [
+                'start' => $this->startDate,
+                'end'   => $this->endDate,
+            ]
+        );
     }
 
 
