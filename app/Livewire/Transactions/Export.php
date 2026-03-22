@@ -2,34 +2,32 @@
 
 namespace App\Livewire\Transactions;
 
-use App\Exports\TransactionExport;
 use Livewire\Component;
-use Maatwebsite\Excel\Facades\Excel;
 
 
 class Export extends Component
 {
     public $startDate;
     public $endDate;
-    public string $errorMessage = '';
 
-    public function exportExcel()
+    public function getExportUrl()
     {
-        $this->errorMessage = '';
-        if (!$this->startDate || !$this->endDate) {
-            $this->errorMessage = 'Tanggal wajib diisi';
-            return;
-            }
-
-        if ($this->startDate > $this->endDate) {
-            $this->errorMessage = 'Range tanggal salah';
-            return;
+       if (! $this->startDate || ! $this->endDate) {
+            throw new \Exception('Tanggal wajib diisi.');
         }
 
-        return redirect()->route('export.excel', [
-            'start' => $this->startDate,
-            'end'   => $this->endDate,
-        ]);
+        if ($this->startDate > $this->endDate) {
+            throw new \Exception('Tanggal awal tidak boleh lebih dari tanggal akhir.');
+        }
+
+        return \URL::temporarySignedRoute(
+            'export.excel',
+            now()->addMinutes(5),
+            [
+                'start' => $this->startDate,
+                'end'   => $this->endDate,
+            ]
+        );
     }
 
 

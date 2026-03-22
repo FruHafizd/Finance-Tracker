@@ -67,7 +67,7 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
             '',
             '',
             '',
-            'Total',
+            'Total pengeluaran',
             $total,
         ];
 
@@ -85,8 +85,8 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
                 $lastRow = $sheet->getHighestRow();
 
                 // Merge judul
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
+                $sheet->mergeCells('A1:E1');
+                $sheet->mergeCells('A2:E2');
 
                 // Bold + center judul
                 $sheet->getStyle('A1:A2')->getFont()->setBold(true);
