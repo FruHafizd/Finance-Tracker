@@ -54,4 +54,9 @@ class User extends Authenticatable
         return $this->hasMany(RecurringTransaction::class);
     }
 
+    public function budget() 
+    {
+        return $this->hasMany(Budget::class);
+    }
+
 }

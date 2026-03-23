@@ -38,6 +38,10 @@ new class extends Component
                         {{ __('Riwayat Transaksi') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('budget.index')" :active="request()->routeIs('budget.index')" wire:navigate>
+                        {{ __('Budget') }}
+                    </x-nav-link>
+
                     {{-- <x-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
                         {{ __('Transaksi Berulang') }}
                     </x-nav-link> --}}
@@ -93,8 +97,11 @@ new class extends Component
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate>
                 {{ __('Beranda') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('transaction.index')" :active="request()->routeIs('history')" wire:navigate>
+            <x-responsive-nav-link :href="route('transaction.index')" :active="request()->routeIs('transaction.index')" wire:navigate>
                 {{ __('Riwayat Transaksi') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('budget.index')" :active="request()->routeIs('budget.index')" wire:navigate>
+                {{ __('Budget') }}
             </x-responsive-nav-link>
             {{-- <x-responsive-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
                 {{ __('Transaksi Berulang') }}
