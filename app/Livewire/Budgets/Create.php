@@ -48,9 +48,7 @@ class Create extends Component
         $this->resetErrorBag();
 
         $this->dispatch('close-modal', 'modal-budget-create');
-        $this->dispatch('budget-created');
-
-        session()->flash('success', 'Budget berhasil ditambahkan!');
+        $this->dispatch('budget-created', message: 'Budget berhasil ditambahkan!');
     }
 
     public function render()

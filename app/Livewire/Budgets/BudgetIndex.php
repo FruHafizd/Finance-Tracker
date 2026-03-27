@@ -8,14 +8,15 @@ use Livewire\Component;
 
 class BudgetIndex extends Component
 {   
-    protected $listeners = [    
-        'budget-created' => '$refresh',
-        'budget-updated' => '$refresh',
-        'budget-deleted' => '$refresh',
-    ];
-
     public int $month;
     public int $year;
+    public string $flashMessage = '';
+
+    protected $listeners = [    
+        'budget-created' => 'showFlash',
+        'budget-updated' => 'showFlash',
+        'budget-deleted' => 'showFlash',
+    ];
 
     public function mount(): void
     {
@@ -23,6 +24,11 @@ class BudgetIndex extends Component
         $this->year  = (int) now()->format('Y');
     }
 
+    public function showFlash(string $message): void
+    {
+        $this->flashMessage = '';
+        $this->flashMessage = $message;
+    }
     public function render()
     {   
         $budgets = Budget::with('category')

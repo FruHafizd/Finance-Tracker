@@ -32,9 +32,7 @@ class Delete extends Component
         $this->reset(['budgetId', 'categoryName']);
 
         $this->dispatch('close-modal', 'modal-budget-delete');
-        $this->dispatch('budget-deleted');
-
-        session()->flash('success', 'Budget berhasil dihapus!');
+        $this->dispatch('budget-deleted',message: 'Budget berhasil dihapus!');
     }
 
     public function render()

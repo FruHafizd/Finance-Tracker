@@ -52,9 +52,7 @@ class Edit extends Component
         $this->reset(['budgetId', 'limit_amount', 'categoryName']);
 
         $this->dispatch('close-modal', 'modal-budget-edit');
-        $this->dispatch('budget-updated');
-
-        session()->flash('success', 'Budget berhasil diperbarui!');
+        $this->dispatch('budget-updated', message: 'Budget berhasil diperbarui!');
     }
 
     public function render()
