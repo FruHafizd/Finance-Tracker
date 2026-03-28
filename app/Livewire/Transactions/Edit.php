@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Transactions;
 
+use App\Models\Budget;
 use App\Models\Transaction;
 use Livewire\Component;
 use App\Models\Category as Categories;
@@ -92,9 +93,57 @@ class Edit extends Component
                         'name' => $this->name,
                         'category_id' => $this->category_id,
                     ]);
+
+        if ($this->type === 'expense') {
+            $this->checkBudget();
+        }
+
         $this->resetForm();
         $this->dispatch('transaction-updated');
         $this->dispatch('close-modal','modal-edit');
+    }
+
+    private function checkBudget(): void
+    {
+        $budget = Budget::with('category')
+            ->where('user_id', auth()->id())
+            ->where('category_id', $this->category_id)
+            ->where('month', (int) now()->format('n'))
+            ->where('year', (int) now()->format('Y'))
+            ->first();
+
+        if (! $budget) return;
+
+        $spent      = $budget->spentAmount();
+        $percentage = $budget->limit_amount > 0
+            ? ($spent / $budget->limit_amount) * 100
+            : 0;
+
+        $categoryName = $budget->category->name;
+        $sisa         = max($budget->limit_amount - $spent, 0);
+        $sisaFormat   = 'Rp ' . number_format($sisa, 0, ',', '.');
+
+        if ($percentage >= 100) {
+            $detail = json_encode([
+                'type'    => 'danger',
+                'title'   => 'Aduh, kebablasan! 🚨',
+                'message' => "Pengeluaran {$categoryName} kamu sudah melebihi batas bulan ini!",
+            ]);
+        } elseif ($percentage >= 80) {
+            $detail = json_encode([
+                'type'    => 'warning',
+                'title'   => 'Hampir habis! ⚠️',
+                'message' => "Uang {$categoryName} kamu sudah " . round($percentage) . "% terpakai. Sisa {$sisaFormat}.",
+            ]);
+        } else {
+            return;
+        }
+
+        $this->js("
+            window.dispatchEvent(new CustomEvent('budget-alert', {
+                detail: {$detail}
+            }));
+        ");
     }
 
     public function render()
