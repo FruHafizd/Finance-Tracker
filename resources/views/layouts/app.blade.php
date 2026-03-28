@@ -16,7 +16,7 @@
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+       <div class="min-h-screen bg-gray-100 flex flex-col">
             <livewire:layout.navigation />
 
             @if (isset($header))
@@ -27,9 +27,11 @@
                 </header>
             @endif
 
-            <main>
+            <main class="flex-1">
                 {{ $slot }}
             </main>
+
+            <x-footer />
         </div>
 
         {{-- Budget Alert Toast --}}
