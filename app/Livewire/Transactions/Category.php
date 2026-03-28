@@ -33,7 +33,7 @@ class Category extends Component
 
         Categories::create([
             'user_id' => auth()->id(),
-            'name' => $this->name,
+            'name' => strip_tags($this->name),
             'color' => $this->color,
         ]);
 
