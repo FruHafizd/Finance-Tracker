@@ -1,23 +1,38 @@
 <?php
 
 use App\Livewire\Actions\Logout;
+use App\Models\Budget;
 use Livewire\Volt\Component;
 
 new class extends Component
 {
-    /**
-     * Log the current user out of the application.
-     */
+    public int $exceededCount = 0;
+
+    public function mount(): void
+    {
+        $this->loadExceededCount();
+    }
+
+    public function loadExceededCount(): void
+    {
+        $this->exceededCount = Budget::getExceededBudgets(auth()->id())->count();
+    }
+
     public function logout(Logout $logout): void
     {
         $logout();
-
         $this->redirect('/', navigate: true);
     }
+
+    protected $listeners = [
+        'budget-created' => 'loadExceededCount',
+        'budget-updated' => 'loadExceededCount',
+        'budget-deleted' => 'loadExceededCount',
+        'transaction-created' => 'loadExceededCount',
+    ];
 }; ?>
 
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
@@ -38,14 +53,18 @@ new class extends Component
                         {{ __('Riwayat Transaksi') }}
                     </x-nav-link>
 
+                    {{-- Budget link dengan indikator --}}
                     <x-nav-link :href="route('budget.index')" :active="request()->routeIs('budget.index')" wire:navigate>
-                        {{ __('Budget') }}
+                        <span class="relative inline-flex items-center">
+                            {{ __('Budget') }}
+                            @if ($exceededCount > 0)
+                                <span class="absolute -top-1 -right-3 flex h-2.5 w-2.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                </span>
+                            @endif
+                        </span>
                     </x-nav-link>
-
-                    {{-- <x-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
-                        {{ __('Transaksi Berulang') }}
-                    </x-nav-link> --}}
-
                 </div>
             </div>
 
@@ -55,7 +74,6 @@ new class extends Component
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -68,8 +86,6 @@ new class extends Component
                         <x-dropdown-link :href="route('profile')" wire:navigate>
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
-                        <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
                             <x-dropdown-link>
                                 {{ __('Log Out') }}
@@ -100,12 +116,20 @@ new class extends Component
             <x-responsive-nav-link :href="route('transaction.index')" :active="request()->routeIs('transaction.index')" wire:navigate>
                 {{ __('Riwayat Transaksi') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('budget.index')" :active="request()->routeIs('budget.index')" wire:navigate>
-                {{ __('Budget') }}
-            </x-responsive-nav-link>
-            {{-- <x-responsive-nav-link :href="route('recurring-transactions')" :active="request()->routeIs('recurring-transactions')" wire:navigate>
-                {{ __('Transaksi Berulang') }}
-            </x-responsive-nav-link> --}} 
+
+            {{-- Budget responsive dengan indikator --}}
+            <div class="relative">
+                <x-responsive-nav-link :href="route('budget.index')" :active="request()->routeIs('budget.index')" wire:navigate>
+                    <div class="flex items-center gap-2">
+                        {{ __('Budget') }}
+                        @if ($exceededCount > 0)
+                            <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                                {{ $exceededCount }}
+                            </span>
+                        @endif
+                    </div>
+                </x-responsive-nav-link>
+            </div>
         </div>
 
         <!-- Responsive Settings Options -->
@@ -114,13 +138,10 @@ new class extends Component
                 <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
                 <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
             </div>
-
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
-
-                <!-- Authentication -->
                 <button wire:click="logout" class="w-full text-start">
                     <x-responsive-nav-link>
                         {{ __('Log Out') }}

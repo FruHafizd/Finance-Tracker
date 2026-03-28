@@ -50,5 +50,19 @@ class Budget extends Model
         if ($this->limit_amount === 0) return 0;
         return round(($this->spentAmount() / $this->limit_amount) * 100, 1 );
     }
+    
+    public function isExceeded(): bool
+    {
+        return $this->spentAmount() >= $this->limit_amount;
+    }
+    public static function getExceededBudgets(int $userId): \Illuminate\Database\Eloquent\Collection
+    {
+        return static::with('category')
+            ->where('user_id', $userId)
+            ->where('month', (int) now()->format('n'))
+            ->where('year', (int) now()->format('Y'))
+            ->get()
+            ->filter(fn($budget) => $budget->isExceeded());
+    }
 
 }
