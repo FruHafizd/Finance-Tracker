@@ -128,10 +128,15 @@ class Index extends Component
     {
         $transactions = $this->baseQuery()
             ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
+
+        $grouped = $transactions->getCollection()
+            ->groupBy(fn($item) => $item->date->format('Y-m-d'));
 
         return view('livewire.transactions.index', [
             'transactions' => $transactions,
+            'grouped'      => $grouped,
             'summary'      => $this->summary,
             'categories'   => $this->categories,
         ])->layout('layouts.app', ['title' => 'Riwayat Transaksi']);
