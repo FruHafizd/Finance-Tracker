@@ -50,7 +50,7 @@ new class extends Component
                     </x-nav-link>
 
                     <x-nav-link :href="route('transaction.index')" :active="request()->routeIs('transaction.index')" wire:navigate>
-                        {{ __('Riwayat Transaksi') }}
+                        {{ __('Transaksi') }}
                     </x-nav-link>
 
                     {{-- Budget link dengan indikator --}}
@@ -114,7 +114,7 @@ new class extends Component
                 {{ __('Beranda') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('transaction.index')" :active="request()->routeIs('transaction.index')" wire:navigate>
-                {{ __('Riwayat Transaksi') }}
+                {{ __('Transaksi') }}
             </x-responsive-nav-link>
 
             {{-- Budget responsive dengan indikator --}}

@@ -1,7 +1,7 @@
 <div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Riwayat Transaksi
+            Transaksi
         </h2>
     </x-slot>
 
@@ -216,85 +216,102 @@
                     </div>
                 </div>
 
-                <!-- Table Desktop -->
+                {{-- Table Desktop --}}
                 <div class="hidden md:block overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
-                                    Tanggal
-                                </th>
-                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Nama
-                                </th>
-                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                                    Tipe
-                                </th>
-                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-36">
-                                    Kategori
-                                </th>
-                                <th class="px-4 lg:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
-                                    Jumlah
-                                </th>
-                                <th class="px-4 lg:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                                    Aksi
-                                </th>
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Tipe</th>
+                                <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Kategori</th>
+                                <th class="px-4 lg:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Jumlah</th>
+                                <th class="px-4 lg:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse ($transactions as $item)
-                                <tr class="hover:bg-gray-50 transition-colors duration-150">
-                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $item->date->format('d M Y') }}
-                                    </td>
-                                    <td class="px-4 lg:px-6 py-4 text-sm text-gray-900 max-w-xs">
-                                        <span class="line-clamp-2">{{ $item['name'] }}</span>
-                                    </td>
-                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full
-                                            {{ $item['type'] === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                            {{ $item['type'] === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full"
-                                            style="background-color: {{ $item->category->color }}20; color: {{ $item->category->color }}">
-                                            {{ $item->category->name }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-right text-sm font-semibold
-                                        {{ $item['type'] === 'income' ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $item['type'] === 'income' ? '+' : '-' }}Rp {{ number_format($item['amount'], 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-center">
-                                        <div class="flex items-center justify-center gap-1">
-                                            <button x-data
-                                                x-on:click.prevent="
-                                                    $dispatch('edit-transaction', { id: {{ $item->id }} });
-                                                    $dispatch('open-modal', 'modal-edit');
-                                                "
-                                                class="inline-flex items-center gap-1 px-2.5 py-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 text-xs font-medium rounded-md transition-colors duration-150">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            @forelse ($grouped as $date => $items)
+                                @php
+                                    $parsedDate  = \Carbon\Carbon::parse($date);
+                                    \Carbon\Carbon::setLocale('id');
+                                    if ($parsedDate->isToday()) {
+                                        $label = 'Hari Ini';
+                                    } elseif ($parsedDate->isYesterday()) {
+                                        $label = 'Kemarin';
+                                    } else {
+                                        $label = $parsedDate->translatedFormat('l, d F Y');
+                                    }
+                                @endphp
+
+                                {{-- Group Header Row --}}
+                                <tr class="bg-gray-50 border-t border-gray-200">
+                                    <td colspan="6" class="px-4 lg:px-6 py-2">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
-                                                Edit
-                                            </button>
-                                            <button x-data
-                                                x-on:click.prevent="
-                                                    $dispatch('confirm-delete', { id: {{ $item->id }} });
-                                                    $dispatch('open-modal', 'modal-delete');
-                                                "
-                                                class="inline-flex items-center gap-1 px-2.5 py-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 text-xs font-medium rounded-md transition-colors duration-150">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                Hapus
-                                            </button>
+                                                <span class="text-xs font-semibold text-gray-600">{{ $label }}</span>
+                                            </div>
+                                            <span class="text-xs text-gray-400">{{ $items->count() }} transaksi</span>
                                         </div>
                                     </td>
                                 </tr>
+
+                                {{-- Transaction Rows --}}
+                                @foreach ($items as $item)
+                                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                        
+                                        <td class="px-4 lg:px-6 py-4 text-sm text-gray-900 max-w-xs">
+                                            <span class="line-clamp-2">{{ $item->name }}</span>
+                                        </td>
+                                        <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full
+                                                {{ $item->type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                {{ $item->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full"
+                                                style="background-color: {{ $item->category->color }}20; color: {{ $item->category->color }}">
+                                                {{ $item->category->name }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-right text-sm font-semibold
+                                            {{ $item->type === 'income' ? 'text-green-600' : 'text-red-600' }}">
+                                            {{ $item->type === 'income' ? '+' : '-' }}Rp {{ number_format($item->amount, 0, ',', '.') }}
+                                        </td>
+                                        <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button x-data
+                                                    x-on:click.prevent="
+                                                        $dispatch('edit-transaction', { id: {{ $item->id }} });
+                                                        $dispatch('open-modal', 'modal-edit');
+                                                    "
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 text-xs font-medium rounded-md transition-colors duration-150">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                    Edit
+                                                </button>
+                                                <button x-data
+                                                    x-on:click.prevent="
+                                                        $dispatch('confirm-delete', { id: {{ $item->id }} });
+                                                        $dispatch('open-modal', 'modal-delete');
+                                                    "
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 text-xs font-medium rounded-md transition-colors duration-150">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    Hapus
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
                             @empty
                                 <tr>
                                     <td colspan="6" class="px-6 py-16 text-center">
@@ -313,57 +330,84 @@
                     </table>
                 </div>
 
-                <!-- Mobile Card View -->
+                {{-- Mobile Card View --}}
                 <div class="md:hidden divide-y divide-gray-100">
-                    @forelse ($transactions as $item)
-                        <div class="p-4 hover:bg-gray-50 transition-colors duration-150">
-                            <div class="flex items-start justify-between gap-2 mb-2">
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-semibold text-gray-900 truncate">{{ $item['name'] }}</p>
-                                    <div class="flex items-center gap-2 mt-1 flex-wrap">
-                                        <p class="text-xs text-gray-400">{{ $item->date->format('d M Y') }}</p>
-                                        <span class="px-2 py-0.5 text-xs font-medium rounded-full"
-                                            style="background-color: {{ $item->category->color }}20; color: {{ $item->category->color }}">
-                                            {{ $item->category->name }}
-                                        </span>
+                    @forelse ($grouped as $date => $items)
+                        @php
+                            $parsedDate = \Carbon\Carbon::parse($date);
+                            \Carbon\Carbon::setLocale('id');
+                            if ($parsedDate->isToday()) {
+                                $label = 'Hari Ini';
+                            } elseif ($parsedDate->isYesterday()) {
+                                $label = 'Kemarin';
+                            } else {
+                                $label = $parsedDate->translatedFormat('l, d F Y');
+                            }
+                        @endphp
+
+                        {{-- Group Header Mobile --}}
+                        <div class="flex items-center justify-between px-4 py-2 bg-gray-50 border-t border-gray-100">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-xs font-semibold text-gray-600">{{ $label }}</span>
+                            </div>
+                            <span class="text-xs text-gray-400">{{ $items->count() }} transaksi</span>
+                        </div>
+
+                        {{-- Mobile Cards --}}
+                        @foreach ($items as $item)
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150">
+                                <div class="flex items-start justify-between gap-2 mb-2">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-gray-900 truncate">{{ $item->name }}</p>
+                                        <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                            <p class="text-xs text-gray-400">{{ $item->date->format('d M Y') }}</p>
+                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full"
+                                                style="background-color: {{ $item->category->color }}20; color: {{ $item->category->color }}">
+                                                {{ $item->category->name }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-1 flex-shrink-0 text-xs font-semibold rounded-full
+                                        {{ $item->type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                        {{ $item->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between mt-3">
+                                    <p class="text-base font-bold {{ $item->type === 'income' ? 'text-green-600' : 'text-red-600' }}">
+                                        {{ $item->type === 'income' ? '+' : '-' }}Rp {{ number_format($item->amount, 0, ',', '.') }}
+                                    </p>
+                                    <div class="flex gap-1">
+                                        <button x-data
+                                            x-on:click.prevent="
+                                                $dispatch('edit-transaction', { id: {{ $item->id }} });
+                                                $dispatch('open-modal', 'modal-edit');
+                                            "
+                                            class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </button>
+                                        <button x-data
+                                            x-on:click.prevent="
+                                                $dispatch('confirm-delete', { id: {{ $item->id }} });
+                                                $dispatch('open-modal', 'modal-delete');
+                                            "
+                                            class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-150">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
-                                <span class="px-2.5 py-1 flex-shrink-0 text-xs font-semibold rounded-full
-                                    {{ $item['type'] === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                    {{ $item['type'] === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
-                                </span>
                             </div>
+                        @endforeach
 
-                            <div class="flex items-center justify-between mt-3">
-                                <p class="text-base font-bold {{ $item['type'] === 'income' ? 'text-green-600' : 'text-red-600' }}">
-                                    {{ $item['type'] === 'income' ? '+' : '-' }}Rp {{ number_format($item['amount'], 0, ',', '.') }}
-                                </p>
-                                <div class="flex gap-1">
-                                    <button x-data
-                                        x-on:click.prevent="
-                                            $dispatch('edit-transaction', { id: {{ $item->id }} });
-                                            $dispatch('open-modal', 'modal-edit');
-                                        "
-                                        class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                    </button>
-                                    <button x-data
-                                        x-on:click.prevent="
-                                            $dispatch('confirm-delete', { id: {{ $item->id }} });
-                                            $dispatch('open-modal', 'modal-delete');
-                                        "
-                                        class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-150">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
                     @empty
                         <div class="py-16 text-center">
                             <div class="flex flex-col items-center">
