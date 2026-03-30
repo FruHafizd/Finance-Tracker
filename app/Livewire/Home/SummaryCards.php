@@ -14,8 +14,8 @@ class SummaryCards extends Component
         $userId    = Auth::id();
         $start     = now()->startOfMonth()->format('Y-m-d');
         $end       = now()->endOfMonth()->format('Y-m-d');
-        $prevStart = Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
-        $prevEnd   = Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
+        $prevStart = now()->startOfMonth()->subMonth()->startOfMonth()->format('Y-m-d');
+        $prevEnd   = now()->startOfMonth()->subMonth()->endOfMonth()->format('Y-m-d');
 
         $current = Transaction::where('user_id', $userId)
             ->whereDate('date', '>=', $start)
