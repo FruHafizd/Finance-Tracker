@@ -52,10 +52,22 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
             }else {
                 $total -= $item->amount;
             }
+
+            // Mencegah CSV / Excel Injection (Security Fix)
+            $name = $item->name ?? '-';
+            if (preg_match('/^[=\+\-@]/', $name)) {
+                $name = "'" . $name;
+            }
+            
+            $categoryName = $item->category->name ?? '-';
+            if (preg_match('/^[=\+\-@]/', $categoryName)) {
+                $categoryName = "'" . $categoryName;
+            }
+
             $data[] = [
                 Carbon::parse($item->date)->locale('id')->isoFormat('DD-MMMM-YYYY'),
-                $item->category->name ?? '-',
-                $item->name ?? '-',
+                $categoryName,
+                $name,
                 $item->type === 'income' ? 'Pemasukan' : 'Pengeluaran',
                 $item->amount,
             ];
@@ -67,7 +79,7 @@ class TransactionExport implements FromArray, WithEvents, ShouldAutoSize
             '',
             '',
             '',
-            'Total pengeluaran',
+            'Total Saldo',
             $total,
         ];
 
