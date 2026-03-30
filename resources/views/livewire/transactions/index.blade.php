@@ -240,7 +240,7 @@
                                                 <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
                                                 <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">{{ $label }}</span>
                                             </div>
-                                            <span class="text-xs font-medium text-gray-400">{{ $items->count() }} aktivitas</span>
+                                            <span class="text-xs font-medium text-gray-400">{{ $items->count() }} transaksi</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -266,7 +266,7 @@
                                             </span>
                                         </td>
                                         <td class="px-5 lg:px-7 py-4 whitespace-nowrap text-right text-sm font-bold tracking-tight
-                                            {{ $item->type === 'income' ? 'text-emerald-600' : 'text-gray-900' }}">
+                                            {{ $item->type === 'income' ? 'text-emerald-600' : 'text-red-500' }}">
                                             {{ $item->type === 'income' ? '+' : '-' }}Rp {{ number_format($item->amount, 0, ',', '.') }}
                                         </td>
                                         <td class="px-5 lg:px-7 py-4 whitespace-nowrap text-right text-sm font-medium">
