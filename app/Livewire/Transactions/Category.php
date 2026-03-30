@@ -17,6 +17,11 @@ class Category extends Component
         'name' => 'required|min:2'
     ];
 
+    protected $messages = [
+        'name.required' => 'Nama kategori wajib diisi.',
+        'name.min' => 'Nama kategori minimal berisi 2 karakter.',
+    ];
+
     public function mount()
     {
         $this->loadCategories();
