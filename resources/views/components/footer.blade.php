@@ -61,10 +61,6 @@
         {{-- Footer Bottom --}}
         <div class="border-t border-gray-50 pt-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <span class="text-xs text-gray-300">© {{ date('Y') }} {{ config('app.name') }}. Hak cipta dilindungi.</span>
-            <div class="flex items-center gap-2 bg-violet-50 rounded-full px-3 py-1">
-                <div class="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
-                <span class="text-xs text-violet-600 font-medium">Semua sistem berjalan normal</span>
-            </div>
         </div>
 
     </div>
