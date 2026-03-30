@@ -13,71 +13,46 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
 
                     <!-- TOTAL PEMASUKAN -->
-                    <div class="relative bg-white rounded-2xl p-6 ring-1 ring-gray-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] overflow-hidden group hover:ring-emerald-500/20 transition-all duration-300">
-                        <div class="absolute -top-4 -right-4 p-8 opacity-[0.03] group-hover:opacity-[0.06] group-hover:scale-110 transition-all duration-300 pointer-events-none">
-                            <svg class="w-24 h-24 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-white rounded-xl p-4 ring-1 ring-inset ring-gray-100 shadow-sm flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-emerald-600/10">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
                             </svg>
                         </div>
-                        <div class="relative">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center ring-1 ring-inset ring-emerald-600/10">
-                                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                                    </svg>
-                                </div>
-                                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Pemasukan</h3>
-                            </div>
-                            <p class="text-[32px] font-black text-gray-900 tracking-tight leading-none mt-4">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">Pemasukan</p>
+                            <p class="text-lg font-bold text-gray-900 mt-0.5">
                                 Rp {{ number_format($summary['income'] ?? 0, 0, ',', '.') }}
                             </p>
                         </div>
                     </div>
 
                     <!-- TOTAL PENGELUARAN -->
-                    <div class="relative bg-white rounded-2xl p-6 ring-1 ring-gray-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] overflow-hidden group hover:ring-rose-500/20 transition-all duration-300">
-                        <div class="absolute -top-4 -right-4 p-8 opacity-[0.03] group-hover:opacity-[0.06] group-hover:scale-110 transition-all duration-300 pointer-events-none">
-                            <svg class="w-24 h-24 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-white rounded-xl p-4 ring-1 ring-inset ring-gray-100 shadow-sm flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-rose-600/10">
+                            <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                             </svg>
                         </div>
-                        <div class="relative">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center ring-1 ring-inset ring-rose-600/10">
-                                    <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
-                                    </svg>
-                                </div>
-                                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Pengeluaran</h3>
-                            </div>
-                            <p class="text-[32px] font-black text-gray-900 tracking-tight leading-none mt-4">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">Pengeluaran</p>
+                            <p class="text-lg font-bold text-gray-900 mt-0.5">
                                 Rp {{ number_format($summary['expense'] ?? 0, 0, ',', '.') }}
                             </p>
                         </div>
                     </div>
 
                     <!-- SALDO BERSIH -->
-                    <div class="relative rounded-2xl p-6 shadow-[0_8px_20px_-4px_rgba(79,70,229,0.3)] overflow-hidden group">
-                        <!-- Premium Indigo Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 via-indigo-600 to-indigo-800"></div>
-                        <!-- Decorative Glow -->
-                        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-colors duration-500 pointer-events-none"></div>
-                        <div class="absolute -top-4 -right-4 p-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 pointer-events-none">
-                            <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-white rounded-xl p-4 ring-1 ring-inset ring-gray-100 shadow-sm flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-indigo-600/10">
+                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <div class="relative">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center ring-1 ring-inset ring-white/30 backdrop-blur-md">
-                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h3 class="text-sm font-bold text-indigo-100 uppercase tracking-wider shadow-sm">Saldo Bersih</h3>
-                            </div>
-                            <p class="text-[32px] font-black text-white tracking-tight leading-none mt-4 drop-shadow-[0_2px_2px_rgba(0,0,0,0.1)]">
-                                Rp {{ number_format($summary['difference'] ?? 0, 0, ',', '.') }}
+                        <div>
+                            <p class="text-xs font-medium text-gray-500">Saldo Bersih</p>
+                            <p class="text-lg font-bold text-gray-900 mt-0.5">
+                                {{ ($summary['difference'] ?? 0) < 0 ? '-' : '' }}Rp {{ number_format(abs($summary['difference'] ?? 0), 0, ',', '.') }}
                             </p>
                         </div>
                     </div>
