@@ -1,56 +1,43 @@
-<style>
-.ec-card { background:#fff; border:1px solid #e8eaf0; border-radius:18px; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,.05); font-family:'Plus Jakarta Sans',sans-serif; }
-.ec-head { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; gap:12px; }
-.ec-title { font-size:15px; font-weight:700; color:#1f2937; margin:0 0 3px 0; }
-.ec-sub { font-size:12px; color:#9ca3af; }
-.ec-total-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#b0b7c3; text-align:right; }
-.ec-total-val { font-size:20px; font-weight:800; color:#1f2937; text-align:right; margin-top:2px; }
-.ec-divider { height:1px; background:#f3f4f6; margin:0 0 20px; }
-.ec-wrap { position:relative; height:320px; }
-.ec-legend { margin-top:16px; display:flex; flex-wrap:wrap; gap:8px 16px; }
-.ec-legend-item { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:500; color:#6b7280; }
-.ec-dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
-.ec-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:56px 0; gap:8px; }
-.ec-empty svg { opacity:.35; }
-.ec-empty p { font-size:13px; font-weight:600; color:#9ca3af; margin:0; }
-.ec-empty span { font-size:12px; color:#c4cad4; }
-</style>
-
-<div class="ec-card">
-    <div class="ec-head">
+<div class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-inset ring-gray-100">
+    <div class="flex items-start justify-between mb-5 gap-3">
         <div>
-            <p class="ec-title">Pengeluaran per Kategori</p>
-            <p class="ec-sub">{{ now()->translatedFormat('F Y') }}</p>
+            <h3 class="text-base font-bold text-gray-900 tracking-tight mb-1">Pengeluaran per Kategori</h3>
+            <p class="text-[13px] font-medium text-gray-400">{{ now()->translatedFormat('F Y') }}</p>
         </div>
         @if(count($chartData['data']) > 0)
-        <div>
-            <p class="ec-total-label">Total</p>
-            <p class="ec-total-val">Rp {{ number_format(array_sum($chartData['data']), 0, ',', '.') }}</p>
+        <div class="text-right">
+            <p class="text-[11px] font-bold tracking-widest uppercase text-gray-400">Total Pengeluaran</p>
+            <p class="text-2xl font-bold text-gray-900 mt-0.5 tracking-tight">Rp {{ number_format(array_sum($chartData['data']), 0, ',', '.') }}</p>
         </div>
         @endif
     </div>
 
-    <div class="ec-divider"></div>
+    <!-- Divider -->
+    <div class="border-t border-gray-100 mb-6"></div>
 
     @if(count($chartData['data']) > 0)
-        <div class="ec-wrap">
+        <div class="relative h-[320px] w-full">
             <canvas id="expenseChart"></canvas>
         </div>
-        <div class="ec-legend">
+        <!-- Legend Custom -->
+        <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2.5">
             @foreach($chartData['labels'] as $i => $label)
-                <div class="ec-legend-item">
-                    <span class="ec-dot" style="background:{{ $chartData['colors'][$i] ?? '#6366f1' }}"></span>
+                <div class="flex items-center gap-2 text-[13px] font-semibold text-gray-600">
+                    <span class="w-2.5 h-2.5 rounded-sm flex-shrink-0 ring-1 ring-inset shadow-sm" style="background:{{ $chartData['colors'][$i] ?? '#6366f1' }}; border-color: rgba(0,0,0,0.05)"></span>
                     {{ $label }}
                 </div>
             @endforeach
         </div>
     @else
-        <div class="ec-empty">
-            <svg width="48" height="48" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-            </svg>
-            <p>Belum ada pengeluaran bulan ini</p>
-            <span>Data akan muncul setelah ada transaksi</span>
+        <!-- Empty State -->
+        <div class="flex flex-col items-center justify-center py-16 px-4">
+            <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 ring-1 ring-inset ring-gray-100">
+                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+            </div>
+            <p class="text-[15px] font-bold text-gray-900 tracking-tight">Belum ada pengeluaran</p>
+            <p class="text-[13px] text-gray-500 mt-1 text-center max-w-xs">Data statistik otomatis akan muncul setelah Anda mencatat transaksi pengeluaran bulan ini.</p>
         </div>
     @endif
 </div>
