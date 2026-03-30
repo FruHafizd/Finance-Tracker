@@ -2,24 +2,20 @@
     <div class="max-h-[92vh] overflow-y-auto">
 
         <!-- HEADER -->
-        <div class="sticky top-0 z-10 bg-white border-b border-gray-100 px-5 py-4 sm:px-7 sm:py-5">
+        <div class="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-5 sm:px-8">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-base sm:text-lg font-semibold text-gray-900 leading-tight">Export Laporan</h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Unduh data transaksi dalam format Excel</p>
-                    </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 tracking-tight">Export Laporan</h2>
+                    <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        Unduh data transaksi dalam format Excel
+                    </p>
                 </div>
                 <button
                     x-on:click="$dispatch('close-modal', 'modal-export')"
                     type="button"
-                    class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-150 flex-shrink-0 ml-3">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -160,66 +156,61 @@
                     });
                 }
             }"
-            class="relative px-5 py-5 sm:px-7 sm:py-6 space-y-5">
+            class="relative px-6 py-6 sm:px-8 space-y-7">
 
             <!-- Rentang Tanggal -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" :class="phase !== 'idle' ? 'opacity-50 pointer-events-none' : ''">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6" :class="phase !== 'idle' ? 'opacity-50 pointer-events-none' : ''">
 
                 <!-- Tanggal Awal -->
-                <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Tanggal Awal
-                    </label>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Tanggal Awal</label>
                     <input
                         type="date"
                         wire:model="startDate"
                         x-on:change="hasError = false"
-                        class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200 bg-gray-50 focus:bg-white">
+                        class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
                 </div>
 
                 <!-- Tanggal Akhir -->
-                <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Tanggal Akhir
-                    </label>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Tanggal Akhir</label>
                     <input
                         type="date"
                         wire:model="endDate"
                         x-on:change="hasError = false"
-                        class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200 bg-gray-50 focus:bg-white">
+                        class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
                 </div>
             </div>
 
             <!-- Info -->
-            <div class="flex items-start gap-2.5 px-3.5 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-600"
+            <div class="flex items-start gap-4 p-5 bg-indigo-50/50 rounded-2xl text-sm text-indigo-700"
                  x-show="phase === 'idle'">
-                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Data akan diunduh dalam format <strong>.xlsx</strong> sesuai rentang tanggal yang dipilih.</span>
+                <div class="w-10 h-10 bg-indigo-100/70 text-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 -mt-1 shadow-sm border border-indigo-200/50">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div class="flex-1 mt-0.5 leading-relaxed">
+                    <strong class="block text-indigo-900 mb-0.5 tracking-tight font-semibold">Format Laporan Otomatis</strong>
+                    Seluruh arus kas Anda akan direkapitulasi secara akurat dan diunduh berupa *Spreadsheet (.xlsx)* sesuai dengan format pelaporan yang berlaku.
+                </div>
             </div>
 
             <!-- ══ PROGRESS AREA ══ -->
 
             <!-- Fase: server memproses -->
             <div x-show="phase === 'preparing'" x-cloak
-                 class="rounded-xl border border-gray-100 bg-gray-50 px-4 py-4 space-y-3">
-                <div class="flex items-center gap-2.5">
-                    <svg class="animate-spin w-4 h-4 text-green-600 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                 class="rounded-2xl ring-1 ring-inset ring-indigo-100 bg-indigo-50/40 px-6 py-5 space-y-4">
+                <div class="flex items-center gap-3">
+                    <svg class="animate-spin w-5 h-5 text-indigo-600 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span class="text-sm font-medium text-gray-700">Menyiapkan file di server...</span>
+                    <span class="text-sm font-semibold text-indigo-900">Menganalisis & Menyiapkan File...</span>
                 </div>
                 <!-- Indeterminate bar -->
-                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                    <div class="h-2 rounded-full bg-green-400 animate-[indeterminate_1.5s_ease-in-out_infinite]"
+                <div class="w-full bg-indigo-200/50 rounded-full h-2.5 overflow-hidden">
+                    <div class="h-2.5 rounded-full bg-indigo-500 animate-[indeterminate_1.5s_ease-in-out_infinite]"
                          style="width:40%; animation: indeterminate 1.5s ease-in-out infinite;">
                     </div>
                 </div>
@@ -230,86 +221,91 @@
                         100% { transform: translateX(160%);  width: 40%; }
                     }
                 </style>
-                <p class="text-xs text-gray-400">Sedang membaca dan memformat data transaksi</p>
+                <p class="text-xs text-indigo-500 font-medium tracking-wide">Mohon tunggu beberapa detik</p>
             </div>
 
             <!-- Fase: download -->
             <div x-show="phase === 'downloading'" x-cloak
-                 class="rounded-xl border border-green-100 bg-green-50 px-4 py-4 space-y-3">
+                 class="rounded-2xl ring-1 ring-inset ring-emerald-100 bg-emerald-50/40 px-6 py-5 space-y-4">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-emerald-600 flex-shrink-0 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
-                        <span class="text-sm font-medium text-green-800">Mengunduh file...</span>
+                        <span class="text-sm font-semibold text-emerald-900">Mentransfer Data Laporan...</span>
                     </div>
                     <!-- Persentase (jika Content-Length tersedia) -->
-                    <span class="text-sm font-semibold text-green-700"
+                    <span class="text-sm font-bold text-emerald-700"
                           x-show="dlProgress >= 0"
                           x-text="dlProgress + '%'"></span>
                     <!-- Bytes terunduh (selalu tampil) -->
-                    <span class="text-xs text-green-600 ml-1"
+                    <span class="text-xs font-semibold text-emerald-600 ml-2"
                           x-show="dlLoaded > 0"
                           x-text="'(' + formatBytes(dlLoaded) + (dlTotal > 0 ? ' / ' + formatBytes(dlTotal) : '') + ')'"></span>
                 </div>
 
                 <!-- Determinate bar (jika Content-Length ada) -->
-                <div class="w-full bg-green-200 rounded-full h-2.5" x-show="dlProgress >= 0">
-                    <div class="h-2.5 rounded-full bg-green-500 transition-all duration-300"
+                <div class="w-full bg-emerald-200/60 rounded-full h-3" x-show="dlProgress >= 0">
+                    <div class="h-3 rounded-full bg-emerald-500 shadow-sm transition-all duration-300"
                          :style="'width: ' + dlProgress + '%'">
                     </div>
                 </div>
 
                 <!-- Indeterminate bar (jika Content-Length tidak ada) -->
-                <div class="w-full bg-green-200 rounded-full h-2.5 overflow-hidden" x-show="dlProgress < 0">
-                    <div class="h-2.5 rounded-full bg-green-500"
+                <div class="w-full bg-emerald-200/60 rounded-full h-3 overflow-hidden" x-show="dlProgress < 0">
+                    <div class="h-3 rounded-full bg-emerald-500 shadow-sm"
                          style="width:40%; animation: indeterminate 1.5s ease-in-out infinite;"></div>
                 </div>
-
-                <p class="text-xs text-green-600">File sedang dikirim ke browser Anda</p>
             </div>
 
             <!-- Fase: selesai -->
             <div x-show="phase === 'done'" x-cloak
-                 class="rounded-xl border border-green-200 bg-green-50 px-4 py-4">
-                <div class="flex items-center gap-2.5">
-                    <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span class="text-sm font-semibold text-green-800">File berhasil diunduh!</span>
+                 class="rounded-2xl ring-1 ring-inset ring-emerald-200 bg-emerald-50/80 px-6 py-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-emerald-100/80 text-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm border border-emerald-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-sm font-bold tracking-tight text-emerald-900 block">Unduhan Berhasil!</span>
+                        <span class="text-xs font-medium text-emerald-600 mt-0.5">Silakan periksa folder unduhan (Downloads) Anda.</span>
+                    </div>
                 </div>
             </div>
 
             <!-- ERROR MESSAGE -->
             <template x-if="hasError">
-                <div class="flex items-start gap-2.5 px-3.5 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
-                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <div class="flex items-start gap-3 p-4 bg-rose-50/80 rounded-2xl text-sm text-rose-600">
+                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                     </svg>
-                    <span x-text="errorMsg"></span>
+                    <span x-text="errorMsg" class="font-medium mt-0.5"></span>
                 </div>
             </template>
 
             <!-- FOOTER -->
-            <div class="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-5 border-t border-gray-100">
+            <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 border-t border-gray-100">
                 <button
                     x-on:click="$dispatch('close-modal', 'modal-export')"
                     type="button"
                     :disabled="phase === 'downloading'"
-                    class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed">
+                    class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white text-gray-700 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed outline-none focus:ring-2 focus:ring-gray-200">
                     Batal
                 </button>
 
                 <button
                     @click="doExport()"
                     :disabled="phase !== 'idle'"
-                    class="w-full sm:w-auto bg-green-600 hover:bg-green-700 active:bg-green-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    class="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="phase === 'idle'">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    <span x-show="phase === 'idle'">Download Excel</span>
-                    <span x-show="phase === 'preparing'">Menyiapkan...</span>
-                    <span x-show="phase === 'downloading'">Mengunduh <span x-text="dlProgress >= 0 ? dlProgress + '%' : ''"></span></span>
+                    <span x-show="phase === 'idle'">Ekspor Data xlsx</span>
+                    <span x-show="phase === 'preparing'" class="flex items-center gap-2">Sedang Disiapkan...</span>
+                    <span x-show="phase === 'downloading'" class="flex items-center gap-2">
+                        Mengunduh <span x-text="dlProgress >= 0 ? dlProgress + '%' : ''"></span>
+                    </span>
                     <span x-show="phase === 'done'">Selesai ✓</span>
                 </button>
             </div>
