@@ -8,56 +8,60 @@
     <div class="py-6 sm:py-10">
 
         <!-- Summary Cards (Fintech Style) -->
-        <div class="px-4 sm:px-6 lg:px-8 mb-8">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
 
-                    <!-- TOTAL PEMASUKAN -->
-                    <div class="bg-white rounded-xl p-4 ring-1 ring-inset ring-gray-100 shadow-sm flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-emerald-600/10">
-                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                <!-- PEMASUKAN -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] ring-1 ring-inset ring-gray-100">
+                    <div class="flex items-center gap-4 sm:gap-5">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50/80 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-emerald-600/10">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 11l5-5m0 0l5 5m-5-5v12" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-xs font-medium text-gray-500">Pemasukan</p>
-                            <p class="text-lg font-bold text-gray-900 mt-0.5">
+                            <h3 class="text-xs sm:text-[13px] font-bold text-gray-400 tracking-wider uppercase">Pemasukan</h3>
+                            <div class="text-xl sm:text-[22px] font-black text-gray-900 tracking-tight mt-0.5">
                                 Rp {{ number_format($summary['income'] ?? 0, 0, ',', '.') }}
-                            </p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- TOTAL PENGELUARAN -->
-                    <div class="bg-white rounded-xl p-4 ring-1 ring-inset ring-gray-100 shadow-sm flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-rose-600/10">
-                            <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-medium text-gray-500">Pengeluaran</p>
-                            <p class="text-lg font-bold text-gray-900 mt-0.5">
-                                Rp {{ number_format($summary['expense'] ?? 0, 0, ',', '.') }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- SALDO BERSIH -->
-                    <div class="bg-white rounded-xl p-4 ring-1 ring-inset ring-gray-100 shadow-sm flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-indigo-600/10">
-                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-medium text-gray-500">Saldo Bersih</p>
-                            <p class="text-lg font-bold text-gray-900 mt-0.5">
-                                {{ ($summary['difference'] ?? 0) < 0 ? '-' : '' }}Rp {{ number_format(abs($summary['difference'] ?? 0), 0, ',', '.') }}
-                            </p>
-                        </div>
-                    </div>
-
                 </div>
+
+                <!-- PENGELUARAN -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] ring-1 ring-inset ring-gray-100">
+                    <div class="flex items-center gap-4 sm:gap-5">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-rose-50/80 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-rose-600/10">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xs sm:text-[13px] font-bold text-gray-400 tracking-wider uppercase">Pengeluaran</h3>
+                            <div class="text-xl sm:text-[22px] font-black text-gray-900 tracking-tight mt-0.5">
+                                Rp {{ number_format($summary['expense'] ?? 0, 0, ',', '.') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SALDO BERSIH -->
+                <div class="bg-indigo-600 rounded-2xl p-4 sm:p-5 shadow-[0_4px_15px_-3px_rgba(79,70,229,0.3)] ring-1 ring-inset ring-indigo-500">
+                    <div class="flex items-center gap-4 sm:gap-5">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-white/20">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xs sm:text-[13px] font-bold text-indigo-100/80 tracking-wider uppercase">Saldo Bersih</h3>
+                            <div class="text-xl sm:text-[22px] font-black text-white tracking-tight mt-0.5">
+                                {{ ($summary['difference'] ?? 0) < 0 ? '-' : '' }}Rp {{ number_format(abs($summary['difference'] ?? 0), 0, ',', '.') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
