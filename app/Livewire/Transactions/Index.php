@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Transactions;
 
+use App\Models\FavoriteTransaction;
 use App\Models\Transaction;
 use App\Models\Category;
 use Livewire\Component;
@@ -24,6 +25,7 @@ class Index extends Component
         'transaction-created' => '$refresh',
         'transaction-deleted' => '$refresh',
         'transaction-updated' => '$refresh',
+        'favorite-created' => '$refresh',
     ];
 
     public function mount(): void
@@ -122,6 +124,45 @@ class Index extends Component
         return Category::where('user_id', auth()->id())
             ->orderBy('name')
             ->get();
+    }
+
+    public function addToFavorite(int $transactionId)
+    {
+        $trx = Transaction::findOrFail($transactionId);
+
+        $fav = FavoriteTransaction::firstOrCreate(
+            [
+                'user_id' => auth()->id(),
+                'name'    => $trx->name,
+                'amount'  => $trx->amount,
+                'type'    => $trx->type,
+            ],
+            ['category_id' => $trx->category_id]
+        );
+        
+        if ($fav->wasRecentlyCreated) {
+            $this->dispatch('favorite-created');
+            
+            $this->js("
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: {
+                        type: 'success',
+                        title: 'Berhasil ditambahkan!',
+                        message: 'Transaksi telah disimpan ke daftar Transaksi Cepat.'
+                    }
+                }));
+            ");
+        } else {
+            $this->js("
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: {
+                        type: 'warning',
+                        title: 'Sudah Ada!',
+                        message: 'Transaksi ini sudah ada di daftar Transaksi Cepat Anda.'
+                    }
+                }));
+            ");
+        }
     }
 
     public function render()
