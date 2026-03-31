@@ -9,7 +9,11 @@ use App\Models\Category as Categories;
 
 class Create extends Component
 {
-    protected $listeners = ['category-created' => 'loadCategories'];
+    protected $listeners = 
+    [
+        'category-created' => 'loadCategories',
+        'prefill-transaction' => 'prefillForm',
+    ];
 
     public $amount;
     public $type;
@@ -111,6 +115,31 @@ class Create extends Component
                 detail: {$detail}
             }));
         ");
+    }
+
+    #[\Livewire\Attributes\On('prefill-transaction')]
+    public function prefillForm($data = null, $name = null, $amount = null, $type = null, $category_id = null, $date = null): void
+    {
+        if (is_array($data) && isset($data['name'])) {
+            $this->name        = $data['name'];
+            $this->amount      = $data['amount'];
+            $this->type        = $data['type'];
+            $this->category_id = $data['category_id'];
+            $this->date        = $data['date'];
+        } else {
+            // Also support named arguments if Livewire 3 passes them like that
+            $this->name        = $name ?: $data['name'] ?? null;
+            $this->amount      = $amount ?: $data['amount'] ?? null;
+            $this->type        = $type ?: $data['type'] ?? null;
+            $this->category_id = $category_id ?: $data['category_id'] ?? null;
+            $this->date        = $date ?: $data['date'] ?? null;
+        }
+    }
+
+    #[\Livewire\Attributes\On('reset-form')]
+    public function resetForm(): void
+    {
+        $this->reset(['amount', 'type', 'date', 'name', 'category_id']);
     }
 
     public function render()

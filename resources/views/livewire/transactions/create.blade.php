@@ -78,13 +78,18 @@
                 <!-- Nominal -->
                 <div
                     x-data="{ display: '', raw: '' }"
-                    @open-modal.window="
-                        if ($event.detail === 'modal-create') {
-                            display = '';
-                            raw = '';
-                            $wire.set('amount', '');
-                        }
+                    x-init="
+                        $watch('$wire.amount', value => {
+                            if (!value) {
+                                display = '';
+                                raw = '';
+                            } else {
+                                raw = value.toString();
+                                display = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                            }
+                        });
                     "
+                    @close-modal.window="if ($event.detail === 'modal-create') $wire.resetForm()"
                     class="space-y-2"
                 >
                     <label class="block text-sm font-medium text-gray-700">Nominal <span class="text-red-500">*</span></label>

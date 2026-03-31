@@ -1,0 +1,157 @@
+<?php
+
+namespace App\Livewire\Transactions;
+
+use App\Models\Category;
+use App\Models\FavoriteTransaction;
+use App\Models\Transaction;
+use Livewire\Component;
+use Livewire\Attributes\Validate;
+
+class QuickTransaction extends Component
+{
+    public $favorites = [];
+    public $categories = [];
+    
+    // Properties for editing favorite transaction
+    public $editId = null;
+    
+    #[Validate('required|string|min:3', as: 'nama transaksi')]
+    public $editName = '';
+    
+    #[Validate('required|numeric|min:1', as: 'nominal')]
+    public $editAmount = '';
+    
+    #[Validate('required|in:income,expense', as: 'tipe')]
+    public $editType = 'expense';
+    
+    #[Validate('required', as: 'kategori')]
+    public $editCategoryId = '';
+
+    protected $listeners = [
+        'favorite-created' => 'loadFavorites',
+        'category-created' => 'loadCategories'
+    ];
+
+    public function mount()
+    {
+        $this->loadCategories();
+        $this->loadFavorites();
+    }
+
+    public function loadCategories()
+    {
+        $this->categories = Category::where('user_id', auth()->id())->get();
+    }
+
+    public function loadFavorites()
+    {
+        $this->favorites = FavoriteTransaction::with('category')->get();
+    }
+
+    // 1-click langsung save, date = hari ini
+    public function saveNow(int $favoriteId)
+    {
+        $fav = FavoriteTransaction::findOrFail($favoriteId);
+
+        Transaction::create([
+            'user_id'     => auth()->id(),
+            'category_id' => $fav->category_id,
+            'name'        => $fav->name,
+            'amount'      => $fav->amount,
+            'type'        => $fav->type,
+            'date'        => now()->toDateString(),
+        ]);
+
+        $this->dispatch('transaction-created');
+        
+        $this->js("
+            window.dispatchEvent(new CustomEvent('notify', {
+                detail: {
+                    type: 'success',
+                    title: 'Transaksi Sukses!',
+                    message: '1 Transaksi cepat berhasil ditambahkan ke catatan.'
+                }
+            }));
+        ");
+    }
+
+    // Kirim data ke modal Create supaya pre-filled
+    public function prefill(int $favoriteId)
+    {
+        $fav = FavoriteTransaction::findOrFail($favoriteId);
+
+        $this->dispatch('prefill-transaction', 
+            name: $fav->name,
+            amount: $fav->amount,
+            type: $fav->type,
+            category_id: $fav->category_id,
+            date: now()->toDateString()
+        );
+
+        $this->dispatch('open-modal', 'modal-create');
+    }
+
+    // Load data template favorit untuk diubah
+    public function editFavorite(int $favoriteId)
+    {
+        $fav = FavoriteTransaction::findOrFail($favoriteId);
+        
+        $this->editId = $fav->id;
+        $this->editName = $fav->name;
+        $this->editAmount = $fav->amount;
+        $this->editType = $fav->type;
+        $this->editCategoryId = $fav->category_id;
+        
+        $this->dispatch('open-modal', 'modal-edit-favorite');
+    }
+
+    // Simpan template favorit yang diubah
+    public function updateFavorite()
+    {
+        $this->validate();
+        
+        $fav = FavoriteTransaction::findOrFail($this->editId);
+        $fav->update([
+            'name' => $this->editName,
+            'amount' => $this->editAmount,
+            'type' => $this->editType,
+            'category_id' => $this->editCategoryId,
+        ]);
+        
+        $this->loadFavorites();
+        $this->dispatch('close-modal', 'modal-edit-favorite');
+        
+        $this->js("
+            window.dispatchEvent(new CustomEvent('notify', {
+                detail: {
+                    type: 'success',
+                    title: 'Berhasil diubah!',
+                    message: 'Template transaksi cepat berhasil diperbarui.'
+                }
+            }));
+        ");
+    }
+
+    // Hapus dari favorite
+    public function removeFavorite(int $favoriteId)
+    {
+        FavoriteTransaction::findOrFail($favoriteId)->delete();
+        $this->loadFavorites();
+        
+        $this->js("
+            window.dispatchEvent(new CustomEvent('notify', {
+                detail: {
+                    type: 'success',
+                    title: 'Berhasil dihapus!',
+                    message: 'Transaksi telah dihapus dari favorit.'
+                }
+            }));
+        ");
+    }
+
+    public function render()
+    {
+        return view('livewire.transactions.quick-transaction');
+    }
+}
