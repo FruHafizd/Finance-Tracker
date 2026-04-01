@@ -81,15 +81,15 @@ class QuickTransaction extends Component
     {
         $fav = FavoriteTransaction::findOrFail($favoriteId);
 
-        $this->dispatch('prefill-transaction', 
-            name: $fav->name,
-            amount: $fav->amount,
-            type: $fav->type,
-            category_id: $fav->category_id,
-            date: now()->toDateString()
-        );
+        $this->dispatch('prefill-transaction', data: [
+            'name'        => $fav->name,
+            'amount'      => $fav->amount,
+            'type'        => $fav->type,
+            'category_id' => $fav->category_id,
+            'date'        => now()->toDateString(),
+        ]);
 
-        $this->dispatch('open-modal', 'modal-create');
+        $this->dispatch('open-modal', 'modal-transaction');
     }
 
     // Load data template favorit untuk diubah
