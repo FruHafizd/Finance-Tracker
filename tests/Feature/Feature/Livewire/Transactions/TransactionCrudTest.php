@@ -2,9 +2,8 @@
 
 namespace Tests\Feature\Livewire\Transactions;
 
-use App\Livewire\Transactions\Create;
 use App\Livewire\Transactions\Delete;
-use App\Livewire\Transactions\Edit;
+use App\Livewire\Transactions\TransactionForm;
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
@@ -33,14 +32,14 @@ class TransactionCrudTest extends TestCase
     }
 
     // =========================================================================
-    // Create — method: save()
+    // Create — transactionId null → mode create
     // =========================================================================
 
     #[Test]
     public function bisa_tambah_transaksi_income(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Gaji Bulanan')
             ->set('amount',      5_000_000)
             ->set('type',        'income')
@@ -61,7 +60,7 @@ class TransactionCrudTest extends TestCase
     public function bisa_tambah_transaksi_expense(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Makan Siang')
             ->set('amount',      50_000)
             ->set('type',        'expense')
@@ -81,24 +80,25 @@ class TransactionCrudTest extends TestCase
     public function setelah_save_form_direset(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Gaji')
             ->set('amount',      5_000_000)
             ->set('type',        'income')
             ->set('category_id', $this->cat->id)
             ->set('date',        now()->format('Y-m-d'))
             ->call('save')
-            ->assertSet('name',        '')
-            ->assertSet('amount',      '')
-            ->assertSet('type',        '')
-            ->assertSet('category_id', '');
+            ->assertSet('name',          '')
+            ->assertSet('amount',        '')
+            ->assertSet('type',          '')
+            ->assertSet('category_id',   '')
+            ->assertSet('transactionId', null);
     }
 
     #[Test]
     public function validasi_name_wajib_diisi(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        '')
             ->set('amount',      50_000)
             ->set('type',        'expense')
@@ -112,7 +112,7 @@ class TransactionCrudTest extends TestCase
     public function validasi_name_minimal_3_karakter(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'AB')
             ->set('amount',      50_000)
             ->set('type',        'expense')
@@ -126,7 +126,7 @@ class TransactionCrudTest extends TestCase
     public function validasi_amount_wajib_diisi(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Test Transaksi')
             ->set('amount',      '')
             ->set('type',        'expense')
@@ -140,7 +140,7 @@ class TransactionCrudTest extends TestCase
     public function validasi_amount_minimal_1(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Test Transaksi')
             ->set('amount',      0)
             ->set('type',        'expense')
@@ -154,7 +154,7 @@ class TransactionCrudTest extends TestCase
     public function validasi_kategori_wajib_dipilih(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Test Transaksi')
             ->set('amount',      50_000)
             ->set('type',        'expense')
@@ -168,7 +168,7 @@ class TransactionCrudTest extends TestCase
     public function validasi_tipe_harus_income_atau_expense(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Test Transaksi')
             ->set('amount',      50_000)
             ->set('type',        'invalid')
@@ -182,7 +182,7 @@ class TransactionCrudTest extends TestCase
     public function validasi_tanggal_wajib_diisi(): void
     {
         Livewire::actingAs($this->user)
-            ->test(Create::class)
+            ->test(TransactionForm::class)
             ->set('name',        'Test Transaksi')
             ->set('amount',      50_000)
             ->set('type',        'expense')
@@ -193,7 +193,7 @@ class TransactionCrudTest extends TestCase
     }
 
     // =========================================================================
-    // Edit — method: loadTransaction($id), update()
+    // Edit — transactionId ada → mode edit
     // =========================================================================
 
     #[Test]
@@ -209,12 +209,12 @@ class TransactionCrudTest extends TestCase
         ]);
 
         Livewire::actingAs($this->user)
-            ->test(Edit::class)
-            ->call('loadTransaction', $trx->id)
-            ->assertSet('transactionsId', $trx->id)
-            ->assertSet('name',           'Nama Asli')
-            ->assertSet('amount',         100_000)
-            ->assertSet('type',           'expense');
+            ->test(TransactionForm::class)
+            ->call('openEdit', $trx->id)
+            ->assertSet('transactionId', $trx->id)
+            ->assertSet('name',          'Nama Asli')
+            ->assertSet('amount',        100_000)
+            ->assertSet('type',          'expense');
     }
 
     #[Test]
@@ -230,11 +230,11 @@ class TransactionCrudTest extends TestCase
         ]);
 
         Livewire::actingAs($this->user)
-            ->test(Edit::class)
-            ->call('loadTransaction', $trx->id)
+            ->test(TransactionForm::class)
+            ->call('openEdit', $trx->id)
             ->set('name',   'Nama Baru')
             ->set('amount', 200_000)
-            ->call('update')
+            ->call('save')                          // bukan update() lagi
             ->assertDispatched('transaction-updated');
 
         $this->assertDatabaseHas('transactions', [
@@ -247,13 +247,18 @@ class TransactionCrudTest extends TestCase
     #[Test]
     public function tidak_bisa_update_tanpa_load_transaksi_dulu(): void
     {
+        // transactionId masih null → save() akan masuk mode create, bukan update
+        // jadi kita pastikan tidak ada dispatch transaction-updated
         Livewire::actingAs($this->user)
-            ->test(Edit::class)
-            ->set('name',   'Coba Update')
-            ->set('amount', 100_000)
-            ->call('update'); // transactionsId null → return awal
-
-        $this->assertDatabaseCount('transactions', 0);
+            ->test(TransactionForm::class)
+            ->set('name',        'Coba Update')
+            ->set('amount',      100_000)
+            ->set('type',        'expense')
+            ->set('category_id', $this->cat->id)
+            ->set('date',        now()->format('Y-m-d'))
+            ->call('save')
+            ->assertNotDispatched('transaction-updated')
+            ->assertDispatched('transaction-created');
     }
 
     #[Test]
@@ -271,12 +276,11 @@ class TransactionCrudTest extends TestCase
             'category_id' => $catLain->id,
         ]);
 
-        // loadTransaction pakai firstOrFail dengan where user_id → akan throw 404
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
         Livewire::actingAs($this->user)
-            ->test(Edit::class)
-            ->call('loadTransaction', $trx->id);
+            ->test(TransactionForm::class)
+            ->call('openEdit', $trx->id);
     }
 
     #[Test]
@@ -292,10 +296,10 @@ class TransactionCrudTest extends TestCase
         ]);
 
         Livewire::actingAs($this->user)
-            ->test(Edit::class)
-            ->call('loadTransaction', $trx->id)
+            ->test(TransactionForm::class)
+            ->call('openEdit', $trx->id)
             ->set('name', 'AB')
-            ->call('update')
+            ->call('save')
             ->assertHasErrors(['name' => 'min']);
     }
 
@@ -312,17 +316,17 @@ class TransactionCrudTest extends TestCase
         ]);
 
         Livewire::actingAs($this->user)
-            ->test(Edit::class)
-            ->call('loadTransaction', $trx->id)
+            ->test(TransactionForm::class)
+            ->call('openEdit', $trx->id)
             ->call('resetForm')
-            ->assertSet('transactionsId', '')
-            ->assertSet('name',           '')
-            ->assertSet('amount',         '')
-            ->assertSet('category_id',    '');
+            ->assertSet('transactionId', null)  // null bukan '' karena typed ?int
+            ->assertSet('name',          '')
+            ->assertSet('amount',        '')
+            ->assertSet('category_id',   '');
     }
 
     // =========================================================================
-    // Delete — method: setTransaction($id), delete()
+    // Delete — tidak berubah
     // =========================================================================
 
     #[Test]
@@ -365,7 +369,6 @@ class TransactionCrudTest extends TestCase
             ->call('setTransaction', $trx->id)
             ->call('delete');
 
-        // Transaksi user lain tetap ada
         $this->assertDatabaseHas('transactions', ['id' => $trx->id]);
     }
 
@@ -382,7 +385,7 @@ class TransactionCrudTest extends TestCase
 
         Livewire::actingAs($this->user)
             ->test(Delete::class)
-            ->call('delete'); // transactionId null → return
+            ->call('delete');
 
         $this->assertDatabaseCount('transactions', 1);
     }
