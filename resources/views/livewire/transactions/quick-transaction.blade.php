@@ -3,11 +3,6 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center ring-1 ring-inset ring-amber-500/20">
-                    <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                </div>
                 <div>
                     <h3 class="text-base font-bold text-gray-900 tracking-tight">Transaksi Cepat</h3>
                     <p class="text-[13px] font-medium text-gray-400 mt-0.5">Satu klik untuk mencatat transaksi rutin Anda.</p>
