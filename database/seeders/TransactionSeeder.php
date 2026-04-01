@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\User;
+use Carbon\Carbon;
 
 class TransactionSeeder extends Seeder
 {
@@ -16,39 +17,41 @@ class TransactionSeeder extends Seeder
         // ambil category berdasarkan nama
         $categories = Category::where('user_id', $user->id)
             ->pluck('id', 'name');
-
+        $now = Carbon::now();
         $transactions = [
-            ["name" => "Gaji Bulanan", "type" => "income", "amount" => 5000000, "date" => "2026-03-01", "category" => "Gaji"],
-            ["name" => "Bonus Freelance", "type" => "income", "amount" => 1500000, "date" => "2026-03-10", "category" => "Gaji"],
+            ["name" => "Gaji Bulanan", "type" => "income", "amount" => 5000000, "date" => $now->copy()->startOfMonth(), "category" => "Gaji"],
+            ["name" => "Bonus Freelance", "type" => "income", "amount" => 1500000, "date" => $now->copy()->startOfMonth()->addDays(9), "category" => "Gaji"],
 
-            ["name" => "Makan Siang", "type" => "expense", "amount" => 25000, "date" => "2026-03-02", "category" => "Makanan"],
-            ["name" => "Ngopi", "type" => "expense", "amount" => 20000, "date" => "2026-03-03", "category" => "Makanan"],
+            ["name" => "Makan Siang", "type" => "expense", "amount" => 25000, "date" => $now->copy()->startOfMonth()->addDays(1), "category" => "Makanan"],
+            ["name" => "Ngopi", "type" => "expense", "amount" => 20000, "date" => $now->copy()->startOfMonth()->addDays(2), "category" => "Makanan"],
 
-            ["name" => "Ojek Online", "type" => "expense", "amount" => 15000, "date" => "2026-03-04", "category" => "Transportasi"],
-            ["name" => "Uang Transport", "type" => "income", "amount" => 100000, "date" => "2026-03-05", "category" => "Transportasi"],
+            ["name" => "Ojek Online", "type" => "expense", "amount" => 15000, "date" => $now->copy()->startOfMonth()->addDays(3), "category" => "Transportasi"],
+            ["name" => "Uang Transport", "type" => "income", "amount" => 100000, "date" => $now->copy()->startOfMonth()->addDays(4), "category" => "Transportasi"],
 
-            ["name" => "Nonton Bioskop", "type" => "expense", "amount" => 50000, "date" => "2026-03-06", "category" => "Hiburan"],
-            ["name" => "Hadiah Event", "type" => "income", "amount" => 200000, "date" => "2026-03-07", "category" => "Hiburan"],
+            ["name" => "Nonton Bioskop", "type" => "expense", "amount" => 50000, "date" => $now->copy()->startOfMonth()->addDays(5), "category" => "Hiburan"],
+            ["name" => "Hadiah Event", "type" => "income", "amount" => 200000, "date" => $now->copy()->startOfMonth()->addDays(6), "category" => "Hiburan"],
 
-            ["name" => "Beli Baju", "type" => "expense", "amount" => 150000, "date" => "2026-03-08", "category" => "Belanja"],
-            ["name" => "Refund Barang", "type" => "income", "amount" => 100000, "date" => "2026-03-09", "category" => "Belanja"],
+            ["name" => "Beli Baju", "type" => "expense", "amount" => 150000, "date" => $now->copy()->startOfMonth()->addDays(7), "category" => "Belanja"],
+            ["name" => "Refund Barang", "type" => "income", "amount" => 100000, "date" => $now->copy()->startOfMonth()->addDays(8), "category" => "Belanja"],
         ];
 
+        $previousMonth = Carbon::now()->subMonth();
+
         $previousMonthTransactions = [
-            ["name" => "Gaji Bulanan", "type" => "income", "amount" => 4800000, "date" => "2026-02-01", "category" => "Gaji"],
-            ["name" => "Bonus Freelance", "type" => "income", "amount" => 1000000, "date" => "2026-02-12", "category" => "Gaji"],
+            ["name" => "Gaji Bulanan", "type" => "income", "amount" => 4800000, "date" => $previousMonth->copy()->startOfMonth(), "category" => "Gaji"],
+            ["name" => "Bonus Freelance", "type" => "income", "amount" => 1000000, "date" => $previousMonth->copy()->startOfMonth()->addDays(11), "category" => "Gaji"],
 
-            ["name" => "Makan Siang", "type" => "expense", "amount" => 20000, "date" => "2026-02-02", "category" => "Makanan"],
-            ["name" => "Ngopi", "type" => "expense", "amount" => 15000, "date" => "2026-02-03", "category" => "Makanan"],
+            ["name" => "Makan Siang", "type" => "expense", "amount" => 20000, "date" => $previousMonth->copy()->startOfMonth()->addDays(1), "category" => "Makanan"],
+            ["name" => "Ngopi", "type" => "expense", "amount" => 15000, "date" => $previousMonth->copy()->startOfMonth()->addDays(2), "category" => "Makanan"],
 
-            ["name" => "Ojek Online", "type" => "expense", "amount" => 12000, "date" => "2026-02-04", "category" => "Transportasi"],
-            ["name" => "Uang Transport", "type" => "income", "amount" => 80000, "date" => "2026-02-05", "category" => "Transportasi"],
+            ["name" => "Ojek Online", "type" => "expense", "amount" => 12000, "date" => $previousMonth->copy()->startOfMonth()->addDays(3), "category" => "Transportasi"],
+            ["name" => "Uang Transport", "type" => "income", "amount" => 80000, "date" => $previousMonth->copy()->startOfMonth()->addDays(4), "category" => "Transportasi"],
 
-            ["name" => "Nonton Bioskop", "type" => "expense", "amount" => 45000, "date" => "2026-02-06", "category" => "Hiburan"],
-            ["name" => "Hadiah Event", "type" => "income", "amount" => 150000, "date" => "2026-02-07", "category" => "Hiburan"],
+            ["name" => "Nonton Bioskop", "type" => "expense", "amount" => 45000, "date" => $previousMonth->copy()->startOfMonth()->addDays(5), "category" => "Hiburan"],
+            ["name" => "Hadiah Event", "type" => "income", "amount" => 150000, "date" => $previousMonth->copy()->startOfMonth()->addDays(6), "category" => "Hiburan"],
 
-            ["name" => "Beli Baju", "type" => "expense", "amount" => 120000, "date" => "2026-02-08", "category" => "Belanja"],
-            ["name" => "Refund Barang", "type" => "income", "amount" => 80000, "date" => "2026-02-09", "category" => "Belanja"],
+            ["name" => "Beli Baju", "type" => "expense", "amount" => 120000, "date" => $previousMonth->copy()->startOfMonth()->addDays(7), "category" => "Belanja"],
+            ["name" => "Refund Barang", "type" => "income", "amount" => 80000, "date" => $previousMonth->copy()->startOfMonth()->addDays(8), "category" => "Belanja"],
         ];
 
         $allTransactions = array_merge($transactions, $previousMonthTransactions);

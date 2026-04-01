@@ -96,12 +96,12 @@
                                     </svg>
                                     Kategori
                                 </button>
-                                <button x-data x-on:click.prevent="$dispatch('open-modal', 'modal-create')"
+                                <button wire:click="$dispatch('open-create-transaction')"
                                     class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold rounded-xl transition-colors duration-150 shadow-sm ring-1 ring-inset ring-indigo-500 w-full sm:w-auto">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                                     </svg>
-                                    Tambah Baru
+                                    Tambah Transaksi
                                 </button>
                             </div>
                         </div>
@@ -276,10 +276,10 @@
                                         </td>
                                         <td class="px-5 lg:px-7 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex items-center justify-end gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200">
-                                                <button x-data
+                                                <button 
+                                                    x-data
                                                     x-on:click.prevent="
                                                         $dispatch('edit-transaction', { id: {{ $item->id }} });
-                                                        $dispatch('open-modal', 'modal-edit');
                                                     "
                                                     title="Edit"
                                                     class="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors duration-150">
@@ -531,8 +531,7 @@
             </div>
         </div>
 
-        <livewire:transactions.create />
-        <livewire:transactions.edit />
+        <livewire:transactions.transaction-form />
         <livewire:transactions.delete />
         <livewire:transactions.category />
         <livewire:transactions.export />
