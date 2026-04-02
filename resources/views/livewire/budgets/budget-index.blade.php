@@ -9,7 +9,7 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             {{-- Flash Message --}}
-            @if ($flashMessage)
+            {{-- @if ($flashMessage)
                 <div
                     x-data="{ show: true }"
                     x-show="show"
@@ -24,7 +24,7 @@
                     </svg>
                     {{ $flashMessage }}
                 </div>
-            @endif
+            @endif --}}
 
             @php
                 $exceededBudgets = \App\Models\Budget::getExceededBudgets(auth()->id());
@@ -96,8 +96,7 @@
 
                 {{-- Tombol Tambah --}}
                 <button
-                    x-data
-                    x-on:click="$dispatch('open-modal', 'modal-budget-create')"
+                    wire:click="$dispatch('open-create-budget')"
                     class="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 active:scale-95 transition-all duration-150 shadow-md shadow-indigo-200">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -199,7 +198,6 @@
                                     <button
                                         x-data
                                         x-on:click="
-                                            $dispatch('open-modal', 'modal-budget-edit');
                                             $dispatch('edit-budget', { id: {{ $budget->id }} });
                                         "
                                         class="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors duration-150"
@@ -260,7 +258,6 @@
         </div>
     </div>
 
-    <livewire:budgets.create />
-    <livewire:budgets.edit />
+    <livewire:budgets.budget-form />
     <livewire:budgets.delete />
 </div>
