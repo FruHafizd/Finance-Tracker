@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Accounts\AccountList;
 use App\Livewire\Budgets\BudgetIndex;
 use \App\Livewire\Home\Index as Home;
 use App\Livewire\Transactions\Index as Transaction;
@@ -34,6 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
 
     })->middleware('signed')->name('export.excel');
+
+    Route::get('/accounts', AccountList::class)->name('account.index');
+
 });
 
 
