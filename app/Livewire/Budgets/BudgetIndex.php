@@ -10,12 +10,12 @@ class BudgetIndex extends Component
 {   
     public int $month;
     public int $year;
-    public string $flashMessage = '';
+    // public string $flashMessage = '';
 
     protected $listeners = [    
-        'budget-created' => 'showFlash',
-        'budget-updated' => 'showFlash',
-        'budget-deleted' => 'showFlash',
+        'budget-created' => '$refresh',
+        'budget-updated' => '$refresh',
+        'budget-deleted' => '$refresh',
     ];
 
     public function mount(): void
@@ -24,11 +24,12 @@ class BudgetIndex extends Component
         $this->year  = (int) now()->format('Y');
     }
 
-    public function showFlash(string $message): void
-    {
-        $this->flashMessage = '';
-        $this->flashMessage = $message;
-    }
+    // public function showFlash(string $message): void
+    // {
+    //     $this->flashMessage = '';
+    //     $this->flashMessage = $message;
+    // }
+
     public function render()
     {   
         $budgets = Budget::with('category')

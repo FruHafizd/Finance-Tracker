@@ -1,19 +1,20 @@
-<x-modal name="modal-budget-create" focusable>
+<x-modal name="modal-budget" focusable>
     <div class="p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
 
         <!-- HEADER -->
         <div class="flex justify-between items-start mb-6 sticky top-0 bg-white pb-4 border-b">
             <div>
                 <h2 class="text-lg sm:text-xl font-semibold text-gray-900">
-                    Tambah Budget
+                  {{ $this->isEditing() ? 'Edit Budget' : 'Tambah Budget' }}
                 </h2>
                 <p class="text-xs sm:text-sm text-gray-500 mt-1">
-                    Tetapkan batas pengeluaran per kategori
+                    
+                    {{ $this->isEditing() ? 'Ubah batas pengeluaran kategori ini' : 'Tetapkan batas pengeluaran per kategori' }}
                 </p>
             </div>
 
             <button
-                x-on:click="$dispatch('close-modal', 'modal-budget-create')"
+                x-on:click="$dispatch('close-modal', 'modal-budget')"
                 type="button"
                 class="flex-shrink-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1.5 transition-colors duration-200 ml-4">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,9 +25,25 @@
 
         <!-- FORM -->
         <form wire:submit="save" class="space-y-5">
-
             <!-- Kategori -->
-            <div class="space-y-2">
+            @if ($this->isEditing())
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 7h.01M7 3h5l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                        </svg>
+                        Kategori
+                    </label>
+                    <div class="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm text-gray-500 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        {{ $categoryName }}
+                    </div>
+                </div>
+            @else
+                <div class="space-y-2">
                 <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -51,6 +68,7 @@
                     </span>
                 @enderror
             </div>
+            @endif
 
             <!-- Batas Pengeluaran -->
             <div
@@ -95,7 +113,7 @@
             <!-- FOOTER -->
             <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t mt-2">
                 <button
-                    x-on:click="$dispatch('close-modal', 'modal-budget-create')"
+                    x-on:click="$dispatch('close-modal', 'modal-budget')"
                     type="button"
                     class="w-full sm:w-auto border-2 border-gray-300 px-4 py-2.5 sm:py-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors duration-200 font-medium text-sm text-gray-700">
                     Batal
