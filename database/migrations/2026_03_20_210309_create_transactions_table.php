@@ -15,10 +15,11 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('user_id')->constrained()->cascadeOnDelete();
                 $table->foreignId('category_id')->constrained('categories')->restrictOnDelete();
+                $table->foreignId('account_id')->constrained()->cascadeOnDelete();
 
                 $table->string("name");
                 $table->unsignedInteger("amount");
-                $table->enum("type",["income","expense"]);
+                $table->enum("type",["income","expense","transfer"]);
                 $table->date("date");
 
                 $table->timestamps();

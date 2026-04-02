@@ -65,6 +65,10 @@ new class extends Component
                             @endif
                         </span>
                     </x-nav-link>
+
+                    <x-nav-link :href="route('account.index')" :active="request()->routeIs('account.index')" wire:navigate>
+                        {{ __('Rekening') }}
+                    </x-nav-link>
                 </div>
             </div>
 
