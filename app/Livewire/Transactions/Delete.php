@@ -3,10 +3,12 @@
 namespace App\Livewire\Transactions;
 
 use App\Models\Transaction;
+use App\Traits\WithNotifications;
 use Livewire\Component;
 
 class Delete extends Component
 {
+    use WithNotifications;
     public $transactionId;
 
     protected $listeners = [
@@ -30,6 +32,7 @@ class Delete extends Component
         Transaction::where('id', $this->transactionId)
                             ->where('user_id', auth()->id())
                             ->delete();
+        $this->notify('Dihapus!', 'Data transaksi telah berhasil dihapus.', 'success');
         $this->dispatch('transaction-deleted');
         $this->dispatch('close-modal','modal-delete');
     }

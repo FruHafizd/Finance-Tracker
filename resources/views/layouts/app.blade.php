@@ -35,10 +35,12 @@
         </div>
 
         {{-- Budget Alert Toast --}}
+        <!-- Global Notifications (Toast) -->
         <div
             x-data="{
                 toasts: [],
-                add(toast) {
+                add(data) {
+                    const toast = Array.isArray(data) ? data[0] : data;
                     const id = Date.now();
                     this.toasts.push({ ...toast, id, show: true });
                     setTimeout(() => this.remove(id), 5000);
@@ -48,99 +50,103 @@
                     if (toast) toast.show = false;
                     setTimeout(() => {
                         this.toasts = this.toasts.filter(t => t.id !== id);
-                    }, 300);
+                    }, 400);
                 }
             }"
             x-on:budget-alert.window="add($event.detail)"
             x-on:notify.window="add($event.detail)"
-
-            class="fixed bottom-5 right-5 z-50 flex flex-col gap-3 w-80"
+            class="fixed top-5 right-5 z-[100] flex flex-col gap-4 w-full max-w-sm px-4 sm:px-0"
         >
             <template x-for="toast in toasts" :key="toast.id">
                 <div
                     x-show="toast.show"
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 translate-y-4"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-200"
-                    x-transition:leave-start="opacity-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 translate-y-4"
+                    x-transition:enter="transition ease-out duration-500"
+                    x-transition:enter-start="opacity-0 translate-x-12 scale-95"
+                    x-transition:enter-end="opacity-100 translate-x-0 scale-100"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 translate-x-0"
+                    x-transition:leave-end="opacity-0 translate-x-12"
+                    class="relative group"
+                >
                     <div
                         :class="{
-                            'bg-red-50 border border-red-200': toast.type === 'danger',
-                            'bg-emerald-50 border border-emerald-200': toast.type === 'success',
-                            'bg-amber-50 border border-amber-200': toast.type !== 'danger' && toast.type !== 'success'
+                            'bg-white/90 border-emerald-500/30 shadow-emerald-500/10': toast.type === 'success',
+                            'bg-white/90 border-red-500/30 shadow-red-500/10': toast.type === 'danger',
+                            'bg-white/90 border-amber-500/30 shadow-amber-500/10': toast.type !== 'success' && toast.type !== 'danger'
                         }"
-                        class="rounded-xl p-4 shadow-lg">
-
-                        <div class="flex items-start gap-3">
-                            {{-- Icon --}}
+                        class="backdrop-blur-xl border-2 rounded-2xl p-4 shadow-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                    >
+                        <div class="flex items-start gap-4">
+                            <!-- Icon with soft glow background -->
                             <div
                                 :class="{
-                                    'bg-red-100': toast.type === 'danger',
-                                    'bg-emerald-100': toast.type === 'success',
-                                    'bg-amber-100': toast.type !== 'danger' && toast.type !== 'success'
+                                    'bg-emerald-100 text-emerald-600 ring-emerald-50': toast.type === 'success',
+                                    'bg-red-100 text-red-600 ring-red-50': toast.type === 'danger',
+                                    'bg-amber-100 text-amber-600 ring-amber-50': toast.type !== 'success' && toast.type !== 'danger'
                                 }"
-                                class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span x-text="toast.type === 'danger' ? '🚨' : (toast.type === 'success' ? '✅' : '⚠️')" class="text-sm"></span>
+                                class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ring-4"
+                            >
+                                <!-- Success Icon -->
+                                <template x-if="toast.type === 'success'">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </template>
+                                <!-- Danger Icon -->
+                                <template x-if="toast.type === 'danger'">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </template>
+                                <!-- Warning/Default Icon -->
+                                <template x-if="toast.type !== 'success' && toast.type !== 'danger'">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </template>
                             </div>
 
-                            {{-- Konten --}}
-                            <div class="flex-1 min-w-0">
-                                <p
+                            <!-- Content -->
+                            <div class="flex-1 pt-0.5">
+                                <h3
                                     :class="{
-                                        'text-red-800': toast.type === 'danger',
-                                        'text-emerald-800': toast.type === 'success',
-                                        'text-amber-800': toast.type !== 'danger' && toast.type !== 'success'
+                                        'text-emerald-900': toast.type === 'success',
+                                        'text-red-900': toast.type === 'danger',
+                                        'text-amber-900': toast.type !== 'success' && toast.type !== 'danger'
                                     }"
-                                    class="text-sm font-semibold"
-                                    x-text="toast.title">
-                                </p>
+                                    class="text-sm font-bold tracking-tight"
+                                    x-text="toast.title"
+                                ></h3>
                                 <p
-                                    :class="{
-                                        'text-red-600': toast.type === 'danger',
-                                        'text-emerald-600': toast.type === 'success',
-                                        'text-amber-600': toast.type !== 'danger' && toast.type !== 'success'
-                                    }"
-                                    class="text-xs mt-0.5 leading-relaxed"
-                                    x-text="toast.message">
-                                </p>
+                                    class="text-gray-600 text-xs mt-1 leading-relaxed font-medium"
+                                    x-text="toast.message"
+                                ></p>
                             </div>
 
-                            {{-- Tombol tutup --}}
+                            <!-- Close Button -->
                             <button
-                                x-on:click="remove(toast.id)"
-                                :class="{
-                                    'text-red-400 hover:text-red-600 hover:bg-red-100': toast.type === 'danger',
-                                    'text-emerald-400 hover:text-emerald-600 hover:bg-emerald-100': toast.type === 'success',
-                                    'text-amber-400 hover:text-amber-600 hover:bg-amber-100': toast.type !== 'danger' && toast.type !== 'success'
-                                }"
-                                class="flex-shrink-0 rounded-lg p-1 transition-colors duration-150">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                @click="remove(toast.id)"
+                                class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 hover:bg-gray-100 p-1.5 rounded-lg"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
 
-                        {{-- Progress bar countdown --}}
-                        <div
-                            :class="{
-                                'bg-red-200': toast.type === 'danger',
-                                'bg-emerald-200': toast.type === 'success',
-                                'bg-amber-200': toast.type !== 'danger' && toast.type !== 'success'
-                            }"
-                            class="mt-3 w-full rounded-full h-1 overflow-hidden">
+                        <!-- Modern Progress Bar -->
+                        <div class="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-100/50">
                             <div
                                 :class="{
-                                    'bg-red-400': toast.type === 'danger',
-                                    'bg-emerald-400': toast.type === 'success',
-                                    'bg-amber-400': toast.type !== 'danger' && toast.type !== 'success'
+                                    'bg-emerald-500': toast.type === 'success',
+                                    'bg-red-500': toast.type === 'danger',
+                                    'bg-amber-500': toast.type !== 'success' && toast.type !== 'danger'
                                 }"
-                            class="h-1 rounded-full"
-                            style="animation: shrink 5s linear forwards">
+                                class="h-full transition-all duration-100"
+                                :style="'animation: shrink 5s linear forwards'"
+                            ></div>
                         </div>
                     </div>
-
                 </div>
             </template>
         </div>

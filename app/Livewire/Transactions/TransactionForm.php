@@ -5,10 +5,12 @@ namespace App\Livewire\Transactions;
 use App\Models\Budget;
 use App\Models\Category;
 use App\Models\Transaction;
+use App\Traits\WithNotifications;
 use Livewire\Component;
 
 class TransactionForm extends Component
 {   
+    use WithNotifications;
     public ?int $transactionId = null;
     public $amount;
     public $type;
@@ -99,9 +101,11 @@ class TransactionForm extends Component
                 ->where('user_id', auth()->id())
                 ->update($data);
 
+            $this->notify('Berhasil!', 'Data transaksi berhasil diperbarui.', 'success');
             $this->dispatch('transaction-updated');
         } else {
             Transaction::create(array_merge($data, ['user_id' => auth()->id()]));
+            $this->notify('Berhasil!', 'Data transaksi berhasil ditambahkan.', 'success');
             $this->dispatch('transaction-created');
         }
 

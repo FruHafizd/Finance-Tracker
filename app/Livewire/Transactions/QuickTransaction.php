@@ -5,11 +5,13 @@ namespace App\Livewire\Transactions;
 use App\Models\Category;
 use App\Models\FavoriteTransaction;
 use App\Models\Transaction;
-use Livewire\Component;
+use App\Traits\WithNotifications;
 use Livewire\Attributes\Validate;
+use Livewire\Component;
 
 class QuickTransaction extends Component
 {
+    use WithNotifications;
     public $favorites = [];
     public $categories = [];
     
@@ -64,16 +66,7 @@ class QuickTransaction extends Component
         ]);
 
         $this->dispatch('transaction-created');
-        
-        $this->js("
-            window.dispatchEvent(new CustomEvent('notify', {
-                detail: {
-                    type: 'success',
-                    title: 'Transaksi Sukses!',
-                    message: '1 Transaksi cepat berhasil ditambahkan ke catatan.'
-                }
-            }));
-        ");
+        $this->notify('Transaksi Sukses!', '1 Transaksi cepat berhasil ditambahkan ke catatan.', 'success');
     }
 
     // Kirim data ke modal Create supaya pre-filled
@@ -121,16 +114,7 @@ class QuickTransaction extends Component
         
         $this->loadFavorites();
         $this->dispatch('close-modal', 'modal-edit-favorite');
-        
-        $this->js("
-            window.dispatchEvent(new CustomEvent('notify', {
-                detail: {
-                    type: 'success',
-                    title: 'Berhasil diubah!',
-                    message: 'Template transaksi cepat berhasil diperbarui.'
-                }
-            }));
-        ");
+        $this->notify('Berhasil diubah!', 'Template transaksi cepat berhasil diperbarui.', 'success');
     }
 
     // Hapus dari favorite
@@ -138,16 +122,7 @@ class QuickTransaction extends Component
     {
         FavoriteTransaction::findOrFail($favoriteId)->delete();
         $this->loadFavorites();
-        
-        $this->js("
-            window.dispatchEvent(new CustomEvent('notify', {
-                detail: {
-                    type: 'success',
-                    title: 'Berhasil dihapus!',
-                    message: 'Transaksi telah dihapus dari favorit.'
-                }
-            }));
-        ");
+        $this->notify('Berhasil dihapus!', 'Transaksi telah dihapus dari favorit.', 'success');
     }
 
     public function render()
