@@ -18,6 +18,9 @@ class TransactionForm extends Component
     public $name;
     public $categories = [];
     public $category_id;
+    public $account_id;
+    public $to_account_id;
+    public $accounts = [];
 
     protected $listeners = [
         'open-create-transaction' => 'openCreate',
@@ -26,33 +29,43 @@ class TransactionForm extends Component
         'prefill-transaction'     => 'prefillForm',
     ];
      protected $rules = [
-        'name'        => 'required|string|min:3',
-        'category_id' => 'required',
-        'amount'      => 'required|numeric|min:1',
-        'type'        => 'required|in:income,expense',
-        'date'        => 'required|date',
+        'name'          => 'required|string|min:3',
+        'category_id'   => 'required',
+        'account_id'    => 'required',
+        'to_account_id' => 'required_if:type,transfer',
+        'amount'        => 'required|numeric|min:1',
+        'type'          => 'required|in:income,expense,transfer',
+        'date'          => 'required|date',
     ];
 
     protected $messages = [
-        'amount.required' => 'Jumlah tidak boleh kosong',
-        'amount.numeric'  => 'Jumlah harus berupa angka',
-        'type.required'   => 'Type tidak boleh kosong',
-        'date.required'   => 'Tanggal tidak boleh kosong',
-        'name.required'   => 'Nama tidak boleh kosong',
-        'type.in'         => 'Type tidak valid',
-        'date.date'       => 'Format tanggal tidak valid',
-        'name.min'        => 'Nama minimal 3 karakter',
-        'category_id'     => 'Kategori tidak boleh kosong',
+        'amount.required'      => 'Jumlah tidak boleh kosong',
+        'amount.numeric'       => 'Jumlah harus berupa angka',
+        'type.required'        => 'Type tidak boleh kosong',
+        'date.required'        => 'Tanggal tidak boleh kosong',
+        'name.required'        => 'Nama tidak boleh kosong',
+        'type.in'              => 'Type tidak valid',
+        'date.date'            => 'Format tanggal tidak valid',
+        'name.min'             => 'Nama minimal 3 karakter',
+        'category_id.required' => 'Kategori tidak boleh kosong',
+        'account_id.required'  => 'Rekening tidak boleh kosong',
+        'to_account_id.required_if' => 'Rekening tujuan wajib diisi untuk transfer',
     ];
 
     public function mount(): void
     {
         $this->loadCategories();
+        $this->loadAccounts();
     }
 
     public function loadCategories(): void
     {
         $this->categories = Category::where('user_id', auth()->id())->get();
+    }
+
+    public function loadAccounts(): void
+    {
+        $this->accounts = \App\Models\Account::where('user_id', auth()->id())->get();
     }
 
     public function isEditing(): bool
@@ -80,6 +93,8 @@ class TransactionForm extends Component
         $this->date          = $transaction->date->format('Y-m-d');
         $this->name          = $transaction->name;
         $this->category_id   = $transaction->category_id;
+        $this->account_id    = $transaction->account_id;
+        $this->to_account_id = $transaction->to_account_id;
 
         $this->dispatch('open-modal', 'modal-transaction');
     }
@@ -89,11 +104,13 @@ class TransactionForm extends Component
         $this->validate();
 
         $data = [
-            'category_id' => $this->category_id,
-            'amount'      => $this->amount,
-            'type'        => $this->type,
-            'date'        => $this->date,
-            'name'        => $this->name,
+            'category_id'   => $this->category_id,
+            'account_id'    => $this->account_id,
+            'to_account_id' => $this->type === 'transfer' ? $this->to_account_id : null,
+            'amount'        => $this->amount,
+            'type'          => $this->type,
+            'date'          => $this->date,
+            'name'          => $this->name,
         ];
 
         if ($this->isEditing()) {
@@ -130,7 +147,7 @@ class TransactionForm extends Component
     #[\Livewire\Attributes\On('reset-form')]
     public function resetForm(): void
     {
-        $this->reset(['transactionId', 'amount', 'type', 'date', 'name', 'category_id']);
+        $this->reset(['transactionId', 'amount', 'type', 'date', 'name', 'category_id', 'account_id', 'to_account_id']);
     }
 
     private function checkBudget(): void
