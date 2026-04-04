@@ -12,7 +12,16 @@ class TransactionFactory extends Factory
     {
         return [
             'user_id'     => User::factory(),
-            'category_id' => Category::factory(),
+            'account_id'  => function (array $attributes) {
+                return \App\Models\Account::factory()->create([
+                    'user_id' => $attributes['user_id'],
+                ])->id;
+            },
+            'category_id' => function (array $attributes) {
+                return \App\Models\Category::factory()->create([
+                    'user_id' => $attributes['user_id'],
+                ])->id;
+            },
             'name'        => fake()->words(3, true),
             'amount'      => fake()->numberBetween(10_000, 5_000_000),
             'type'        => fake()->randomElement(['income', 'expense']),
