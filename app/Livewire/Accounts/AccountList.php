@@ -3,10 +3,12 @@
 namespace App\Livewire\Accounts;
 
 use App\Models\Account;
+use App\Traits\WithNotifications;
 use Livewire\Component;
 
 class AccountList extends Component
 {
+    use WithNotifications;
     protected $listeners = [
         'account-saved' => '$refresh',
         'transaction-deleted' => '$refresh',
@@ -40,13 +42,15 @@ class AccountList extends Component
     public function deleteAccount(int $id): void
     {
         $account = Account::findOrFail($id);
+
+        if ($account->transactions()->exists() || \App\Models\Transaction::where('to_account_id', $id)->exists()) {
+            $this->notify('Gagal menghapus', "Rekening {$account->name} tidak dapat dihapus karena masih memiliki riwayat transaksi.", 'error');
+            return;
+        }
+
         $account->delete();
 
-        $this->dispatch('notify', [
-            'type'    => 'success',
-            'title'   => 'Rekening dihapus',
-            'message' => "Rekening {$account->name} berhasil dihapus.",
-        ]);
+        $this->notify('Rekening dihapus', "Rekening {$account->name} berhasil dihapus.", 'success');
     }
     public function render()
     {
