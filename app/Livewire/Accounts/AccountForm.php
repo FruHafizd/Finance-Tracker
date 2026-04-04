@@ -4,10 +4,12 @@ namespace App\Livewire\Accounts;
 
 use App\Enums\AccountProvider;
 use App\Models\Account;
+use App\Traits\WithNotifications;
 use Livewire\Component;
 
 class AccountForm extends Component
 {   
+    use WithNotifications;
 
     public ?int $accountId = null;
 
@@ -94,11 +96,7 @@ class AccountForm extends Component
         }
 
         $this->dispatch('close-modal', 'modal-account');
-        $this->dispatch('notify', [
-            'type'    => 'success',
-            'title'   => $title,
-            'message' => $message,
-        ]);
+        $this->notify($title, $message, 'success');
         $this->dispatch('account-saved');
         $this->resetForm();
     }

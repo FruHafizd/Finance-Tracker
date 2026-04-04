@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Transactions;
 use App\Models\Category as Categories;
+use App\Traits\WithNotifications;
 use Livewire\Component;
 
 class Category extends Component
 {
+    use WithNotifications;
     public $categories;
     public $name;
     public $color = '#6366f1';
@@ -43,6 +45,7 @@ class Category extends Component
         ]);
 
         $this->reset(['name']);
+        $this->notify('Berhasil!', 'Kategori berhasil ditambahkan.', 'success');
         $this->dispatch('category-created');
         $this->loadCategories();
     }
@@ -66,6 +69,7 @@ class Category extends Component
         ]);
 
         $this->reset(['name','editId']);
+        $this->notify('Berhasil!', 'Kategori berhasil diperbarui.', 'success');
         $this->dispatch('category-created');
         $this->loadCategories();
     }
@@ -75,11 +79,14 @@ class Category extends Component
         $this->errorMessage = '';
         try {
             Categories::find($id)->delete();
+            $this->notify('Dihapus!', 'Kategori berhasil dihapus.', 'success');
             $this->loadCategories();
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() === '23000') {
+                $this->notify('Gagal!', 'Kategori ini masih digunakan oleh transaksi.', 'danger');
                 $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi.';
             } else {
+                $this->notify('Gagal!', 'Terjadi kesalahan sistem.', 'danger');
                 $this->errorMessage = 'Terjadi kesalahan, kategori gagal dihapus.';
             }
         }

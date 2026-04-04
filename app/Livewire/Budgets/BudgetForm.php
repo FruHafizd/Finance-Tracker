@@ -4,11 +4,13 @@ namespace App\Livewire\Budgets;
 
 use App\Models\Budget;
 use App\Models\Category;
+use App\Traits\WithNotifications;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class BudgetForm extends Component
 {
+    use WithNotifications;
     public ?int $budgetId = null;
     public int $category_id = 0;
     public string $limit_amount = '';
@@ -82,12 +84,13 @@ class BudgetForm extends Component
                 'limit_amount' => (int) $this->limit_amount,
             ]);
 
+            $this->notify('Berhasil!', 'Budget berhasil diperbarui!', 'success');
             $this->dispatch('close-modal', 'budget-updated');
-            $this->dispatch('budget-updated', message: 'Budget berhasil diperbarui!');  
+            $this->dispatch('budget-updated');  
         }else {
             Budget::create(array_merge($data, ['user_id' => auth()->id()]));
+            $this->notify('Berhasil!', 'Budget berhasil dibuat', 'success');
             $this->dispatch('budget-created');
-            $this->dispatch('budget-created', message: 'Budget berhasil dibuat');
         }
 
         $this->resetForm();

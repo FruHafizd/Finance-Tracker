@@ -3,12 +3,14 @@
 namespace App\Livewire\Budgets;
 
 use App\Models\Budget;
+use App\Traits\WithNotifications;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Delete extends Component
 {
+    use WithNotifications;
     public ?int $budgetId = null;
     public string $categoryName = '';
 
@@ -31,8 +33,9 @@ class Delete extends Component
 
         $this->reset(['budgetId', 'categoryName']);
 
+        $this->notify('Berhasil!', 'Budget berhasil dihapus!', 'success');
         $this->dispatch('close-modal', 'modal-budget-delete');
-        $this->dispatch('budget-deleted',message: 'Budget berhasil dihapus!');
+        $this->dispatch('budget-deleted');
     }
 
     public function render()
