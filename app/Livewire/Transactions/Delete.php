@@ -29,12 +29,17 @@ class Delete extends Component
         if (!$this->transactionId) {
             return;
         }
-        Transaction::where('id', $this->transactionId)
+
+        $transaction = Transaction::where('id', $this->transactionId)
                             ->where('user_id', auth()->id())
-                            ->firstOrFail()
-                            ->delete();
-        $this->notify('Dihapus!', 'Data transaksi telah berhasil dihapus.', 'success');
-        $this->dispatch('transaction-deleted');
+                            ->first();
+
+        if ($transaction) {
+            $transaction->delete();
+            $this->notify('Dihapus!', 'Data transaksi telah berhasil dihapus.', 'success');
+            $this->dispatch('transaction-deleted');
+        }
+
         $this->dispatch('close-modal','modal-delete');
     }
 
