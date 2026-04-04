@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Carbon::setLocale('id');
+        \Illuminate\Support\Carbon::setLocale('id');
+        \App\Models\Transaction::observe(\App\Observers\TransactionObserver::class);
     }
 }

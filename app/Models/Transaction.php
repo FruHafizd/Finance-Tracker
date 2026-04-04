@@ -24,6 +24,8 @@ class Transaction extends Model
         'date',
         'recurring_transactions_id',
         'category_id',
+        'account_id',
+        'to_account_id',
     ];
     
     protected static function booted()
@@ -47,6 +49,11 @@ class Transaction extends Model
     public function account() 
     {
         return $this->belongsTo(Account::class);    
+    }
+
+    public function toAccount()
+    {
+        return $this->belongsTo(Account::class, 'to_account_id');
     }
 
 }
