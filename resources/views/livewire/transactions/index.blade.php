@@ -259,8 +259,8 @@
                                         </td>
                                         <td class="px-5 lg:px-7 py-4 whitespace-nowrap">
                                             <span class="px-3 py-1 inline-flex text-xs font-bold rounded-lg tracking-wide
-                                                {{ $item->type === 'income' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20' }}">
-                                                {{ $item->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                                {{ $item->type === 'income' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20' : ($item->type === 'transfer' ? 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20' : 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20') }}">
+                                                {{ $item->type === 'income' ? 'Pemasukan' : ($item->type === 'transfer' ? 'Transfer' : 'Pengeluaran') }}
                                             </span>
                                         </td>
                                         <td class="px-5 lg:px-7 py-4 whitespace-nowrap">
@@ -271,8 +271,8 @@
                                             </span>
                                         </td>
                                         <td class="px-5 lg:px-7 py-4 whitespace-nowrap text-right text-sm font-bold tracking-tight
-                                            {{ $item->type === 'income' ? 'text-emerald-600' : 'text-red-500' }}">
-                                            {{ $item->type === 'income' ? '+' : '-' }}Rp {{ number_format($item->amount, 0, ',', '.') }}
+                                            {{ $item->type === 'income' ? 'text-emerald-600' : ($item->type === 'transfer' ? 'text-blue-600' : 'text-red-500') }}">
+                                            {{ $item->type === 'income' ? '+' : ($item->type === 'transfer' ? '⇅' : '-') }}Rp {{ number_format($item->amount, 0, ',', '.') }}
                                         </td>
                                         <td class="px-5 lg:px-7 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex items-center justify-end gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200">
@@ -373,13 +373,13 @@
                                         </div>
                                     </div>
                                     <span class="px-2.5 py-1 flex-shrink-0 text-[10px] font-bold rounded-md tracking-wider uppercase ring-1 ring-inset
-                                        {{ $item->type === 'income' ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-rose-600/20' }}">
-                                        {{ $item->type === 'income' ? 'IN' : 'OUT' }}
+                                        {{ $item->type === 'income' ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : ($item->type === 'transfer' ? 'bg-blue-50 text-blue-700 ring-blue-600/20' : 'bg-rose-50 text-rose-700 ring-rose-600/20') }}">
+                                        {{ $item->type === 'income' ? 'IN' : ($item->type === 'transfer' ? 'TRF' : 'OUT') }}
                                     </span>
                                 </div>
                                 <div class="flex items-end justify-between mt-1">
-                                    <p class="text-[17px] font-black tracking-tight {{ $item->type === 'income' ? 'text-emerald-600' : 'text-gray-900' }}">
-                                        {{ $item->type === 'income' ? '+' : '-' }}Rp {{ number_format($item->amount, 0, ',', '.') }}
+                                    <p class="text-[17px] font-black tracking-tight {{ $item->type === 'income' ? 'text-emerald-600' : ($item->type === 'transfer' ? 'text-blue-600' : 'text-gray-900') }}">
+                                        {{ $item->type === 'income' ? '+' : ($item->type === 'transfer' ? '⇅' : '-') }}Rp {{ number_format($item->amount, 0, ',', '.') }}
                                     </p>
                                     <div class="flex items-center gap-1.5">
                                         <button x-data
