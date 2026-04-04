@@ -65,7 +65,18 @@ Berikut adalah langkah-langkah detail yang harus dilakukan untuk menyelesaikan i
 
 ---
 
-### Tahap 3: Pengujian (Sangat Penting)
+### Tahap 3: Persiapan Database (Migrate & Seed)
+
+Untuk memastikan pengujian berjalan di lingkungan yang bersih dan aman dari data yang mungkin korup dari implementasi sebelumnya, lakukan reset database sebelum memulai implementasi dan pengujian mendalam:
+1.  Jalankan perintah berikut pada terminal di root proyek:
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+2.  *Catatan:* Pastikan `DatabaseSeeder.php` sudah memiliki data dummy yang memadai (minimal ada user, beberapa kategori, dan default akun/rekening) agar lebih mudah saat testing. Login menggunakan kredensial dummy tersebut.
+
+---
+
+### Tahap 4: Pengujian (Sangat Penting)
 
 1.  **Pengujian Edit Transfer:**
     *   Buat transaksi Transfer baru (A -> B = Rp100.000). Catat saldo A & B.
