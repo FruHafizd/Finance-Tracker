@@ -70,11 +70,14 @@ class BudgetForm extends Component
     {
         $this->validate();
         
+        $month = (int) now()->format('n');
+        $year  = (int) now()->format('Y');
+
         $data = [
             'category_id'  => $this->category_id,
             'limit_amount' => (int) $this->limit_amount,
-            'month'        => (int) now()->format('n'),
-            'year'         => (int) now()->format('Y'),
+            'month'        => $month,
+            'year'         => $year,
         ];
 
         if ($this->isEditing()) {
@@ -88,6 +91,17 @@ class BudgetForm extends Component
             $this->dispatch('close-modal', 'budget-updated');
             $this->dispatch('budget-updated');  
         }else {
+            $exists = Budget::where('user_id', Auth::id())
+                ->where('category_id', $this->category_id)
+                ->where('month', $month)
+                ->where('year', $year)
+                ->exists();
+
+            if ($exists) {
+                $this->addError('category_id', 'Kategori ini sudah memiliki budget di bulan ini.');
+                return;
+            }
+
             Budget::create(array_merge($data, ['user_id' => auth()->id()]));
             $this->notify('Berhasil!', 'Budget berhasil dibuat', 'success');
             $this->dispatch('budget-created');
