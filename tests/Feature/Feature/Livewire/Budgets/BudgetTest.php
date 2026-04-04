@@ -81,4 +81,27 @@ class BudgetTest extends TestCase
 
         $this->assertDatabaseMissing('budgets', ['id' => $budget->id]);
     }
+
+    #[Test]
+    public function tidak_bisa_membuat_budget_duplikat_di_bulan_yang_sama(): void
+    {
+        // Buat budget pertama untuk kategori ini
+        Budget::factory()->create([
+            'user_id'     => $this->user->id,
+            'category_id' => $this->cat->id,
+            'month'       => (int) now()->format('n'),
+            'year'        => (int) now()->format('Y'),
+        ]);
+
+        // Coba buat budget kedua untuk kategori yang sama → harus gagal
+        Livewire::actingAs($this->user)
+            ->test(BudgetForm::class)
+            ->set('category_id', $this->cat->id)
+            ->set('limit_amount', 2000000)
+            ->call('save')
+            ->assertHasErrors(['category_id']);
+
+        // Pastikan tetap hanya 1 record di database
+        $this->assertDatabaseCount('budgets', 1);
+    }
 }
