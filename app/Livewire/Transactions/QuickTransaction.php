@@ -14,6 +14,7 @@ class QuickTransaction extends Component
     use WithNotifications;
     public $favorites = [];
     public $categories = [];
+    public ?int $deleteId = null;
     
     // Properties for editing favorite transaction
     public $editId = null;
@@ -117,11 +118,19 @@ class QuickTransaction extends Component
         $this->notify('Berhasil diubah!', 'Template transaksi cepat berhasil diperbarui.', 'success');
     }
 
-    // Hapus dari favorite
-    public function removeFavorite(int $favoriteId)
+    public function confirmDelete(int $id): void
     {
-        FavoriteTransaction::findOrFail($favoriteId)->delete();
+        $this->deleteId = $id;
+        $this->dispatch('open-modal', 'modal-delete-favorit');
+    }
+
+    // Hapus dari favorite
+    public function delete(): void
+    {
+        FavoriteTransaction::findOrFail($this->deleteId)->delete();
+        $this->deleteId = null;
         $this->loadFavorites();
+        $this->dispatch('close-modal', 'modal-delete-favorit');
         $this->notify('Berhasil dihapus!', 'Transaksi telah dihapus dari favorit.', 'success');
     }
 

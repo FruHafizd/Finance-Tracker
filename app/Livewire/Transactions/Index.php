@@ -10,7 +10,9 @@ use Livewire\WithPagination;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, \App\Traits\WithNotifications;
+
+    public ?int $deleteId = null;
 
     protected $paginationTheme = 'tailwind';
 
@@ -163,6 +165,22 @@ class Index extends Component
                 }));
             ");
         }
+    }
+    public function confirmDelete(int $id): void
+    {
+        $this->deleteId = $id;
+        $this->dispatch('open-modal', 'modal-delete-transaksi');
+    }
+
+    public function delete(): void
+    {
+        $transaction = Transaction::findOrFail($this->deleteId);
+        $transaction->delete();
+
+        $this->deleteId = null;
+        $this->dispatch('close-modal', 'modal-delete-transaksi');
+        $this->notify('Berhasil!', 'Transaksi berhasil dihapus.', 'success');
+        $this->dispatch('transaction-deleted');
     }
 
     public function render()

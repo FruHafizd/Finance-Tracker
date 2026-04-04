@@ -16,6 +16,7 @@ class AccountList extends Component
     ];
 
     public string $activeTab = 'semua';
+    public ?int $deleteId = null;
 
     public function getAccountsProperty()
     {
@@ -39,9 +40,15 @@ class AccountList extends Component
         ];
     }
 
-    public function deleteAccount(int $id): void
+    public function confirmDelete(int $id): void
     {
-        $account = Account::findOrFail($id);
+        $this->deleteId = $id;
+        $this->dispatch('open-modal', 'modal-delete-rekening');
+    }
+
+    public function delete(): void
+    {
+        $account = Account::findOrFail($this->deleteId);
 
         if ($account->transactions()->exists() || \App\Models\Transaction::where('to_account_id', $id)->exists()) {
             $this->notify('Gagal menghapus', "Rekening {$account->name} tidak dapat dihapus karena masih memiliki riwayat transaksi.", 'error');
@@ -50,6 +57,8 @@ class AccountList extends Component
 
         $account->delete();
 
+        $this->deleteId = null;
+        $this->dispatch('close-modal', 'modal-delete-rekening');
         $this->notify('Rekening dihapus', "Rekening {$account->name} berhasil dihapus.", 'success');
     }
     public function render()

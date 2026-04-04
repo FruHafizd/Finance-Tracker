@@ -289,8 +289,7 @@
                                                 </button>
                                                 <button x-data
                                                     x-on:click.prevent="
-                                                        $dispatch('confirm-delete', { id: {{ $item->id }} });
-                                                        $dispatch('open-modal', 'modal-delete');
+                                                        $wire.confirmDelete({{ $item->id }})
                                                     "
                                                     title="Hapus"
                                                     class="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors duration-150">
@@ -394,8 +393,7 @@
                                         </button>
                                         <button x-data
                                             x-on:click.prevent="
-                                                $dispatch('confirm-delete', { id: {{ $item->id }} });
-                                                $dispatch('open-modal', 'modal-delete');
+                                                $wire.confirmDelete({{ $item->id }})
                                             "
                                             class="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl ring-1 ring-inset ring-gray-100 transition-all duration-150 active:scale-95 bg-white">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -532,7 +530,12 @@
         </div>
 
         <livewire:transactions.transaction-form />
-        <livewire:transactions.delete />
+        <x-modal-delete
+            name="modal-delete-transaksi"
+            title="Hapus Transaksi"
+            description="Apakah Anda yakin ingin menghapus catatan transaksi ini? Semua data terkait transaksi ini akan dihapus permanen dan tidak bisa dikembalikan."
+            action="delete"
+        />
         <livewire:transactions.category />
         <livewire:transactions.export />
 

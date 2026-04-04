@@ -104,8 +104,7 @@
                         </svg>
                     </button>
                     <button
-                        wire:click="deleteAccount({{ $account->id }})"
-                        wire:confirm="Yakin hapus rekening {{ $account->name }}?"
+                        wire:click="confirmDelete({{ $account->id }})"
                         class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -130,5 +129,12 @@
 
     {{-- Modal Form --}}
     <livewire:accounts.account-form />
+
+    <x-modal-delete
+        name="modal-delete-rekening"
+        title="Hapus Rekening"
+        description="Apakah Anda yakin ingin menghapus rekening ini? Rekening hanya dapat dihapus jika tidak memiliki riwayat transaksi."
+        action="delete"
+    />
 
 </div>

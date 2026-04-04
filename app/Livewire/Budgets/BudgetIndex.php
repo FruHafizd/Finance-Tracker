@@ -8,8 +8,11 @@ use Livewire\Component;
 
 class BudgetIndex extends Component
 {   
+    use \App\Traits\WithNotifications;
+
     public int $month;
     public int $year;
+    public ?int $deleteId = null;
     // public string $flashMessage = '';
 
     protected $listeners = [    
@@ -29,6 +32,25 @@ class BudgetIndex extends Component
     //     $this->flashMessage = '';
     //     $this->flashMessage = $message;
     // }
+
+    public function confirmDelete(int $id): void
+    {
+        $this->deleteId = $id;
+        $this->dispatch('open-modal', 'modal-delete-budget');
+    }
+
+    public function delete(): void
+    {
+        $budget = Budget::where('user_id', Auth::id())
+            ->findOrFail($this->deleteId);
+        
+        $budget->delete();
+
+        $this->deleteId = null;
+        $this->dispatch('close-modal', 'modal-delete-budget');
+        $this->notify('Berhasil!', 'Budget berhasil dihapus!', 'success');
+        $this->dispatch('budget-deleted');
+    }
 
     public function render()
     {   
