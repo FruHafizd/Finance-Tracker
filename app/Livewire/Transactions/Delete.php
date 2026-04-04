@@ -31,6 +31,7 @@ class Delete extends Component
         }
         Transaction::where('id', $this->transactionId)
                             ->where('user_id', auth()->id())
+                            ->firstOrFail()
                             ->delete();
         $this->notify('Dihapus!', 'Data transaksi telah berhasil dihapus.', 'success');
         $this->dispatch('transaction-deleted');

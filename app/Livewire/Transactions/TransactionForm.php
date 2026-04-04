@@ -114,9 +114,11 @@ class TransactionForm extends Component
         ];
 
         if ($this->isEditing()) {
-            Transaction::where('id', $this->transactionId)
+            $transaction = Transaction::where('id', $this->transactionId)
                 ->where('user_id', auth()->id())
-                ->update($data);
+                ->firstOrFail();
+            
+            $transaction->update($data);
 
             $this->notify('Berhasil!', 'Data transaksi berhasil diperbarui.', 'success');
             $this->dispatch('transaction-updated');
