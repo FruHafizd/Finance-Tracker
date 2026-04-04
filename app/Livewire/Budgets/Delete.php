@@ -15,7 +15,7 @@ class Delete extends Component
     public string $categoryName = '';
 
     #[On('delete-budget')]
-    public function loadBudget(int $id): void
+    public function setBudget(int $id): void
     {
         $budget = Budget::with('category')
             ->where('user_id', Auth::id())
