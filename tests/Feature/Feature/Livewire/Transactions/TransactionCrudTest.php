@@ -18,12 +18,17 @@ class TransactionCrudTest extends TestCase
 
     private User $user;
     private Category $cat;
+    private \App\Models\Account $account;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->user = User::factory()->create();
+        $this->account = \App\Models\Account::factory()->create([
+            'user_id' => $this->user->id,
+            'balance' => 10_000_000,
+        ]);
         $this->cat  = Category::factory()->create([
             'user_id' => $this->user->id,
             'name'    => 'Makanan',
@@ -44,6 +49,7 @@ class TransactionCrudTest extends TestCase
             ->set('amount',      5_000_000)
             ->set('type',        'income')
             ->set('category_id', $this->cat->id)
+            ->set('account_id',  $this->account->id)
             ->set('date',        now()->format('Y-m-d'))
             ->call('save')
             ->assertDispatched('transaction-created');
@@ -65,6 +71,7 @@ class TransactionCrudTest extends TestCase
             ->set('amount',      50_000)
             ->set('type',        'expense')
             ->set('category_id', $this->cat->id)
+            ->set('account_id',  $this->account->id)
             ->set('date',        now()->format('Y-m-d'))
             ->call('save')
             ->assertDispatched('transaction-created');
@@ -388,5 +395,26 @@ class TransactionCrudTest extends TestCase
             ->call('delete');
 
         $this->assertDatabaseCount('transactions', 1);
+    }
+
+    #[Test]
+    public function test_boundary_limit_nominal_15_triliun(): void
+    {
+        // Skenario pengetesan bug nominal sangat besar sesuai Issue #52
+        $nominalBesar = 15000001500000; // 15.000.001.500.000
+
+        Livewire::actingAs($this->user)
+            ->test(TransactionForm::class)
+            ->set('name',        'Transaksi Limit')
+            ->set('amount',      $nominalBesar)
+            ->set('type',        'income')
+            ->set('category_id', $this->cat->id)
+            ->set('account_id',  $this->account->id)
+            ->set('date',        now()->format('Y-m-d'))
+            ->call('save');
+
+        $this->assertDatabaseHas('transactions', [
+            'amount' => $nominalBesar,
+        ]);
     }
 }
