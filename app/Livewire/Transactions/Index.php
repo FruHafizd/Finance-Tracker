@@ -139,7 +139,10 @@ class Index extends Component
                 'amount'  => $trx->amount,
                 'type'    => $trx->type,
             ],
-            ['category_id' => $trx->category_id]
+            [
+                'category_id' => $trx->category_id,
+                'account_id'  => $trx->account_id,
+            ]
         );
         
         if ($fav->wasRecentlyCreated) {
