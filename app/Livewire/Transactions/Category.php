@@ -77,18 +77,24 @@ class Category extends Component
     public function delete($id)
     {
         $this->errorMessage = '';
+
+        // Check for existing transactions or favorite transactions
+        $hasTransactions = \App\Models\Transaction::where('category_id', $id)->exists();
+        $hasFavorites    = \App\Models\FavoriteTransaction::where('category_id', $id)->exists();
+
+        if ($hasTransactions || $hasFavorites) {
+            $this->notify('Gagal!', 'Kategori ini masih digunakan oleh transaksi.', 'danger');
+            $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi.';
+            return;
+        }
+
         try {
-            Categories::find($id)->delete();
+            Categories::findOrFail($id)->delete();
             $this->notify('Dihapus!', 'Kategori berhasil dihapus.', 'success');
             $this->loadCategories();
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() === '23000') {
-                $this->notify('Gagal!', 'Kategori ini masih digunakan oleh transaksi.', 'danger');
-                $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi.';
-            } else {
-                $this->notify('Gagal!', 'Terjadi kesalahan sistem.', 'danger');
-                $this->errorMessage = 'Terjadi kesalahan, kategori gagal dihapus.';
-            }
+        } catch (\Exception $e) {
+            $this->notify('Gagal!', 'Terjadi kesalahan sistem.', 'danger');
+            $this->errorMessage = 'Terjadi kesalahan, kategori gagal dihapus.';
         }
     }
 
