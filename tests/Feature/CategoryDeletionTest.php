@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Livewire\Transactions\Category;
+use App\Models\Budget;
 use App\Models\Category as CategoryModel;
 use App\Models\FavoriteTransaction;
 use App\Models\Transaction;
@@ -31,7 +32,7 @@ class CategoryDeletionTest extends TestCase
 
         Livewire::test(Category::class)
             ->call('delete', $category->id)
-            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi.');
+            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.');
 
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
     }
@@ -55,7 +56,7 @@ class CategoryDeletionTest extends TestCase
 
         Livewire::test(Category::class)
             ->call('delete', $category->id)
-            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi.');
+            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.');
 
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
     }
@@ -73,5 +74,28 @@ class CategoryDeletionTest extends TestCase
             ->assertSet('errorMessage', '');
 
         $this->assertDatabaseMissing('categories', ['id' => $category->id]);
+    }
+
+    /** @test */
+    public function it_cannot_delete_category_with_existing_budget()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $category = CategoryModel::factory()->create(['user_id' => $user->id]);
+
+        // Create budget linked to this category
+        Budget::factory()->create([
+            'user_id'     => $user->id,
+            'category_id' => $category->id,
+            'month'       => now()->month,
+            'year'        => now()->year,
+        ]);
+
+        Livewire::test(Category::class)
+            ->call('delete', $category->id)
+            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.');
+
+        $this->assertDatabaseHas('categories', ['id' => $category->id]);
     }
 }

@@ -81,10 +81,11 @@ class Category extends Component
         // Check for existing transactions or favorite transactions
         $hasTransactions = \App\Models\Transaction::where('category_id', $id)->exists();
         $hasFavorites    = \App\Models\FavoriteTransaction::where('category_id', $id)->exists();
+        $hasBudgets      = \App\Models\Budget::withoutGlobalScopes()->where('category_id', $id)->exists();
 
-        if ($hasTransactions || $hasFavorites) {
-            $this->notify('Gagal!', 'Kategori ini masih digunakan oleh transaksi.', 'danger');
-            $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi.';
+        if ($hasTransactions || $hasFavorites || $hasBudgets) {
+            $this->notify('Gagal!', 'Kategori ini masih digunakan oleh transaksi atau budget.', 'danger');
+            $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.';
             return;
         }
 
