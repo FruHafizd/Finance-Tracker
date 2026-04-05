@@ -50,7 +50,7 @@ class AccountList extends Component
     {
         $account = Account::findOrFail($this->deleteId);
 
-        if ($account->transactions()->exists() || \App\Models\Transaction::where('to_account_id', $id)->exists()) {
+        if ($account->transactions()->exists() || \App\Models\Transaction::where('to_account_id', $this->deleteId)->exists()) {
             $this->notify('Gagal menghapus', "Rekening {$account->name} tidak dapat dihapus karena masih memiliki riwayat transaksi.", 'error');
             return;
         }
