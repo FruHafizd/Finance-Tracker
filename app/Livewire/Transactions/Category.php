@@ -78,14 +78,26 @@ class Category extends Component
     {
         $this->errorMessage = '';
 
-        // Check for existing transactions or favorite transactions
-        $hasTransactions = \App\Models\Transaction::where('category_id', $id)->exists();
-        $hasFavorites    = \App\Models\FavoriteTransaction::where('category_id', $id)->exists();
-        $hasBudgets      = \App\Models\Budget::withoutGlobalScopes()->where('category_id', $id)->exists();
+        $userId          = auth()->id();
+        $transactionCount = \App\Models\Transaction::where('category_id', $id)->where('user_id', $userId)->count();
+        $hasBudgets      = \App\Models\Budget::where('category_id', $id)->where('user_id', $userId)->exists();
+        $hasFavorites    = \App\Models\FavoriteTransaction::where('category_id', $id)->where('user_id', $userId)->exists();
 
-        if ($hasTransactions || $hasFavorites || $hasBudgets) {
-            $this->notify('Gagal!', 'Kategori ini masih digunakan oleh transaksi atau budget.', 'danger');
-            $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.';
+        if ($transactionCount > 0 || $hasBudgets || $hasFavorites) {
+            $reasons = [];
+            
+            if ($transactionCount > 0) {
+                $reasons[] = "{$transactionCount} transaksi (termasuk transaksi di bulan-bulan sebelumnya)";
+            }
+            if ($hasBudgets) {
+                $reasons[] = "budget";
+            }
+            if ($hasFavorites) {
+                $reasons[] = "transaksi favorit";
+            }
+
+            $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh ' . implode(' dan ', $reasons) . '.';
+            $this->notify('Gagal!', $this->errorMessage, 'danger');
             return;
         }
 
