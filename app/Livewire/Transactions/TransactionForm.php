@@ -143,6 +143,7 @@ class TransactionForm extends Component
         $this->amount      = $data['amount']      ?? null;
         $this->type        = $data['type']        ?? null;
         $this->category_id = $data['category_id'] ?? null;
+        $this->account_id  = $data['account_id']  ?? null;
         $this->date        = $data['date']        ?? null;
     }
 

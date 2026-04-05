@@ -31,6 +31,11 @@ class QuickTransaction extends Component
     #[Validate('required', as: 'kategori')]
     public $editCategoryId = '';
 
+    #[Validate('required', as: 'rekening')]
+    public $editAccountId = '';
+
+    public $accounts = [];
+
     protected $listeners = [
         'favorite-created' => 'loadFavorites',
         'category-created' => 'loadCategories'
@@ -39,7 +44,13 @@ class QuickTransaction extends Component
     public function mount()
     {
         $this->loadCategories();
+        $this->loadAccounts();
         $this->loadFavorites();
+    }
+
+    public function loadAccounts()
+    {
+        $this->accounts = \App\Models\Account::where('user_id', auth()->id())->get();
     }
 
     public function loadCategories()
@@ -49,7 +60,7 @@ class QuickTransaction extends Component
 
     public function loadFavorites()
     {
-        $this->favorites = FavoriteTransaction::with('category')->get();
+        $this->favorites = FavoriteTransaction::with(['category', 'account'])->get();
     }
 
     // 1-click langsung save, date = hari ini
@@ -60,6 +71,7 @@ class QuickTransaction extends Component
         Transaction::create([
             'user_id'     => auth()->id(),
             'category_id' => $fav->category_id,
+            'account_id'  => $fav->account_id,
             'name'        => $fav->name,
             'amount'      => $fav->amount,
             'type'        => $fav->type,
@@ -80,6 +92,7 @@ class QuickTransaction extends Component
             'amount'      => $fav->amount,
             'type'        => $fav->type,
             'category_id' => $fav->category_id,
+            'account_id'  => $fav->account_id,
             'date'        => now()->toDateString(),
         ]);
 
@@ -96,6 +109,7 @@ class QuickTransaction extends Component
         $this->editAmount = $fav->amount;
         $this->editType = $fav->type;
         $this->editCategoryId = $fav->category_id;
+        $this->editAccountId = $fav->account_id;
         
         $this->dispatch('open-modal', 'modal-edit-favorite');
     }
@@ -111,6 +125,7 @@ class QuickTransaction extends Component
             'amount' => $this->editAmount,
             'type' => $this->editType,
             'category_id' => $this->editCategoryId,
+            'account_id' => $this->editAccountId,
         ]);
         
         $this->loadFavorites();

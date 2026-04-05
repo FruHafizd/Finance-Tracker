@@ -142,43 +142,77 @@
                     <!-- Nominal -->
                     <div x-data="{ 
                             display: '', 
-                            raw: '', 
+                            raw: @entangle('editAmount'), 
                             format(val) { 
                                 if (!val) return ''; 
                                 return val.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'); 
                             } 
                         }" 
                         x-init="
-                            $watch('$wire.editAmount', value => { 
-                                if(value) { 
-                                    raw = value.toString(); 
-                                    display = format(raw); 
-                                } else { 
-                                    display = ''; 
-                                    raw = ''; 
-                                } 
-                            })
+                            $watch('raw', value => { 
+                                display = format(value); 
+                            });
+                            display = format(raw);
                         " class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700">Nominal <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-gray-700 tracking-tight">Nominal <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                                <span class="text-gray-500 sm:text-sm font-medium">Rp</span>
+                                <span class="text-gray-500 sm:text-sm font-bold">Rp</span>
                             </div>
-                            <input type="text" x-model="display" @input="raw = display.replace(/\D/g, ''); display = format(raw); $wire.editAmount = raw;" class="block w-full rounded-xl border-0 py-3 pl-11 pr-4 text-gray-900 font-semibold shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors" placeholder="0">
+                            <input type="text" x-model="display" @input="raw = display.replace(/\D/g, ''); display = format(raw);" class="block w-full rounded-2xl border-0 py-4 pl-12 pr-4 text-gray-900 font-extrabold shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xl sm:leading-6 bg-white transition-all" placeholder="0">
                         </div>
                         @error('editAmount') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <!-- Kategori -->
+                    <!-- Kategori (Pill Selection) -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700">Kategori <span class="text-red-500">*</span></label>
-                        <select wire:model="editCategoryId" class="block w-full rounded-xl border-0 py-3 pl-4 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 appearance-none bg-gray-50/50 hover:bg-white transition-colors cursor-pointer">
-                            <option value="" class="text-gray-400">Pilih Kategori</option>
+                        <label class="block text-sm font-semibold text-gray-700 tracking-tight">Kategori <span class="text-red-500">*</span></label>
+                        <div class="flex flex-wrap gap-2 py-1">
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <button
+                                    type="button"
+                                    wire:key="edit-category-{{ $category->id }}"
+                                    wire:click="$set('editCategoryId', {{ $category->id }})"
+                                    class="px-3 py-2 rounded-xl text-xs font-bold border transition-all duration-200 {{ $editCategoryId == $category->id ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-white border-gray-200 text-gray-600 hover:border-gray-400' }}">
+                                    {{ $category->name }}
+                                </button>
                             @endforeach
-                        </select>
+                            @if($categories->isEmpty())
+                                <p class="text-xs text-gray-400 italic">Belum ada kategori</p>
+                            @endif
+                        </div>
                         @error('editCategoryId') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <!-- Pemilihan Rekening (Matching TransactionForm Style) -->
+                <div class="space-y-4">
+                    <div class="space-y-3">
+                        <label class="block text-sm font-semibold text-gray-700 tracking-tight">Rekening <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            @foreach($accounts as $account)
+                                <button
+                                    type="button"
+                                    wire:key="edit-account-{{ $account->id }}"
+                                    wire:click="$set('editAccountId', {{ $account->id }})"
+                                    class="group relative flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all duration-200 {{ $editAccountId == $account->id ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-gray-100 bg-white hover:border-gray-300 hover:bg-gray-50' }}">
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-xl mb-2 {{ $editAccountId == $account->id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-white' }}">
+                                        @if($account->type === 'bank')
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                            </svg>
+                                        @else
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                    <span class="text-xs font-bold {{ $editAccountId == $account->id ? 'text-indigo-900' : 'text-gray-700' }} truncate w-full text-center">{{ $account->name }}</span>
+                                    <span class="text-[10px] text-gray-500 truncate w-full text-center">Rp {{ number_format($account->balance, 0, ',', '.') }}</span>
+                                </button>
+                            @endforeach
+                        </div>
+                        @error('editAccountId') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
