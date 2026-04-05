@@ -32,7 +32,7 @@ class CategoryDeletionTest extends TestCase
 
         Livewire::test(Category::class)
             ->call('delete', $category->id)
-            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.');
+            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh 1 transaksi (termasuk transaksi di bulan-bulan sebelumnya).');
 
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
     }
@@ -45,8 +45,8 @@ class CategoryDeletionTest extends TestCase
 
         $category = CategoryModel::factory()->create(['user_id' => $user->id]);
         
-        // Create favorite transaction linked to this category using create()
-        FavoriteTransaction::create([
+        // Create favorite transaction linked to this category
+        $favorite = FavoriteTransaction::create([
             'user_id'     => $user->id,
             'category_id' => $category->id,
             'name'        => 'Nasi Padang',
@@ -54,9 +54,11 @@ class CategoryDeletionTest extends TestCase
             'type'        => 'expense',
         ]);
 
+        $this->assertDatabaseHas('favorite_transactions', ['id' => $favorite->id]);
+
         Livewire::test(Category::class)
             ->call('delete', $category->id)
-            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.');
+            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi favorit.');
 
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
     }
@@ -94,8 +96,39 @@ class CategoryDeletionTest extends TestCase
 
         Livewire::test(Category::class)
             ->call('delete', $category->id)
-            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh transaksi atau budget.');
+            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh budget.');
 
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
+    }
+
+    /** @test */
+    public function it_can_delete_category_after_budget_is_deleted()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $category = CategoryModel::factory()->create(['user_id' => $user->id]);
+
+        $budget = Budget::factory()->create([
+            'user_id'     => $user->id,
+            'category_id' => $category->id,
+            'month'       => now()->month,
+            'year'        => now()->year,
+        ]);
+
+        // Verify it is blocked initially
+        Livewire::test(Category::class)
+            ->call('delete', $category->id)
+            ->assertSet('errorMessage', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh budget.');
+
+        // Delete the budget
+        $budget->delete();
+
+        // Verify it is now allowed
+        Livewire::test(Category::class)
+            ->call('delete', $category->id)
+            ->assertSet('errorMessage', '');
+
+        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
 }
