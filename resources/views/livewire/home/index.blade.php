@@ -44,4 +44,9 @@
 
         </div>
     </div>
+
+    {{-- Month in Review Story --}}
+    @if($showReview)
+        <x-story-modal :reviewData="$reviewData" />
+    @endif
 </div>
