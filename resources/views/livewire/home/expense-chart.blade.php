@@ -1,4 +1,67 @@
-<div class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-inset ring-gray-100">
+<div class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-inset ring-gray-100"
+     x-data='{
+        chart: null,
+        chartData: @json($chartData),
+        initChart() {
+            const canvas = this.$refs.canvas;
+            if (!canvas) return;
+
+            if (this.chart) {
+                this.chart.destroy();
+            }
+
+            this.chart = new Chart(canvas.getContext("2d"), {
+                type: "bar",
+                data: {
+                    labels: this.chartData.labels,
+                    datasets: [{
+                        data: this.chartData.data,
+                        backgroundColor: this.chartData.colors.map(c => c + "30"),
+                        borderColor: this.chartData.colors,
+                        borderWidth: 2,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: "#1f2937",
+                            titleColor: "#f9fafb",
+                            bodyColor: "#9ca3af",
+                            padding: 12,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function(ctx) { return "  Rp " + ctx.parsed.y.toLocaleString("id-ID"); }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, border: { display: false }, ticks: { color: "#9ca3af", font: { size: 12 } } },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: "#f3f4f6" },
+                            border: { display: false },
+                            ticks: {
+                                color: "#9ca3af", font: { size: 11 },
+                                callback: function(v) {
+                                    if (v >= 1000000) return "Rp"+(v/1000000).toFixed(1)+"jt";
+                                    if (v >= 1000)    return "Rp"+(v/1000).toFixed(0)+"rb";
+                                    return "Rp"+v;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+     }'
+     x-init="initChart()"
+>
+
     <div class="flex items-start justify-between mb-5 gap-3">
         <div>
             <h3 class="text-base font-bold text-gray-900 tracking-tight mb-1">Pengeluaran per Kategori</h3>
@@ -17,7 +80,7 @@
 
     @if(count($chartData['data']) > 0)
         <div class="relative h-[320px] w-full">
-            <canvas id="expenseChart"></canvas>
+            <canvas x-ref="canvas" id="expenseChart"></canvas>
         </div>
         <!-- Legend Custom -->
         <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2.5">
@@ -41,77 +104,3 @@
         </div>
     @endif
 </div>
-
-@if(count($chartData['data']) > 0)
-<script>
-    (function () {
-        function initExpenseChart() {
-            var canvas = document.getElementById('expenseChart');
-            if (!canvas) return;
-
-            // Destroy chart lama jika ada
-            if (window._expenseChartInstance) {
-                window._expenseChartInstance.destroy();
-                window._expenseChartInstance = null;
-            }
-
-            window._expenseChartInstance = new Chart(canvas.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: @json($chartData['labels']),
-                    datasets: [{
-                        data: @json($chartData['data']),
-                        backgroundColor: @json(array_map(fn($c) => $c . '30', $chartData['colors'])),
-                        borderColor: @json($chartData['colors']),
-                        borderWidth: 2,
-                        borderRadius: 10,
-                        borderSkipped: false,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#1f2937',
-                            titleColor: '#f9fafb',
-                            bodyColor: '#9ca3af',
-                            padding: 12,
-                            cornerRadius: 10,
-                            callbacks: {
-                                label: function(ctx) { return '  Rp ' + ctx.parsed.y.toLocaleString('id-ID'); }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { display: false }, border: { display: false }, ticks: { color: '#9ca3af', font: { size: 12 } } },
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#f3f4f6' },
-                            border: { display: false },
-                            ticks: {
-                                color: '#9ca3af', font: { size: 11 },
-                                callback: function(v) {
-                                    if (v >= 1000000) return 'Rp'+(v/1000000).toFixed(1)+'jt';
-                                    if (v >= 1000)    return 'Rp'+(v/1000).toFixed(0)+'rb';
-                                    return 'Rp'+v;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initExpenseChart);
-        } else {
-            initExpenseChart();
-        }
-
-        // Untuk Livewire navigate (bukan re-render biasa)
-        document.addEventListener('livewire:navigated', initExpenseChart);
-    })();
-    </script>
-@endif
