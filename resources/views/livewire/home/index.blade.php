@@ -29,11 +29,18 @@
                 <livewire:home.summary-cards />
             </div>
 
-            {{-- Chart --}}
-            <div>
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 ml-1">Analisis Pengeluaran</h3>
-                <livewire:home.expense-chart />
+            {{-- Charts & Score --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 order-2 lg:order-1">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 ml-1">Kesehatan Keuangan</h3>
+                    <livewire:home.financial-score />
+                </div>
+                <div class="lg:col-span-2 order-1 lg:order-2">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 ml-1">Analisis Pengeluaran</h3>
+                    <livewire:home.expense-chart />
+                </div>
             </div>
+
 
         </div>
     </div>
