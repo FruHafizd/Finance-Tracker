@@ -7,7 +7,7 @@
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 tracking-tight">Export Laporan</h2>
                     <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
                         Unduh data transaksi dalam format Excel
                     </p>
                 </div>
@@ -168,7 +168,7 @@
                         type="date"
                         wire:model="startDate"
                         x-on:change="hasError = false"
-                        class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
+                        class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
                 </div>
 
                 <!-- Tanggal Akhir -->
@@ -178,20 +178,20 @@
                         type="date"
                         wire:model="endDate"
                         x-on:change="hasError = false"
-                        class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
+                        class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
                 </div>
             </div>
 
             <!-- Info -->
-            <div class="flex items-start gap-4 p-5 bg-indigo-50/50 rounded-2xl text-sm text-indigo-700"
+            <div class="flex items-start gap-4 p-5 bg-slate-50/50 rounded-2xl text-sm text-slate-700"
                  x-show="phase === 'idle'">
-                <div class="w-10 h-10 bg-indigo-100/70 text-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 -mt-1 shadow-sm border border-indigo-200/50">
+                <div class="w-10 h-10 bg-slate-100/70 text-slate-600 rounded-xl flex items-center justify-center flex-shrink-0 -mt-1 shadow-sm border border-slate-200/50">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
                 <div class="flex-1 mt-0.5 leading-relaxed">
-                    <strong class="block text-indigo-900 mb-0.5 tracking-tight font-semibold">Format Laporan Otomatis</strong>
+                    <strong class="block text-slate-900 mb-0.5 tracking-tight font-semibold">Format Laporan Otomatis</strong>
                     Seluruh arus kas Anda akan direkapitulasi secara akurat dan diunduh berupa *Spreadsheet (.xlsx)* sesuai dengan format pelaporan yang berlaku.
                 </div>
             </div>
@@ -200,17 +200,17 @@
 
             <!-- Fase: server memproses -->
             <div x-show="phase === 'preparing'" x-cloak
-                 class="rounded-2xl ring-1 ring-inset ring-indigo-100 bg-indigo-50/40 px-6 py-5 space-y-4">
+                 class="rounded-2xl ring-1 ring-inset ring-slate-100 bg-slate-50/40 px-6 py-5 space-y-4">
                 <div class="flex items-center gap-3">
-                    <svg class="animate-spin w-5 h-5 text-indigo-600 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin w-5 h-5 text-slate-600 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span class="text-sm font-semibold text-indigo-900">Menganalisis & Menyiapkan File...</span>
+                    <span class="text-sm font-semibold text-slate-900">Menganalisis & Menyiapkan File...</span>
                 </div>
                 <!-- Indeterminate bar -->
-                <div class="w-full bg-indigo-200/50 rounded-full h-2.5 overflow-hidden">
-                    <div class="h-2.5 rounded-full bg-indigo-500 animate-[indeterminate_1.5s_ease-in-out_infinite]"
+                <div class="w-full bg-slate-200/50 rounded-full h-2.5 overflow-hidden">
+                    <div class="h-2.5 rounded-full bg-slate-500 animate-[indeterminate_1.5s_ease-in-out_infinite]"
                          style="width:40%; animation: indeterminate 1.5s ease-in-out infinite;">
                     </div>
                 </div>
@@ -221,7 +221,7 @@
                         100% { transform: translateX(160%);  width: 40%; }
                     }
                 </style>
-                <p class="text-xs text-indigo-500 font-medium tracking-wide">Mohon tunggu beberapa detik</p>
+                <p class="text-xs text-slate-500 font-medium tracking-wide">Mohon tunggu beberapa detik</p>
             </div>
 
             <!-- Fase: download -->
@@ -297,7 +297,7 @@
                 <button
                     @click="doExport()"
                     :disabled="phase !== 'idle'"
-                    class="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 text-white text-sm font-semibold shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="phase === 'idle'">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
