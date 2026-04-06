@@ -62,7 +62,7 @@
      x-init="initChart()"
 >
 
-    <div class="flex items-start justify-between mb-5 gap-3">
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between mb-5 gap-3">
         <div>
             <h3 class="text-base font-bold text-gray-900 tracking-tight mb-1">Pengeluaran per Kategori</h3>
             <p class="text-[13px] font-medium text-gray-400">{{ now()->translatedFormat('F Y') }}</p>
@@ -79,7 +79,7 @@
     <div class="border-t border-gray-100 mb-6"></div>
 
     @if(count($chartData['data']) > 0)
-        <div class="relative h-[320px] w-full">
+        <div class="relative h-[250px] sm:h-[320px] w-full">
             <canvas x-ref="canvas" id="expenseChart"></canvas>
         </div>
         <!-- Legend Custom -->

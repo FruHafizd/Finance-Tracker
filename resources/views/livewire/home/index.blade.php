@@ -27,7 +27,7 @@
                 </div>
 
                 {{-- Date Badge --}}
-                <div class="flex flex-col items-end gap-3">
+                <div class="flex flex-col items-start sm:items-end gap-3">
                     <div class="bg-gray-50 border border-gray-100 p-4 rounded-2xl flex items-center gap-4 shadow-inner hover:bg-gray-100 transition-all duration-300">
                         <div class="w-12 h-12 bg-slate-900 rounded-xl flex flex-col items-center justify-center text-white shadow-lg">
                             <span class="text-[10px] font-bold uppercase leading-none">{{ now()->translatedFormat('M') }}</span>

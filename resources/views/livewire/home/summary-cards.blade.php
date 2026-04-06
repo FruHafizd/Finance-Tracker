@@ -77,10 +77,10 @@ $cards = [
         $iconBg = 'bg-rose-50 text-rose-600 ring-1 ring-inset ring-rose-100/50';
     } else {
         // Balance (Saldo Bersih)
-        $cardBg = 'bg-indigo-600 rounded-2xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col justify-between';
-        $labelColor = 'text-indigo-100';
+        $cardBg = 'bg-slate-900 rounded-2xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col justify-between';
+        $labelColor = 'text-slate-300';
         $valueColor = 'text-white';
-        $iconBg = 'bg-indigo-500/50 text-white border border-indigo-400/30';
+        $iconBg = 'bg-slate-700/50 text-white border border-slate-600/30';
     }
 @endphp
 
@@ -100,7 +100,7 @@ $cards = [
 
     <div class="flex items-center gap-2.5 min-h-[28px]">
         @if(!$card['hasPrev'])
-            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-indigo-200' : 'text-gray-400' }}">— Belum ada data bulan lalu</span>
+            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-slate-400' : 'text-gray-400' }}">— Belum ada data bulan lalu</span>
         @elseif($card['key'] === 'balance')
             <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md ring-1 ring-inset bg-white/20 text-white ring-white/30 backdrop-blur-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
@@ -108,9 +108,9 @@ $cards = [
                 </svg>
                 {{ $isUp ? '+' : '-' }}Rp {{ number_format(abs($diff), 0, ',', '.') }}
             </span>
-            <span class="text-xs font-medium text-indigo-200">dari bulan lalu</span>
+            <span class="text-xs font-medium text-slate-400">dari bulan lalu</span>
         @elseif($card['change'] === null)
-            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-indigo-200' : 'text-gray-400' }}">— Belum ada data bulan lalu</span>
+            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-slate-400' : 'text-gray-400' }}">— Belum ada data bulan lalu</span>
         @else
             <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md ring-1 ring-inset {{ $badgeClass }}">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
