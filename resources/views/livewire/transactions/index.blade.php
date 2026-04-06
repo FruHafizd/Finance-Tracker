@@ -46,7 +46,7 @@
                 </div>
 
                 <!-- SALDO BERSIH -->
-                <div class="bg-indigo-600 rounded-2xl p-4 sm:p-5 shadow-[0_4px_15px_-3px_rgba(79,70,229,0.3)] ring-1 ring-inset ring-indigo-500">
+                <div class="bg-slate-900 rounded-2xl p-4 sm:p-5 shadow-[0_4px_15px_-3px_rgba(15,23,42,0.3)] ring-1 ring-inset ring-slate-700">
                     <div class="flex items-center gap-4 sm:gap-5">
                         <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0 ring-1 ring-inset ring-white/20">
                             <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-xs sm:text-[13px] font-bold text-indigo-100/80 tracking-wider uppercase">Saldo Bersih</h3>
+                            <h3 class="text-xs sm:text-[13px] font-bold text-slate-300 tracking-wider uppercase">Saldo Bersih</h3>
                             <div class="text-xl sm:text-[22px] font-black text-white tracking-tight mt-0.5">
                                 {{ ($summary['difference'] ?? 0) < 0 ? '-' : '' }}Rp {{ number_format(abs($summary['difference'] ?? 0), 0, ',', '.') }}
                             </div>
@@ -91,13 +91,13 @@
                                 </button>
                                 <button x-data x-on:click.prevent="$dispatch('open-modal', 'modal-category')"
                                     class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-white ring-1 ring-inset ring-gray-200 hover:ring-gray-300 hover:bg-gray-50 text-gray-700 text-[13px] font-bold rounded-xl transition-all duration-150 shadow-sm w-full sm:w-auto">
-                                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                     </svg>
                                     Kategori
                                 </button>
                                 <button wire:click="$dispatch('open-create-transaction')"
-                                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold rounded-xl transition-colors duration-150 shadow-sm ring-1 ring-inset ring-indigo-500 w-full sm:w-auto">
+                                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-bold rounded-xl transition-colors duration-150 shadow-sm ring-1 ring-inset ring-slate-700 w-full sm:w-auto">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                                     </svg>
@@ -110,13 +110,13 @@
                         <div class="border-t border-gray-100"></div>
 
                         <!-- Filter Controls -->
-                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 items-end bg-gray-50/50 p-4 rounded-xl ring-1 ring-inset ring-gray-100/50">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 items-end bg-gray-50/50 p-4 rounded-xl ring-1 ring-inset ring-gray-100/50">
 
                             <!-- Filter Tahun -->
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Tahun</label>
                                 <select wire:model.live="filterYear"
-                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-indigo-600 transition-shadow">
+                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-slate-500 transition-shadow">
                                     <option value="">Semua</option>
                                     @for ($year = date('Y'); $year >= 2020; $year--)
                                         <option value="{{ $year }}">{{ $year }}</option>
@@ -128,7 +128,7 @@
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Bulan</label>
                                 <select wire:model.live="filterMonth"
-                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-indigo-600 transition-shadow">
+                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-slate-500 transition-shadow">
                                     <option value="">Semua</option>
                                     <option value="1">Januari</option>
                                     <option value="2">Februari</option>
@@ -149,21 +149,21 @@
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Dari</label>
                                 <input type="date" wire:model.live="startDate"
-                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-indigo-600 transition-shadow" />
+                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-slate-500 transition-shadow" />
                             </div>
 
                             <!-- Filter Sampai Tanggal -->
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Sampai</label>
                                 <input type="date" wire:model.live="endDate"
-                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-indigo-600 transition-shadow" />
+                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-slate-500 transition-shadow" />
                             </div>
 
                             <!-- Filter Tipe -->
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Tipe</label>
                                 <select wire:model.live="filterType"
-                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-indigo-600 transition-shadow">
+                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-slate-500 transition-shadow">
                                     <option value="">Semua</option>
                                     <option value="income">Pemasukan</option>
                                     <option value="expense">Pengeluaran</option>
@@ -173,7 +173,7 @@
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Kategori</label>
                                 <select wire:model.live="filterCategory"
-                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-indigo-600 transition-shadow">
+                                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-gray-200 bg-white px-3.5 py-2.5 text-[13px] font-medium text-gray-900 focus:ring-2 focus:ring-inset focus:ring-slate-500 transition-shadow">
                                     <option value="">Semua</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -197,7 +197,7 @@
                         </div>
                         @if($startDate || $endDate)
                             <div class="flex items-center gap-2 mt-2 px-1">
-                                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 ring-1 ring-inset ring-indigo-600/20 px-3 py-1 rounded-lg">
+                                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 ring-1 ring-inset ring-slate-600/20 px-3 py-1 rounded-lg">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
@@ -242,7 +242,7 @@
                                     <td colspan="5" class="px-5 lg:px-7 py-2.5">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-2.5">
-                                                <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
                                                 <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">{{ $label }}</span>
                                             </div>
                                             <span class="text-xs font-medium text-gray-400">{{ $items->count() }} transaksi</span>
@@ -282,7 +282,7 @@
                                                         $dispatch('edit-transaction', { id: {{ $item->id }} });
                                                     "
                                                     title="Edit"
-                                                    class="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors duration-150">
+                                                    class="p-1.5 text-gray-400 hover:text-slate-700 hover:bg-slate-50 rounded-lg transition-colors duration-150">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
@@ -346,7 +346,7 @@
                         {{-- Group Header Mobile --}}
                         <div class="sticky top-0 z-10 flex items-center justify-between px-5 py-2.5 bg-gray-50/95 backdrop-blur-sm border-t border-b border-gray-100 shadow-sm">
                             <div class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
                                 <span class="text-xs font-bold text-gray-700 uppercase tracking-wider">{{ $label }}</span>
                             </div>
                             <span class="text-[11px] font-bold text-gray-400 bg-white px-2 py-0.5 rounded-md ring-1 ring-inset ring-gray-200">{{ $items->count() }} item</span>
@@ -424,7 +424,7 @@
                                 <p class="text-base font-bold text-gray-900 tracking-tight">Belum ada aktivitas</p>
                                 <p class="text-[13px] text-gray-500 mt-1 max-w-[250px]">Catat pemasukan atau pengeluaran pertama Anda hari ini.</p>
                                 <button x-data x-on:click.prevent="$dispatch('open-modal', 'modal-create')"
-                                        class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-[13px] font-bold rounded-xl shadow-sm ring-1 ring-inset ring-indigo-500 hover:bg-indigo-700 active:bg-indigo-800 transition-colors">
+                                        class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-[13px] font-bold rounded-xl shadow-sm ring-1 ring-inset ring-slate-700 hover:bg-slate-800 active:bg-slate-900 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                     Tambah Transaksi
                                 </button>
@@ -472,7 +472,7 @@
                                     @if ($start > 1)
                                         <button wire:click='gotoPage(1)'
                                             class="relative inline-flex items-center px-4 py-2 text-[13px] font-bold border-r border-gray-200 transition-colors duration-150
-                                                {{ 1 === $currentPage ? 'bg-indigo-50 text-indigo-600' : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                                                {{ 1 === $currentPage ? 'bg-slate-100 text-slate-900' : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                                             1
                                         </button>
                                         @if ($showStartDots)
@@ -486,7 +486,7 @@
                                     @for ($page = $start; $page <= $end; $page++)
                                         <button wire:click='gotoPage({{ $page }})'
                                             class="relative inline-flex items-center px-4 py-2 text-[13px] font-bold border-r border-gray-200 transition-colors duration-150
-                                                {{ $page === $currentPage ? 'bg-indigo-50 text-indigo-600 shadow-[inset_0_-2px_0_0_rgba(79,70,229,1)]' : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                                                {{ $page === $currentPage ? 'bg-slate-100 text-slate-900 shadow-[inset_0_-2px_0_0_rgba(15,23,42,1)]' : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                                             {{ $page }}
                                         </button>
                                     @endfor
@@ -500,7 +500,7 @@
                                         @endif
                                         <button wire:click='gotoPage({{ $lastPage }})'
                                             class="relative inline-flex items-center px-4 py-2 text-[13px] font-bold border-r border-gray-200 transition-colors duration-150
-                                                {{ $lastPage === $currentPage ? 'bg-indigo-50 text-indigo-600 shadow-[inset_0_-2px_0_0_rgba(79,70,229,1)]' : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                                                {{ $lastPage === $currentPage ? 'bg-slate-100 text-slate-900 shadow-[inset_0_-2px_0_0_rgba(15,23,42,1)]' : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                                             {{ $lastPage }}
                                         </button>
                                     @endif

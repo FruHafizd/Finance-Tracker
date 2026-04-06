@@ -9,7 +9,7 @@
                         {{ $this->isEditing() ? 'Edit Transaksi' : 'Catat Transaksi' }}
                     </h2>
                     <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
                         {{ $this->isEditing() ? 'Perbarui informasi catatan keuangan' : 'Kelola arus kas Anda dengan cerdas' }}
                     </p>
                 </div>
@@ -38,7 +38,7 @@
                 </p>
                 <div class="mt-8">
                     <a href="{{ route('account.index') }}" 
-                       class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-500 transition-all duration-200">
+                       class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
@@ -98,8 +98,8 @@
                                     type="button"
                                     wire:key="account-src-{{ $account->id }}"
                                     wire:click="$set('account_id', {{ $account->id }})"
-                                    class="group relative flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all duration-200 {{ $account_id == $account->id ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-gray-100 bg-white hover:border-gray-300 hover:bg-gray-50' }}">
-                                    <div class="w-10 h-10 flex items-center justify-center rounded-xl mb-2 {{ $account_id == $account->id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-white' }}">
+                                    class="group relative flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all duration-200 {{ $account_id == $account->id ? 'border-slate-800 bg-slate-50/50 shadow-sm' : 'border-gray-100 bg-white hover:border-gray-300 hover:bg-gray-50' }}">
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-xl mb-2 {{ $account_id == $account->id ? 'bg-slate-900 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-white' }}">
                                         @if($account->type === 'bank')
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -110,7 +110,7 @@
                                             </svg>
                                         @endif
                                     </div>
-                                    <span class="text-xs font-bold {{ $account_id == $account->id ? 'text-indigo-900' : 'text-gray-700' }} truncate w-full text-center">{{ $account->name }}</span>
+                                    <span class="text-xs font-bold {{ $account_id == $account->id ? 'text-slate-900' : 'text-gray-700' }} truncate w-full text-center">{{ $account->name }}</span>
                                     <span class="text-[10px] text-gray-500 truncate w-full text-center">Rp {{ number_format($account->balance, 0, ',', '.') }}</span>
                                 </button>
                             @endforeach
@@ -157,7 +157,7 @@
                         <input
                             wire:model="name"
                             type="text"
-                            class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-white hover:border-gray-300 transition-all"
+                            class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 bg-white hover:border-gray-300 transition-all"
                             placeholder="Contoh: Gaji ke-13, Beli Kopi">
                         @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -167,7 +167,7 @@
                         <input
                             type="date"
                             wire:model="date"
-                            class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-white transition-all">
+                            class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 bg-white transition-all">
                         @error('date') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -194,7 +194,7 @@
                             <input
                                 type="text"
                                 x-model="display"
-                                class="block w-full rounded-2xl border-0 py-4 pl-12 pr-4 text-gray-900 font-extrabold shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xl sm:leading-6 bg-white transition-all"
+                                class="block w-full rounded-2xl border-0 py-4 pl-12 pr-4 text-gray-900 font-extrabold shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-slate-500 text-xl sm:leading-6 bg-white transition-all"
                                 placeholder="0">
                         </div>
                         @error('amount') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
@@ -208,7 +208,7 @@
                                 x-data
                                 x-on:click.prevent="$dispatch('open-modal', 'modal-category')"
                                 type="button"
-                                class="text-xs font-bold text-indigo-600 hover:text-indigo-500">
+                                class="text-xs font-bold text-slate-700 hover:text-slate-600">
                                 + Tambah Kategori
                             </button>
                         </div>
@@ -218,7 +218,7 @@
                                     type="button"
                                     wire:key="category-{{ $category->id }}"
                                     wire:click="$set('category_id', {{ $category->id }})"
-                                    class="px-3 py-2 rounded-xl text-xs font-bold border transition-all duration-200 {{ $category_id == $category->id ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-white border-gray-200 text-gray-600 hover:border-gray-400' }}">
+                                    class="px-3 py-2 rounded-xl text-xs font-bold border transition-all duration-200 {{ $category_id == $category->id ? 'bg-slate-900 border-slate-900 text-white shadow-md' : 'bg-white border-gray-200 text-gray-600 hover:border-gray-400' }}">
                                     {{ $category->name }}
                                 </button>
                             @endforeach
@@ -241,7 +241,7 @@
                     <button
                         type="submit"
                         wire:loading.attr="disabled"
-                        class="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-xl shadow-indigo-200 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        class="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-slate-900 text-white text-sm font-bold shadow-xl shadow-slate-200 hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                         <span wire:loading.remove wire:target="save">
                             {{ $this->isEditing() ? 'Simpan Perubahan' : 'Simpan Transaksi' }}
                         </span>

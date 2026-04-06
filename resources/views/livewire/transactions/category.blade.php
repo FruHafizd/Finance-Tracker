@@ -7,7 +7,7 @@
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 tracking-tight">Kelola Kategori</h2>
                     <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
                         Tambah, ubah, atau hapus kategori
                     </p>
                 </div>
@@ -54,7 +54,7 @@
                             wire:model="name"
                             type="text"
                             placeholder="Nama kategori..."
-                            class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
+                            class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
                     </div>
                     
                     <!-- Action Button -->
@@ -63,7 +63,7 @@
                         class="w-full sm:w-auto flex-shrink-0 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm flex items-center justify-center gap-2
                             {{ $editId
                                 ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                                : 'bg-indigo-600 hover:bg-indigo-500 text-white' }}">
+                                : 'bg-slate-900 hover:bg-slate-800 text-white' }}">
                         @if ($editId)
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -89,7 +89,7 @@
 
                 <div class="grid grid-cols-1 gap-2 max-h-[40vh] overflow-y-auto pr-1 pb-4">
                     @forelse ($categories as $cat)
-                        <div class="group flex items-center justify-between p-3 bg-white rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 hover:ring-indigo-100 hover:bg-indigo-50/30 transition-all duration-200">
+                        <div class="group flex items-center justify-between p-3 bg-white rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 hover:ring-slate-200 hover:bg-slate-50/30 transition-all duration-200">
                             <div class="flex items-center gap-3">
                                 <div class="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm" style="background: {{ $cat->color }}"></div>
                                 <span class="text-sm font-medium text-gray-700">{{ $cat->name }}</span>
@@ -103,7 +103,7 @@
                                     <button
                                         wire:click="startEdit({{ $cat->id }})"
                                         title="Edit"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-100 transition-all duration-200">
+                                        class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
