@@ -17,7 +17,6 @@ class Account extends Model
         'provider',
         'balance',
         'color',
-        'is_active',
         'sort_order',
     ];
 

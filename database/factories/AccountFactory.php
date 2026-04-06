@@ -16,7 +16,6 @@ class AccountFactory extends Factory
             'provider' => fake()->company(),
             'balance' => fake()->numberBetween(100000, 10000000),
             'color' => fake()->hexColor(),
-            'is_active' => true,
             'sort_order' => 0,
         ];
     }
