@@ -41,4 +41,12 @@ $_ENV['APP_STORAGE'] = '/tmp/storage';
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 
 // Forward Vercel requests to normal index.php
-require __DIR__ . '/../public/index.php';
+try {
+    require __DIR__ . '/../public/index.php';
+} catch (\Exception $e) {
+    echo "Caught Exception: " . $e->getMessage() . "\n";
+    echo "Trace: " . $e->getTraceAsString();
+} catch (\Error $e) {
+    echo "Caught Error: " . $e->getMessage() . "\n";
+    echo "Trace: " . $e->getTraceAsString();
+}
