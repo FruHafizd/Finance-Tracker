@@ -14,7 +14,7 @@ if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 // Check for APP_KEY
-if (empty(env('APP_KEY')) && empty($_ENV['APP_KEY'])) {
+if (empty($_ENV['APP_KEY']) && empty($_SERVER['APP_KEY'])) {
     echo "Fatal Error: APP_KEY is not set in Environment Variables.";
     exit;
 }
