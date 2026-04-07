@@ -6,6 +6,7 @@
     <title>Catatan Keuangan - Kelola Keuangan Pribadi Lebih Cerdas & Simpel</title>
     <meta name="description" content="Aplikasi catatan keuangan modern untuk mengelola pengeluaran, pemasukan, dan anggaran dengan desain minimalis. 100% Gratis dan Responsif.">
     <meta name="keywords" content="catatan keuangan, kelola uang, aplikasi keuangan, budget tracker, pengeluaran harian">
+    <meta name="google-site-verification" content="hrS95szUWdPCSlah_fujNZXbKWGgIrvrpr7UlghDK8M" />
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
