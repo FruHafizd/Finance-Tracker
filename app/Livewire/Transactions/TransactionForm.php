@@ -24,7 +24,8 @@ class TransactionForm extends Component
 
     protected $listeners = [
         'open-create-transaction' => 'openCreate',
-        'edit-transaction' => 'openEdit',
+        'open-transfer'           => 'openTransfer',
+        'edit-transaction'        => 'openEdit',
         'category-created'        => 'loadCategories',
         'prefill-transaction'     => 'prefillForm',
     ];
@@ -77,6 +78,15 @@ class TransactionForm extends Component
     {
         $this->resetForm();
         $this->dispatch('open-modal', 'modal-transaction');    
+    }
+
+    public function openTransfer(int $fromAccountId): void
+    {
+        $this->resetForm();
+        $this->type = 'transfer';
+        $this->account_id = $fromAccountId;
+        $this->date = now()->format('Y-m-d');
+        $this->dispatch('open-modal', 'modal-transaction');
     }
 
     public function openEdit($id): void 

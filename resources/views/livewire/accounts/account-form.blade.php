@@ -2,21 +2,21 @@
     <div class="max-h-[92vh] overflow-y-auto">
 
         {{-- HEADER --}}
-        <div class="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-5 sm:px-8">
+        <div class="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-5 sm:px-8">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-900 tracking-tight">
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">
                         {{ $accountId ? 'Edit Rekening' : 'Tambah Rekening' }}
                     </h2>
-                    <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                        {{ $accountId ? 'Perbarui informasi rekening' : 'Tambah rekening baru' }}
+                    <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-2 font-medium">
+                        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                        {{ $accountId ? 'Perbarui informasi rekening kamu' : 'Tambah rekening baru untuk kelola uangmu' }}
                     </p>
                 </div>
                 <button
                     x-on:click="$dispatch('close-modal', 'modal-account')"
                     type="button"
-                    class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all duration-200">
+                    class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-2xl transition-all duration-200">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -25,20 +25,20 @@
         </div>
 
         {{-- FORM BODY --}}
-        <form wire:submit.prevent="save" class="px-6 py-6 sm:px-8 space-y-6">
+        <form wire:submit.prevent="save" class="px-6 py-6 sm:px-8 space-y-7">
 
             {{-- Tipe Rekening --}}
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Tipe Rekening <span class="text-red-500">*</span></label>
-                <div class="relative flex p-1 bg-gray-100/80 rounded-2xl">
+            <div class="space-y-3">
+                <label class="block text-sm font-bold text-slate-700">Tipe Rekening <span class="text-red-500">*</span></label>
+                <div class="relative flex p-1.5 bg-slate-100 rounded-2xl">
                     @foreach(['tabungan' => 'Tabungan', 'ewallet' => 'E-Wallet', 'tunai' => 'Tunai'] as $key => $label)
                         <button
                             type="button"
                             wire:click="$set('type', '{{ $key }}')"
-                            class="relative w-1/3 flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300
+                            class="relative w-1/3 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-xl transition-all duration-300
                                 {{ $type === $key
-                                    ? 'text-indigo-700 bg-white shadow-sm ring-1 ring-black/5'
-                                    : 'text-gray-500 hover:text-gray-700' }}">
+                                    ? 'text-slate-800 bg-white shadow-sm ring-1 ring-slate-200'
+                                    : 'text-slate-500 hover:text-slate-700' }}">
                             {{ $label }}
                         </button>
                     @endforeach
@@ -47,40 +47,50 @@
 
             {{-- Provider --}}
             @if($type !== 'tunai')
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">
+                <div class="space-y-3">
+                    <label class="block text-sm font-bold text-slate-700">
                         {{ $type === 'tabungan' ? 'Pilih Bank' : 'Pilih Aplikasi' }}
                         <span class="text-red-500">*</span>
                     </label>
-                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                         @foreach($this->providers as $p)
                             <button
                                 type="button"
                                 wire:click="$set('provider', '{{ $p->value }}')"
-                                class="py-2 px-2 rounded-xl text-xs font-medium border transition-all duration-200
+                                class="py-2.5 px-3 rounded-xl text-xs font-bold border transition-all duration-200
                                     {{ $provider === $p->value
-                                        ? 'bg-indigo-50 text-indigo-600 border-indigo-400 ring-1 ring-indigo-300'
-                                        : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-500' }}">
+                                        ? 'bg-slate-800 text-white border-slate-800 ring-2 ring-slate-200'
+                                        : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-50' }}">
                                 {{ $p->value }}
                             </button>
                         @endforeach
                     </div>
                     @error('provider')
-                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        <p class="text-xs text-red-500 mt-2 font-medium flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
                     @enderror
                 </div>
             @endif
 
             {{-- Nama Rekening --}}
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Nama Rekening <span class="text-red-500">*</span></label>
+            <div class="space-y-3">
+                <label class="block text-sm font-bold text-slate-700">Nama Rekening <span class="text-red-500">*</span></label>
                 <input
                     type="text"
                     wire:model="name"
                     placeholder="Contoh: BCA Utama, GoPay Harian"
-                    class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm bg-gray-50/50 hover:bg-white transition-colors" />
+                    class="block w-full rounded-2xl border-slate-200 py-3.5 px-4 text-slate-900 shadow-sm focus:ring-2 focus:ring-slate-400 focus:border-slate-400 sm:text-sm bg-slate-50/50 hover:bg-white transition-all duration-200" />
                 @error('name')
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    <p class="text-xs text-red-500 mt-2 font-medium flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ $message }}
+                    </p>
                 @enderror
             </div>
 
@@ -96,50 +106,60 @@
                         this.raw = value.replace(/\D/g, '');
                     }
                 }"
-                class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">
+                class="space-y-3">
+                <label class="block text-sm font-bold text-slate-700">
                     {{ $accountId ? 'Saldo Saat Ini' : 'Saldo Awal' }}
                     <span class="text-red-500">*</span>
                 </label>
-                <div class="relative">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                        <span class="text-gray-500 sm:text-sm font-medium">Rp</span>
+                <div class="relative group">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5">
+                        <span class="text-slate-400 sm:text-sm font-bold group-focus-within:text-slate-800 transition-colors">Rp</span>
                     </div>
                     <input
                         type="text"
                         x-model="display"
-                        class="block w-full rounded-xl border-0 py-3 pl-11 pr-4 text-gray-900 font-semibold shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base bg-gray-50/50 hover:bg-white transition-colors"
+                        class="block w-full rounded-2xl border-slate-200 py-4 pl-12 pr-5 text-slate-900 font-bold shadow-sm focus:ring-2 focus:ring-slate-800 focus:border-slate-800 sm:text-lg bg-slate-50/50 hover:bg-white transition-all duration-200"
                         placeholder="0" />
                 </div>
                 @error('balance')
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    <p class="text-xs text-red-500 mt-2 font-medium flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ $message }}
+                    </p>
                 @enderror
             </div>
 
             {{-- Warna --}}
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Warna Rekening</label>
-                <div class="flex items-center gap-3">
-                    <input
-                        type="color"
-                        wire:model="color"
-                        class="w-10 h-10 rounded-xl border border-gray-200 cursor-pointer p-1" />
-                    <span class="text-sm text-gray-400">{{ $color }}</span>
+            <div class="space-y-3">
+                <label class="block text-sm font-bold text-slate-700">Warna Rekening</label>
+                <div class="flex items-center gap-4 bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
+                    <div class="relative w-12 h-12 rounded-xl overflow-hidden shadow-inner ring-1 ring-slate-200">
+                        <input
+                            type="color"
+                            wire:model="color"
+                            class="absolute inset-[-100%] w-[300%] h-[300%] cursor-pointer" />
+                    </div>
+                    <div>
+                        <span class="text-sm font-bold text-slate-800 uppercase leading-none">{{ $color }}</span>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Identitas visual rekening</p>
+                    </div>
                 </div>
             </div>
 
             {{-- FOOTER --}}
-            <div class="pt-6 mt-2 border-t border-gray-100 flex flex-col-reverse sm:flex-row justify-end gap-3">
+            <div class="pt-8 flex flex-col-reverse sm:flex-row justify-end gap-3">
                 <button
                     type="button"
                     x-on:click="$dispatch('close-modal', 'modal-account')"
-                    class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white text-gray-700 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all duration-200">
+                    class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-white text-slate-600 text-sm font-bold border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 active:scale-95">
                     Batal
                 </button>
                 <button
                     type="submit"
                     wire:loading.attr="disabled"
-                    class="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-500 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-slate-800 text-white text-sm font-bold shadow-lg shadow-slate-200 hover:bg-slate-900 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.98]">
                     <span wire:loading.remove wire:target="save">
                         {{ $accountId ? 'Simpan Perubahan' : 'Tambah Rekening' }}
                     </span>

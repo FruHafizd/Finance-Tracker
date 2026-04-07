@@ -17,7 +17,7 @@ class AccountForm extends Component
     public string $type     = 'tabungan';
     public string $provider = '';
     public float  $balance  = 0;
-    public string $color    = '#6366f1';
+    public string $color    = '#475569';
 
     protected function rules(): array
     {
@@ -53,7 +53,7 @@ class AccountForm extends Component
             $this->type     = $account->type;
             $this->provider = $account->provider ?? '';
             $this->balance  = $account->balance;
-            $this->color    = $account->color ?? '#6366f1';
+            $this->color    = $account->color ?? '#475569';
         }
 
         // buka modal pakai Alpine dispatch
@@ -108,7 +108,7 @@ class AccountForm extends Component
         $this->type      = 'tabungan';
         $this->provider  = '';
         $this->balance   = 0;
-        $this->color     = '#6366f1';
+        $this->color     = '#475569';
         $this->resetValidation();
     }
 
