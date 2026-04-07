@@ -1,7 +1,7 @@
 <?php
 // PHP Entry point for Vercel
-// Optimize for production (Temporarily debug = true to catch region-switch errors)
-$_ENV['APP_DEBUG'] = 'true';
+// Optimize for production
+$_ENV['APP_DEBUG'] = 'false';
 $_ENV['APP_ENV'] = 'production';
 
 // Ensure /tmp directories exist (Only create what's essential)
