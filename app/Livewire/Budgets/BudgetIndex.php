@@ -15,10 +15,13 @@ class BudgetIndex extends Component
     public ?int $deleteId = null;
     // public string $flashMessage = '';
 
-    protected $listeners = [    
+    protected $listeners = [
         'budget-created' => '$refresh',
         'budget-updated' => '$refresh',
         'budget-deleted' => '$refresh',
+        'transaction-created' => '$refresh',
+        'transaction-deleted' => '$refresh',
+        'transaction-updated' => '$refresh',
     ];
 
     public function mount(): void
@@ -26,12 +29,6 @@ class BudgetIndex extends Component
         $this->month = (int) now()->format('n');
         $this->year  = (int) now()->format('Y');
     }
-
-    // public function showFlash(string $message): void
-    // {
-    //     $this->flashMessage = '';
-    //     $this->flashMessage = $message;
-    // }
 
     public function confirmDelete(int $id): void
     {

@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class SummaryCards extends Component
 {
+    protected $listeners = [
+        'transaction-created' => '$refresh',
+        'transaction-deleted' => '$refresh',
+        'transaction-updated' => '$refresh',
+    ];
+
     public function getData(): array
     {
         $userId    = Auth::id();

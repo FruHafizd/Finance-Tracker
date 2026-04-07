@@ -29,6 +29,8 @@ new class extends Component
         'budget-updated' => 'loadExceededCount',
         'budget-deleted' => 'loadExceededCount',
         'transaction-created' => 'loadExceededCount',
+        'transaction-deleted' => 'loadExceededCount',
+        'transaction-updated' => 'loadExceededCount',
     ];
 }; ?>
 
