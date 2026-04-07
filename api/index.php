@@ -39,6 +39,15 @@ foreach ($directories as $directory) {
 // Override storage path using $_ENV
 $_ENV['APP_STORAGE'] = '/tmp/storage';
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
+$_ENV['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/cache/packages.php';
+$_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/cache/services.php';
+$_ENV['APP_CONFIG_CACHE'] = '/tmp/storage/bootstrap/cache/config.php';
+$_ENV['APP_ROUTES_CACHE'] = '/tmp/storage/bootstrap/cache/routes.php';
+
+// Ensure cache directory exists in /tmp
+if (!is_dir('/tmp/storage/bootstrap/cache')) {
+    mkdir('/tmp/storage/bootstrap/cache', 0755, true);
+}
 
 // Forward Vercel requests to normal index.php
 try {
