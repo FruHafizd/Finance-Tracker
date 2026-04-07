@@ -38,7 +38,9 @@ class QuickTransaction extends Component
 
     protected $listeners = [
         'favorite-created' => 'loadFavorites',
-        'category-created' => 'loadCategories'
+        'category-created' => 'loadCategories',
+        'account-saved'    => 'loadAccounts',
+        'account-deleted'  => 'loadAccounts',
     ];
 
     public function mount()
