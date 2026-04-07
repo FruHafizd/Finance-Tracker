@@ -45,8 +45,14 @@ try {
     require __DIR__ . '/../public/index.php';
 } catch (\Exception $e) {
     echo "Caught Exception: " . $e->getMessage() . "\n";
+    if ($e->getPrevious()) {
+        echo "Previous Exception: " . $e->getPrevious()->getMessage() . "\n";
+    }
     echo "Trace: " . $e->getTraceAsString();
 } catch (\Error $e) {
     echo "Caught Error: " . $e->getMessage() . "\n";
+    if ($e->getPrevious()) {
+        echo "Previous Error: " . $e->getPrevious()->getMessage() . "\n";
+    }
     echo "Trace: " . $e->getTraceAsString();
 }
