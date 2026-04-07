@@ -53,7 +53,7 @@
                     <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="category_id"
-                    class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white">
+                    class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200 bg-white">
                     <option value="0">-- Pilih Kategori --</option>
                     @foreach ($categories as $cat)
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -98,7 +98,7 @@
                         x-model="display"
                         inputmode="numeric"
                         placeholder="0"
-                        class="w-full border border-gray-300 rounded-lg p-2.5 pl-10 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" />
+                        class="w-full border border-gray-300 rounded-lg p-2.5 pl-10 text-sm focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-200" />
                 </div>
                 @error('limit_amount')
                     <span class="text-xs text-red-600 flex items-center gap-1 mt-1">
@@ -122,7 +122,7 @@
                 <button
                     type="submit"
                     wire:loading.attr="disabled"
-                    class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2.5 sm:py-2 rounded-lg hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all duration-200 font-medium text-sm shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    class="w-full sm:w-auto bg-slate-900 text-white px-4 py-2.5 sm:py-2 rounded-lg hover:bg-slate-800 active:scale-95 transition-all duration-200 font-medium text-sm shadow-lg shadow-slate-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                     <span wire:loading.remove wire:target="save" class="flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />

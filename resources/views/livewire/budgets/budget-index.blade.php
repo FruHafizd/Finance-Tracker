@@ -7,25 +7,6 @@
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
-            {{-- Flash Message --}}
-            {{-- @if ($flashMessage)
-                <div
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-init="setTimeout(() => show = false, 3000)"
-                    x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 -translate-y-2"
-                    wire:key="flash-{{ now()->timestamp }}"
-                    class="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm shadow-sm">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    {{ $flashMessage }}
-                </div>
-            @endif --}}
-
             @php
                 $exceededBudgets = \App\Models\Budget::getExceededBudgets(auth()->id());
             @endphp
@@ -84,9 +65,9 @@
                         </select>
                     </div>
 
-                    <div class="flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-1 py-1 shadow-sm">
+                   <div class="flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-1 py-1 shadow-sm">
                         <select wire:model.live="year"
-                            class="border-0 bg-transparent text-sm text-gray-700 font-medium focus:outline-none focus:ring-0 px-2 py-1 cursor-pointer">
+                            class="border-0 bg-white text-sm text-gray-700 font-medium focus:outline-none focus:ring-0 px-2 py-1 pr-7 cursor-pointer">
                             @foreach (range((int) now()->format('Y') - 1, (int) now()->format('Y') + 1) as $y)
                                 <option value="{{ $y }}">{{ $y }}</option>
                             @endforeach
@@ -97,7 +78,7 @@
                 {{-- Tombol Tambah --}}
                 <button
                     wire:click="$dispatch('open-create-budget')"
-                    class="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 active:scale-95 transition-all duration-150 shadow-md shadow-indigo-200">
+                    class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 active:scale-95 transition-all duration-150 shadow-md shadow-slate-200">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -112,7 +93,7 @@
                     $totalSpent = $budgets->sum(fn($b) => $b->spentAmount());
                     $totalPct   = $totalLimit > 0 ? round(($totalSpent / $totalLimit) * 100, 1) : 0;
                 @endphp
-                <div class="grid grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
                         <p class="text-xs text-gray-400 mb-1">Total Budget</p>
                         <p class="text-base font-bold text-gray-800">
@@ -121,7 +102,7 @@
                     </div>
                     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
                         <p class="text-xs text-gray-400 mb-1">Terpakai</p>
-                        <p class="text-base font-bold text-indigo-600">
+                        <p class="text-base font-bold text-slate-900">
                             Rp {{ number_format($totalSpent, 0, ',', '.') }}
                         </p>
                     </div>
@@ -137,8 +118,8 @@
             {{-- Daftar Budget --}}
             @if ($budgets->isEmpty())
                 <div class="flex flex-col items-center justify-center py-20 text-center">
-                    <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
@@ -146,9 +127,8 @@
                     <p class="text-gray-700 font-medium">Belum ada budget bulan ini</p>
                     <p class="text-sm text-gray-400 mt-1">Mulai tetapkan batas pengeluaran per kategori</p>
                     <button
-                        x-data
-                        x-on:click="$dispatch('open-modal', 'modal-budget-create')"
-                        class="mt-5 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition shadow-md shadow-indigo-200">
+                        wire:click="$dispatch('open-create-budget')"
+                        class="mt-5 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition shadow-md shadow-slate-200">
                         + Tambah Budget Pertama
                     </button>
                 </div>
@@ -162,7 +142,7 @@
                             $isDanger   = $percentage >= 100;
                             $barColor   = $isDanger
                                             ? 'bg-red-500'
-                                            : ($isWarning ? 'bg-amber-400' : 'bg-indigo-500');
+                                            : ($isWarning ? 'bg-amber-400' : 'bg-slate-800');
                             $bgCard     = $isDanger
                                             ? 'border-red-100 bg-red-50/30'
                                             : ($isWarning ? 'border-amber-100 bg-amber-50/30' : 'border-gray-100 bg-white');
@@ -200,7 +180,7 @@
                                         x-on:click="
                                             $dispatch('edit-budget', { id: {{ $budget->id }} });
                                         "
-                                        class="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors duration-150"
+                                        class="p-1.5 text-gray-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors duration-150"
                                         title="Edit">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
