@@ -25,7 +25,7 @@
         "APP_DEBUG": "false",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
-        "CACHE_STORE": "file",
+        "CACHE_STORE": "database",
         "QUEUE_CONNECTION": "database"
     }
 }
