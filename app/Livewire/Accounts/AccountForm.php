@@ -24,7 +24,7 @@ class AccountForm extends Component
         return [
             'name'     => 'required|string|max:100',
             'type'     => 'required|in:tabungan,ewallet,tunai',
-            'provider' => 'nullable|string|max:100',
+            'provider' => 'required_if:type,tabungan,ewallet|string|max:100',
             'balance'  => 'required|numeric|min:0',
             'color'    => 'nullable|string|max:7',
         ];
@@ -34,6 +34,7 @@ class AccountForm extends Component
         'name.required'    => 'Nama rekening wajib diisi.',
         'balance.required' => 'Saldo awal wajib diisi.',
         'balance.min'      => 'Saldo tidak boleh minus.',
+        'provider.required_if' => 'Silakan pilih bank atau penyedia e-wallet.',
     ];
 
     // listener dari AccountList saat klik edit

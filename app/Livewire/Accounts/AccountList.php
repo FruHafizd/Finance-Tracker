@@ -126,6 +126,7 @@ class AccountList extends Component
 
         $this->deleteId = null;
         $this->dispatch('close-modal', 'modal-delete-rekening');
+        $this->dispatch('account-deleted');
         $this->notify('Rekening dihapus', "Rekening {$account->name} berhasil dihapus.", 'success');
     }
 

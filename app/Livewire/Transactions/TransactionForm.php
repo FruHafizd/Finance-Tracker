@@ -28,8 +28,11 @@ class TransactionForm extends Component
         'edit-transaction'        => 'openEdit',
         'category-created'        => 'loadCategories',
         'prefill-transaction'     => 'prefillForm',
+        'account-saved'           => 'loadAccounts',
+        'account-deleted'         => 'loadAccounts',
     ];
-     protected $rules = [
+     
+    protected $rules = [
         'name'          => 'required|string|min:3',
         'category_id'   => 'required',
         'account_id'    => 'required',
