@@ -1,5 +1,10 @@
 <?php
-// Ensure /tmp directories exist for Laravel's read-only file system on Vercel
+// PHP Entry point for Vercel
+// Optimize for production
+$_ENV['APP_DEBUG'] = 'false';
+$_ENV['APP_ENV'] = 'production';
+
+// Ensure /tmp directories exist (Only create what's essential)
 $directories = [
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',
