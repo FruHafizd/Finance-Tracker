@@ -45,7 +45,7 @@ class TransactionForm extends Component
     protected $messages = [
         'amount.required'      => 'Jumlah tidak boleh kosong',
         'amount.numeric'       => 'Jumlah harus berupa angka',
-        'type.required'        => 'Type tidak boleh kosong',
+        'type.required'        => 'Silakan pilih jenis transaksi (Pemasukan, Pengeluaran, atau Transfer)',
         'date.required'        => 'Tanggal tidak boleh kosong',
         'name.required'        => 'Nama tidak boleh kosong',
         'type.in'              => 'Type tidak valid',
