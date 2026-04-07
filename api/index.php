@@ -19,30 +19,6 @@ if (empty($_ENV['APP_KEY']) && empty($_SERVER['APP_KEY'])) {
     exit;
 }
 
-// TEST DATABASE CONNECTION
-try {
-    $host = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? '';
-    $port = $_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? '4000';
-    $db   = $_ENV['DB_DATABASE'] ?? $_SERVER['DB_DATABASE'] ?? 'test';
-    $user = $_ENV['DB_USERNAME'] ?? $_SERVER['DB_USERNAME'] ?? '';
-    $pass = $_ENV['DB_PASSWORD'] ?? $_SERVER['DB_PASSWORD'] ?? '';
-    $ssl  = __DIR__ . '/../cacert.pem';
-
-    if ($host) {
-        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
-        $options = [
-            PDO::MYSQL_ATTR_SSL_CA => $ssl,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        ];
-        $pdo = new PDO($dsn, $user, $pass, $options);
-        echo "Database Connection: SUCCESS\n";
-    }
-} catch (\PDOException $e) {
-    echo "Database Connection: FAILED\n";
-    echo "Error: " . $e->getMessage() . "\n";
-    exit;
-}
-
 // Ensure /tmp directories exist for Laravel's read-only file system on Vercel
 $directories = [
     '/tmp/storage/framework/views',

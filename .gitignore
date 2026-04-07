@@ -24,3 +24,4 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 laravel-scheduler.bat
+/bootstrap/cache/*.php
