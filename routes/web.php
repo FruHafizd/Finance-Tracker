@@ -47,4 +47,10 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+Route::get('auth/google/redirect', [App\Http\Controllers\Auth\GoogleController::class, 'redirect'])
+    ->name('auth.google.redirect');
+
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'callback'])
+    ->name('auth.google.callback');
+
 require __DIR__ . '/auth.php';
