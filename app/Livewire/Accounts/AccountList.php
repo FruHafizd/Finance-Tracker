@@ -26,6 +26,10 @@ class AccountList extends Component
 
     public function getAccountsProperty()
     {
+        $allowedSortColumns = ['name', 'provider', 'balance', 'sort_order'];
+        $sortColumn = in_array($this->sortBy, $allowedSortColumns) ? $this->sortBy : 'sort_order';
+        $sortDirection = in_array(strtolower($this->sortDir), ['asc', 'desc']) ? $this->sortDir : 'asc';
+
         return Account::query()
             ->when($this->activeTab !== 'semua', function ($query) {
                 $query->where('type', $this->activeTab);
@@ -36,12 +40,18 @@ class AccountList extends Component
                       ->orWhere('provider', 'like', '%' . $this->search . '%');
                 });
             })
-            ->orderBy($this->sortBy, $this->sortDir)
+            ->orderBy($sortColumn, $sortDirection)
             ->get();
     }
 
     public function setSort(string $field): void
     {
+        $allowedSortColumns = ['name', 'provider', 'balance', 'sort_order'];
+        
+        if (!in_array($field, $allowedSortColumns)) {
+            return;
+        }
+
         if ($this->sortBy === $field) {
             $this->sortDir = $this->sortDir === 'asc' ? 'desc' : 'asc';
         } else {

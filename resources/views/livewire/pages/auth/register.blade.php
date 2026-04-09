@@ -20,15 +20,27 @@ new #[Layout('layouts.guest')] class extends Component
      */
     public function register(): void
     {
+        $throttleKey = 'register:'.request()->ip();
+
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'name' => 'Terlalu banyak upaya pendaftaran. Silakan coba lagi dalam ' . ceil($seconds / 60) . ' menit.',
+            ]);
+        }
+
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'string', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
         event(new Registered($user = User::create($validated)));
+
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 1800); // 30 menit
 
         Auth::login($user);
 
