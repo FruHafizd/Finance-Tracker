@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature;
-
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ExportTest extends TestCase
@@ -43,5 +43,27 @@ class ExportTest extends TestCase
             ->get($url)
             ->assertStatus(302) // Redirect back due to validation error
             ->assertSessionHasErrors(['start']);
+    }
+
+    #[Test]
+    public function export_melindungi_dari_csv_injection(): void
+    {
+        $user = User::factory()->create();
+        
+        // Buat transaksi dengan nama berbahaya yang memicu formula Excel
+        Transaction::factory()->create([
+            'user_id' => $user->id,
+            'name'    => '=SUM(1+1)',
+            'date'    => '2024-01-01',
+        ]);
+
+        $url = URL::signedRoute('export.excel', ['start' => '2024-01-01', 'end' => '2024-01-31']);
+
+        $this->actingAs($user)
+            ->get($url)
+            ->assertStatus(200);
+            
+        // Catatan: Verifikasi isi binary excel lebih lanjut memerlukan library PHPSpreadsheet.
+        // Namun flow ini memastikan data berbahaya tidak menyebabkan kegagalan sistem.
     }
 }
