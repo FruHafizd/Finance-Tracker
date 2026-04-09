@@ -18,8 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Validasi input
         $request->validate([
-            'start' => ['required', 'date'],
-            'end'   => ['required', 'date', 'after_or_equal:start'],
+            'start' => ['required', 'date', 'date_format:Y-m-d'],
+            'end'   => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:start'],
         ]);
 
         $writer = \Maatwebsite\Excel\Facades\Excel::raw(
