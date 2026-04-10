@@ -50,7 +50,11 @@ Route::view('profile', 'profile')
 Route::get('auth/google/redirect', [App\Http\Controllers\Auth\GoogleController::class, 'redirect'])
     ->name('auth.google.redirect');
 
-Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'callback'])
+Route::get('/auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'callback'])
     ->name('auth.google.callback');
+
+// Legal Pages
+Route::view('/privacy-policy', 'legal.privacy')->name('legal.privacy');
+Route::view('/terms-of-service', 'legal.terms')->name('legal.terms');
 
 require __DIR__ . '/auth.php';
