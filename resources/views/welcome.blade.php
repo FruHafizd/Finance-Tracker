@@ -4,9 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finansiku - Kelola Keuangan Pribadi Lebih Cerdas & Simpel</title>
-    <meta name="description" content="Aplikasi Finansiku modern untuk mengelola pengeluaran, pemasukan, dan anggaran dengan desain minimalis. 100% Gratis dan Responsif.">
-    <meta name="keywords" content="finansiku, kelola uang, aplikasi keuangan, budget tracker, pengeluaran harian">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Finansiku adalah aplikasi pencatatan keuangan modern untuk mengelola pengeluaran, pemasukan, dan anggaran dengan desain minimalis. 100% Gratis, Aman, dan Responsif.">
+    <meta name="keywords" content="finansiku, catatan keuangan, kelola uang, aplikasi keuangan, budget tracker, pengeluaran harian, manajemen finansial">
+    <meta name="author" content="Finansiku Teams">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
     <meta name="google-site-verification" content="XDUltp0hE8n1iQSBjhJ339PM7d_XqldKzRBP33wC-m4" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="Finansiku - Kelola Keuangan Pribadi Lebih Cerdas & Simpel">
+    <meta property="og:description" content="Pantau setiap rupiah dengan presisi tinggi menggunakan platform pencatatan keuangan modern yang dirancang untuk membantu Anda mengontrol masa depan finansial.">
+    <meta property="og:image" content="{{ asset('images/features/dashboard.png') }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="Finansiku - Kelola Keuangan Pribadi Lebih Cerdas & Simpel">
+    <meta property="twitter:description" content="Aplikasi pencatatan keuangan modern dengan visualisasi dashboard yang informatif. Gratis dan aman digunakan.">
+    <meta property="twitter:image" content="{{ asset('images/features/dashboard.png') }}">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon.ico') }}">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Finansiku",
+      "url": "{{ config('app.url') }}",
+      "description": "Platform pencatatan keuangan modern dan minimalis.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ config('app.url') }}/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Finansiku",
+      "url": "{{ config('app.url') }}",
+      "logo": "{{ asset('images/features/dashboard.png') }}",
+      "sameAs": [
+        "https://instagram.com/fruha82",
+        "https://tiktok.com/@fruhaaa"
+      ]
+    }
+    </script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
