@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Legal' }} - {{ config('app.name', 'Finansiku') }}</title>
     
+    <meta name="description" content="Informasi legal, kebijakan privasi, dan syarat ketentuan penggunaan layanan Finansiku.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
