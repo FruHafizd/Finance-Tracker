@@ -280,8 +280,8 @@
                     &copy; 2026 Finansiku. Dibuat untuk manajemen masa depan yang lebih baik.
                 </div>
                 <div class="flex space-x-6 text-slate-400 text-sm">
-                    <a href="#" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover:text-slate-900 transition-colors">Terms of Service</a>
+                    <a href="{{ route('legal.privacy') }}" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
+                    <a href="{{ route('legal.terms') }}" class="hover:text-slate-900 transition-colors">Terms of Service</a>
                 </div>
             </div>
         </div>

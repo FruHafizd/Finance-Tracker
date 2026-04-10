@@ -77,8 +77,8 @@
         <div class="pt-8 border-t border-gray-50 flex flex-col sm:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-6 text-xs text-gray-400">
                 <span>© {{ date('Y') }} {{ config('app.name') }}. Hak cipta dilindungi.</span>
-                <a href="#" class="hover:text-slate-900 transition-colors">Kebijakan Privasi</a>
-                <a href="#" class="hover:text-slate-900 transition-colors">Syarat & Ketentuan</a>
+                <a href="{{ route('legal.privacy') }}" class="hover:text-slate-900 transition-colors">Kebijakan Privasi</a>
+                <a href="{{ route('legal.terms') }}" class="hover:text-slate-900 transition-colors">Syarat & Ketentuan</a>
             </div>
             <div class="flex items-center gap-2 text-xs text-gray-300 group cursor-default">
                 Didesain dengan
