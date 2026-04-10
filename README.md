@@ -1,7 +1,7 @@
-# 📒 Catatan Keuangan
+# 📒 Finansiku
 
 ## 📖 Tentang Aplikasi
-Catatan Keuangan adalah aplikasi pencatatan dan pengelolaan keuangan pribadi berbasis web. Aplikasi ini dirancang dengan antarmuka yang modern dan minimalis untuk membantu pengguna melacak aliran kas (pemasukan, pengeluaran, transfer antar akun), mengelola batasan anggaran bulanan, serta mendapatkan visibilitas yang baik terhadap kondisi finansial mereka melalui ringkasan dashboard interaktif.
+Finansiku adalah aplikasi pencatatan dan pengelolaan keuangan pribadi berbasis web. Aplikasi ini dirancang dengan antarmuka yang modern dan minimalis untuk membantu pengguna melacak aliran kas (pemasukan, pengeluaran, transfer antar akun), mengelola batasan anggaran bulanan, serta mendapatkan visibilitas yang baik terhadap kondisi finansial mereka melalui ringkasan dashboard interaktif.
 
 ---
 

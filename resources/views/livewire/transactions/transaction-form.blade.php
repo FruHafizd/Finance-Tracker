@@ -10,7 +10,7 @@
                     </h2>
                     <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-                        {{ $this->isEditing() ? 'Perbarui informasi catatan keuangan' : 'Kelola arus kas Anda dengan cerdas' }}
+                        {{ $this->isEditing() ? 'Perbarui informasi Finansiku' : 'Kelola arus kas Anda dengan cerdas' }}
                     </p>
                 </div>
                 <button
