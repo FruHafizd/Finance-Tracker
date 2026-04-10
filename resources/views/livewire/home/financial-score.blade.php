@@ -2,7 +2,19 @@
     <div class="flex items-start justify-between mb-6 gap-3">
         <div>
             <h3 class="text-base font-bold text-gray-900 tracking-tight mb-1">Skor Keuangan</h3>
-            <p class="text-[13px] font-medium text-gray-400">Analisis kesehatan finansial bulan ini</p>
+            <div class="flex items-center gap-1.5 group cursor-help">
+                <p class="text-[13px] font-medium text-gray-400">Analisis aktivitas bulan ini</p>
+                <div class="relative">
+                    <svg class="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <!-- Tooltip -->
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-gray-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-center shadow-xl">
+                        Skor ini dihitung berdasarkan kebiasaan menabung, ketaatan anggaran, dan aktivitas pencatatan Anda selama bulan berjalan.
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-gray-900"></div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="bg-gray-50 p-2 rounded-xl ring-1 ring-inset ring-gray-100">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,18 +63,28 @@
     </div>
 
     <!-- Breakdown Stats -->
-    <div class="mt-6 pt-6 border-t border-gray-100 grid grid-cols-3 gap-4">
-        <div class="text-center">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tabungan</p>
-            <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['savings'] }}</p>
-        </div>
-        <div class="text-center border-x border-gray-100 px-2">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Anggaran</p>
-            <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['budget'] }}</p>
-        </div>
-        <div class="text-center">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Aktif</p>
-            <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['consistency'] }}</p>
-        </div>
+    <div class="mt-6 pt-6 border-t border-gray-100">
+        @if($scoreData['has_transactions'])
+            <div class="grid grid-cols-3 gap-4">
+                <div class="text-center">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Simpanan</p>
+                    <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['savings'] }}</p>
+                </div>
+                <div class="text-center border-x border-gray-100 px-2">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Anggaran</p>
+                    <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['budget'] }}</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Aktivitas</p>
+                    <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['consistency'] }}</p>
+                </div>
+            </div>
+        @else
+            <div class="flex flex-col items-center justify-center text-center px-4 py-2">
+                <p class="text-[11px] font-semibold text-gray-400 leading-relaxed italic">
+                    Catat pemasukan dan pengeluaran pertamamu di bulan ini untuk melihat analisis skor finansialmu.
+                </p>
+            </div>
+        @endif
     </div>
 </div>
