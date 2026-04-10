@@ -30,17 +30,19 @@
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon.ico') }}">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
+      "@@context": "https://schema.org",
+      "@@type": "WebSite",
       "name": "Finansiku",
       "url": "{{ config('app.url') }}",
       "description": "Platform pencatatan keuangan modern dan minimalis.",
       "potentialAction": {
-        "@type": "SearchAction",
+        "@@type": "SearchAction",
         "target": "{{ config('app.url') }}/?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
@@ -48,8 +50,8 @@
     </script>
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "Organization",
+      "@@context": "https://schema.org",
+      "@@type": "Organization",
       "name": "Finansiku",
       "url": "{{ config('app.url') }}",
       "logo": "{{ asset('images/features/dashboard.png') }}",
