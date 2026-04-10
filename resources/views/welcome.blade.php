@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catatan Keuangan - Kelola Keuangan Pribadi Lebih Cerdas & Simpel</title>
-    <meta name="description" content="Aplikasi catatan keuangan modern untuk mengelola pengeluaran, pemasukan, dan anggaran dengan desain minimalis. 100% Gratis dan Responsif.">
-    <meta name="keywords" content="catatan keuangan, kelola uang, aplikasi keuangan, budget tracker, pengeluaran harian">
+    <title>Finansiku - Kelola Keuangan Pribadi Lebih Cerdas & Simpel</title>
+    <meta name="description" content="Aplikasi Finansiku modern untuk mengelola pengeluaran, pemasukan, dan anggaran dengan desain minimalis. 100% Gratis dan Responsif.">
+    <meta name="keywords" content="finansiku, kelola uang, aplikasi keuangan, budget tracker, pengeluaran harian">
     <meta name="google-site-verification" content="XDUltp0hE8n1iQSBjhJ339PM7d_XqldKzRBP33wC-m4" />
     
     <!-- Fonts -->
@@ -47,7 +47,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <span class="text-xl font-bold tracking-tight text-slate-900">Catatan Keuangan</span>
+                    <span class="text-xl font-bold tracking-tight text-slate-900">Finansiku</span>
                 </div>
                 <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
                     <a href="#fitur" class="hover:text-slate-600 transition-colors">Fitur</a>
@@ -89,7 +89,7 @@
             <div class="mt-20 max-w-5xl mx-auto relative group">
                 <div class="absolute -inset-1 bg-gradient-to-b from-slate-200 to-transparent rounded-[2rem] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
                 <div class="relative bg-white p-2 rounded-[2rem] shadow-2xl border border-slate-200">
-                    <img src="{{ asset('images/features/dashboard.png') }}" alt="Dashboard Catatan Keuangan" class="rounded-[1.5rem] w-full shadow-inner">
+                    <img src="{{ asset('images/features/dashboard.png') }}" alt="Dashboard Finansiku" class="rounded-[1.5rem] w-full shadow-inner">
                 </div>
             </div>
         </div>
@@ -229,7 +229,7 @@
         <div class="max-w-4xl mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold mb-4 tracking-tight">Pertanyaan Umum</h2>
-                <p class="text-slate-500">Semua yang perlu Anda ketahui tentang Catatan Keuangan.</p>
+                <p class="text-slate-500">Semua yang perlu Anda ketahui tentang Finansiku.</p>
             </div>
             <div class="space-y-6">
                 <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
@@ -274,10 +274,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <span class="text-lg font-bold tracking-tight">Catatan Keuangan</span>
+                    <span class="text-lg font-bold tracking-tight">Finansiku</span>
                 </div>
                 <div class="text-slate-400 text-sm">
-                    &copy; 2026 Catatan Keuangan. Dibuat untuk manajemen masa depan yang lebih baik.
+                    &copy; 2026 Finansiku. Dibuat untuk manajemen masa depan yang lebih baik.
                 </div>
                 <div class="flex space-x-6 text-slate-400 text-sm">
                     <a href="#" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
