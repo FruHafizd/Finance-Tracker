@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->middleware('signed')->name('export.excel');
 
     Route::get('/accounts', AccountList::class)->name('account.index');
+    Route::get('/settings/data', \App\Livewire\Settings\DataManagement::class)->name('settings.data');
 
 });
 
