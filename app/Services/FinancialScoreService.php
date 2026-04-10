@@ -94,7 +94,8 @@ class FinancialScoreService
             'color' => $this->getColor($totalScore),
             'income' => $income,
             'expense' => $expense,
-            'total_budget' => $totalBudget
+            'total_budget' => $totalBudget,
+            'has_transactions' => $transactionCount > 0
         ];
     }
 
