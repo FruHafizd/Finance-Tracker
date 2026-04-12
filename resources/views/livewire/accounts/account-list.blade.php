@@ -276,5 +276,6 @@
 
     {{-- Form Transaksi (untuk Quick Transfer) --}}
     <livewire:transactions.transaction-form />
+    <livewire:transactions.category />
 
 </div>
