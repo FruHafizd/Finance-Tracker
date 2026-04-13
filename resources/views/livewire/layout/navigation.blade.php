@@ -157,6 +157,10 @@ new class extends Component
                     </div>
                 </x-responsive-nav-link>
             </div>
+
+            <x-responsive-nav-link :href="route('account.index')" :active="request()->routeIs('account.index')" wire:navigate>
+                {{ __('Rekening') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
