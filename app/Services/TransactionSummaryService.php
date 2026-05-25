@@ -62,6 +62,18 @@ class TransactionSummaryService
     }
 
     /**
+     * Tampilkan transaksi terbaru milik user.
+     */
+    public function getRecentTransactions(int $limit = 5): \Illuminate\Support\Collection
+    {
+        return Transaction::with(['category', 'account'])
+            ->latest('date')
+            ->latest('id')
+            ->take($limit)
+            ->get();
+    }
+
+    /**
      * Hitung persentase perubahan.
      */
     private function pct(float $current, float $prev): ?float
@@ -70,3 +82,4 @@ class TransactionSummaryService
         return round((($current - $prev) / $prev) * 100, 1);
     }
 }
+

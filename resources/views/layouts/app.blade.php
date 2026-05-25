@@ -46,8 +46,6 @@
                 <main class="flex-1 p-4 sm:p-6 lg:p-8">
                     {{ $slot }}
                 </main>
-
-                <x-footer />
             </div>
         </div>
 
@@ -179,7 +177,6 @@
         <livewire:financial-calendar />
 
         @livewireScripts
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         @stack('scripts')
     </body>
 </html>
