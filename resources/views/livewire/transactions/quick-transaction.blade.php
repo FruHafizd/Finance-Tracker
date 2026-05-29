@@ -1,6 +1,6 @@
 <div>
     @if($favorites->count() > 0)
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         {{-- Header --}}
         <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">

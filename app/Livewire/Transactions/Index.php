@@ -2,39 +2,53 @@
 
 namespace App\Livewire\Transactions;
 
-use App\Models\FavoriteTransaction;
-use App\Models\Transaction;
-use App\Models\Category;
+use App\Livewire\Concerns\RefreshesOnTransactionChange;
+use App\Services\TransactionService;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
-    use WithPagination, \App\Traits\WithNotifications;
+    use WithPagination, \App\Traits\WithNotifications, RefreshesOnTransactionChange;
+
+    /* ------------------------------------------------------------------
+     |  State
+     | ------------------------------------------------------------------ */
 
     public ?int $deleteId = null;
 
     protected $paginationTheme = 'tailwind';
 
-    public $filterYear    = '';
-    public $filterMonth   = '';
-    public $filterType    = '';
+    /** Filter properties */
+    public $filterYear     = '';
+    public $filterMonth    = '';
+    public $filterType     = '';
     public $filterCategory = '';
-    public $startDate     = '';
-    public $endDate       = '';
+    public $startDate      = '';
+    public $endDate        = '';
+
+    /* ------------------------------------------------------------------
+     |  Event Listeners
+     |  transaction-created/deleted/updated → via RefreshesOnTransactionChange
+     | ------------------------------------------------------------------ */
 
     protected $listeners = [
-        'transaction-created' => '$refresh',
-        'transaction-deleted' => '$refresh',
-        'transaction-updated' => '$refresh',
         'favorite-created' => '$refresh',
     ];
+
+    /* ------------------------------------------------------------------
+     |  Lifecycle
+     | ------------------------------------------------------------------ */
 
     public function mount(): void
     {
         $this->filterYear  = date('Y');
         $this->filterMonth = date('n');
     }
+
+    /* ------------------------------------------------------------------
+     |  Filter Updates — reset pagination on change
+     | ------------------------------------------------------------------ */
 
     public function updatedFilterYear(): void
     {
@@ -78,76 +92,36 @@ class Index extends Component
         $this->resetPage();
     }
 
-    private function baseQuery()
+    /* ------------------------------------------------------------------
+     |  Helpers
+     | ------------------------------------------------------------------ */
+
+    /**
+     * Kumpulkan semua filter aktif ke dalam array untuk dikirim ke service.
+     */
+    private function currentFilters(): array
     {
-        $query = Transaction::where('user_id', auth()->id())
-            ->with('category');
-
-        // Kalau pakai range tanggal → abaikan filterYear & filterMonth
-        if ($this->startDate && $this->endDate) {
-            $query->whereBetween('date', [$this->startDate, $this->endDate]);
-        } elseif ($this->startDate) {
-            $query->whereDate('date', '>=', $this->startDate);
-        } elseif ($this->endDate) {
-            $query->whereDate('date', '<=', $this->endDate);
-        } else {
-            // Pakai filter tahun/bulan kalau tidak ada range
-            if ($this->filterYear)  $query->whereYear('date', $this->filterYear);
-            if ($this->filterMonth) $query->whereMonth('date', $this->filterMonth);
-        }
-
-        if ($this->filterType)     $query->where('type', $this->filterType);
-        if ($this->filterCategory) $query->where('category_id', $this->filterCategory);
-
-        return $query;
-    }
-
-    public function getSummaryProperty(): array
-    {
-        $data = $this->baseQuery()
-            ->selectRaw("
-                SUM(CASE WHEN type = 'income'  THEN amount ELSE 0 END) as income,
-                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expense
-            ")
-            ->first();
-
-        $income  = (float) ($data->income  ?? 0);
-        $expense = (float) ($data->expense ?? 0);
-
         return [
-            'income'     => $income,
-            'expense'    => $expense,
-            'difference' => $income - $expense,
+            'year'      => $this->filterYear,
+            'month'     => $this->filterMonth,
+            'startDate' => $this->startDate,
+            'endDate'   => $this->endDate,
+            'type'      => $this->filterType,
+            'category'  => $this->filterCategory,
         ];
     }
 
-    public function getCategoriesProperty()
-    {
-        return Category::where('user_id', auth()->id())
-            ->orderBy('name')
-            ->get();
-    }
+    /* ------------------------------------------------------------------
+     |  Actions
+     | ------------------------------------------------------------------ */
 
-    public function addToFavorite(int $transactionId)
+    public function addToFavorite(int $transactionId, TransactionService $service): void
     {
-        $trx = Transaction::findOrFail($transactionId);
+        $status = $service->addToFavorite($transactionId);
 
-        $fav = FavoriteTransaction::firstOrCreate(
-            [
-                'user_id' => auth()->id(),
-                'name'    => $trx->name,
-                'amount'  => $trx->amount,
-                'type'    => $trx->type,
-            ],
-            [
-                'category_id' => $trx->category_id,
-                'account_id'  => $trx->account_id,
-            ]
-        );
-        
-        if ($fav->wasRecentlyCreated) {
+        if ($status === 'created') {
             $this->dispatch('favorite-created');
-            
+
             $this->js("
                 window.dispatchEvent(new CustomEvent('notify', {
                     detail: {
@@ -169,16 +143,16 @@ class Index extends Component
             ");
         }
     }
+
     public function confirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->dispatch('open-modal', 'modal-delete-transaksi');
     }
 
-    public function delete(): void
+    public function delete(TransactionService $service): void
     {
-        $transaction = Transaction::findOrFail($this->deleteId);
-        $transaction->delete();
+        $service->deleteTransaction($this->deleteId);
 
         $this->deleteId = null;
         $this->dispatch('close-modal', 'modal-delete-transaksi');
@@ -186,21 +160,21 @@ class Index extends Component
         $this->dispatch('transaction-deleted');
     }
 
-    public function render()
-    {
-        $transactions = $this->baseQuery()
-            ->orderBy('date', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+    /* ------------------------------------------------------------------
+     |  Render
+     | ------------------------------------------------------------------ */
 
-        $grouped = $transactions->getCollection()
-            ->groupBy(fn($item) => $item->date->format('Y-m-d'));
+    public function render(TransactionService $service)
+    {
+        $filters = $this->currentFilters();
+
+        $data = $service->getPaginatedTransactions($filters);
 
         return view('livewire.transactions.index', [
-            'transactions' => $transactions,
-            'grouped'      => $grouped,
-            'summary'      => $this->summary,
-            'categories'   => $this->categories,
+            'transactions' => $data['transactions'],
+            'grouped'      => $data['grouped'],
+            'summary'      => $service->getSummary($filters),
+            'categories'   => $service->getCategories(),
         ])->layout('layouts.app', ['title' => 'Riwayat Transaksi']);
     }
 }
