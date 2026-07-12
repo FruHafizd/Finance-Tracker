@@ -11,17 +11,21 @@ class Category extends Component
     public $categories;
     public $name;
     public $color = '#6366f1';
+    public $type = 'expense';
     public string $errorMessage = '';
 
     public $editId = null;
 
     protected $rules = [
-        'name' => 'required|min:2'
+        'name' => 'required|min:2',
+        'type' => 'required|in:income,expense',
     ];
 
     protected $messages = [
         'name.required' => 'Nama kategori wajib diisi.',
         'name.min' => 'Nama kategori minimal berisi 2 karakter.',
+        'type.required' => 'Jenis kategori wajib dipilih.',
+        'type.in' => 'Jenis kategori tidak valid.',
     ];
 
     public function mount()
@@ -42,9 +46,11 @@ class Category extends Component
             'user_id' => auth()->id(),
             'name' => strip_tags($this->name),
             'color' => $this->color,
+            'type' => $this->type,
         ]);
 
-        $this->reset(['name']);
+        $this->reset(['name', 'type']);
+        $this->type = 'expense'; // restore default
         $this->notify('Berhasil!', 'Kategori berhasil ditambahkan.', 'success');
         $this->dispatch('category-created');
         $this->loadCategories();
@@ -57,6 +63,7 @@ class Category extends Component
         $this->editId = $id;
         $this->name = $category->name;
         $this->color = $category->color;
+        $this->type = $category->type ?? 'expense';
     }
 
     public function update()
@@ -66,9 +73,11 @@ class Category extends Component
         Categories::where('id', $this->editId)->update([
             'name' => $this->name,
             'color' => $this->color,
+            'type' => $this->type,
         ]);
 
-        $this->reset(['name','editId']);
+        $this->reset(['name', 'type', 'editId']);
+        $this->type = 'expense'; // restore default
         $this->notify('Berhasil!', 'Kategori berhasil diperbarui.', 'success');
         $this->dispatch('category-created');
         $this->loadCategories();

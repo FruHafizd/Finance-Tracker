@@ -17,11 +17,11 @@ class CategorySeeder extends Seeder
         $user = User::first();
 
         $categories = [
-            ["name" => "Gaji", "color" => "#22c55e"],
-            ["name" => "Makanan", "color" => "#f97316"],
-            ["name" => "Transportasi", "color" => "#3b82f6"],
-            ["name" => "Hiburan", "color" => "#a855f7"],
-            ["name" => "Belanja", "color" => "#ef4444"],
+            ["name" => "Gaji", "color" => "#22c55e", "type" => "income"],
+            ["name" => "Makanan", "color" => "#f97316", "type" => "expense"],
+            ["name" => "Transportasi", "color" => "#3b82f6", "type" => "expense"],
+            ["name" => "Hiburan", "color" => "#a855f7", "type" => "expense"],
+            ["name" => "Belanja", "color" => "#ef4444", "type" => "expense"],
         ];
 
         foreach ($categories as $cat) {
@@ -29,6 +29,7 @@ class CategorySeeder extends Seeder
                 "user_id" => $user->id,
                 "name" => $cat["name"],
                 "color" => $cat["color"],
+                "type" => $cat["type"],
             ]);
         }
     }

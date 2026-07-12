@@ -2,38 +2,50 @@
 
 namespace App\Livewire\Transactions;
 
-use App\Models\Budget;
-use App\Models\Category;
 use App\Models\Transaction;
+use App\Services\TransactionService;
 use App\Traits\WithNotifications;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class TransactionForm extends Component
-{   
+{
     use WithNotifications;
+
+    /* ------------------------------------------------------------------
+     |  UI State
+     | ------------------------------------------------------------------ */
+
     public ?int $transactionId = null;
-    public $amount;
-    public $type;
-    public $date;
-    public $name;
-    public $categories = [];
-    public $category_id;
-    public $account_id;
-    public $to_account_id;
-    public $accounts = [];
+    public $amount = '';
+    public $type = '';
+    public $date = '';
+    public $name = '';
+    public $category_id = '';
+    public $account_id = '';
+    public $to_account_id = '';
+    public bool $showNotes = false;
+
+    /* ------------------------------------------------------------------
+     |  Listeners
+     | ------------------------------------------------------------------ */
 
     protected $listeners = [
         'open-create-transaction' => 'openCreate',
         'open-transfer'           => 'openTransfer',
         'edit-transaction'        => 'openEdit',
-        'category-created'        => 'loadCategories',
+        'category-created'        => '$refresh',
         'prefill-transaction'     => 'prefillForm',
-        'account-saved'           => 'loadAccounts',
-        'account-deleted'         => 'loadAccounts',
+        'account-saved'           => '$refresh',
+        'account-deleted'         => '$refresh',
     ];
-     
+
+    /* ------------------------------------------------------------------
+     |  Validation
+     | ------------------------------------------------------------------ */
+
     protected $rules = [
-        'name'          => 'required|string|min:3',
+        'name'          => 'nullable|string|min:3',
         'category_id'   => 'required',
         'account_id'    => 'required',
         'to_account_id' => 'required_if:type,transfer',
@@ -43,33 +55,67 @@ class TransactionForm extends Component
     ];
 
     protected $messages = [
-        'amount.required'      => 'Jumlah tidak boleh kosong',
-        'amount.numeric'       => 'Jumlah harus berupa angka',
-        'type.required'        => 'Silakan pilih jenis transaksi (Pemasukan, Pengeluaran, atau Transfer)',
-        'date.required'        => 'Tanggal tidak boleh kosong',
-        'name.required'        => 'Nama tidak boleh kosong',
-        'type.in'              => 'Type tidak valid',
-        'date.date'            => 'Format tanggal tidak valid',
-        'name.min'             => 'Nama minimal 3 karakter',
-        'category_id.required' => 'Kategori tidak boleh kosong',
-        'account_id.required'  => 'Rekening tidak boleh kosong',
+        'amount.required'           => 'Jumlah tidak boleh kosong',
+        'amount.numeric'            => 'Jumlah harus berupa angka',
+        'amount.min'                => 'Jumlah minimal Rp 1',
+        'type.required'             => 'Silakan pilih jenis transaksi (Pemasukan, Pengeluaran, atau Transfer)',
+        'date.required'             => 'Tanggal tidak boleh kosong',
+        'name.min'                  => 'Nama minimal 3 karakter',
+        'type.in'                   => 'Type tidak valid',
+        'date.date'                 => 'Format tanggal tidak valid',
+        'category_id.required'      => 'Kategori tidak boleh kosong',
+        'account_id.required'       => 'Rekening tidak boleh kosong',
         'to_account_id.required_if' => 'Rekening tujuan wajib diisi untuk transfer',
     ];
 
+    /* ------------------------------------------------------------------
+     |  Computed Properties (menggantikan public $categories & $accounts)
+     | ------------------------------------------------------------------ */
+
+    #[Computed]
+    public function accounts()
+    {
+        return \App\Models\Account::where('user_id', auth()->id())->get();
+    }
+
+    /**
+     * Kategori yang difilter berdasarkan jenis transaksi yang dipilih.
+     * Jika type belum dipilih, tampilkan semua kategori.
+     */
+    #[Computed]
+    public function filteredCategories()
+    {
+        $service = app(TransactionService::class);
+
+        if (! $this->type || $this->type === 'transfer') {
+            return \App\Models\Category::where('user_id', auth()->id())
+                ->orderBy('name')
+                ->get();
+        }
+
+        return $service->getFilteredCategories(auth()->id(), $this->type);
+    }
+
+    /* ------------------------------------------------------------------
+     |  Lifecycle
+     | ------------------------------------------------------------------ */
+
     public function mount(): void
     {
-        $this->loadCategories();
-        $this->loadAccounts();
-    }
+        $this->date = now()->format('Y-m-d');
 
-    public function loadCategories(): void
-    {
-        $this->categories = Category::where('user_id', auth()->id())->get();
-    }
-
-    public function loadAccounts(): void
-    {
-        $this->accounts = \App\Models\Account::where('user_id', auth()->id())->get();
+        if (auth()->check()) {
+            $service = app(TransactionService::class);
+            $lastAccount = $service->getLastUsedAccount(auth()->user());
+            if ($lastAccount) {
+                $this->account_id = $lastAccount->id;
+            } else {
+                $firstAccount = \App\Models\Account::where('user_id', auth()->id())->first();
+                if ($firstAccount) {
+                    $this->account_id = $firstAccount->id;
+                }
+            }
+        }
     }
 
     public function isEditing(): bool
@@ -77,25 +123,52 @@ class TransactionForm extends Component
         return $this->transactionId !== null;
     }
 
-    public function openCreate(): void 
+    /**
+     * Saat user mengganti jenis transaksi, auto-set default kategori.
+     */
+    public function updatedType($value): void
+    {
+        if ($value && $value !== 'transfer') {
+            $service = app(TransactionService::class);
+            $lastCategory = $service->getLastUsedCategory(auth()->user(), $value);
+
+            if ($lastCategory) {
+                $this->category_id = $lastCategory->id;
+            } else {
+                $this->category_id = null;
+            }
+        }
+
+        // Reset to_account_id jika bukan transfer
+        if ($value !== 'transfer') {
+            $this->to_account_id = null;
+        }
+    }
+
+    /* ------------------------------------------------------------------
+     |  Modal Openers
+     | ------------------------------------------------------------------ */
+
+    public function openCreate(): void
     {
         $this->resetForm();
-        $this->dispatch('open-modal', 'modal-transaction');    
+        $this->applyDefaults();
+        $this->dispatch('open-modal', 'modal-transaction');
     }
 
     public function openTransfer(int $fromAccountId): void
     {
         $this->resetForm();
-        $this->type = 'transfer';
+        $this->type       = 'transfer';
         $this->account_id = $fromAccountId;
-        $this->date = now()->format('Y-m-d');
+        $this->date       = now()->format('Y-m-d');
         $this->dispatch('open-modal', 'modal-transaction');
     }
 
-    public function openEdit($id): void 
+    public function openEdit($id): void
     {
         $this->resetForm();
-        
+
         $transaction = Transaction::where('id', $id)
             ->where('user_id', auth()->id())
             ->firstOrFail();
@@ -109,10 +182,17 @@ class TransactionForm extends Component
         $this->account_id    = $transaction->account_id;
         $this->to_account_id = $transaction->to_account_id;
 
+        // Tampilkan field nama jika sudah terisi
+        $this->showNotes = ! empty($this->name);
+
         $this->dispatch('open-modal', 'modal-transaction');
     }
 
-    public function save(): void
+    /* ------------------------------------------------------------------
+     |  Save — delegasi ke TransactionService
+     | ------------------------------------------------------------------ */
+
+    public function save(TransactionService $service): void
     {
         $this->validate();
 
@@ -130,24 +210,34 @@ class TransactionForm extends Component
             $transaction = Transaction::where('id', $this->transactionId)
                 ->where('user_id', auth()->id())
                 ->firstOrFail();
-            
-            $transaction->update($data);
+
+            $service->updateTransaction($transaction, $data);
 
             $this->notify('Berhasil!', 'Data transaksi berhasil diperbarui.', 'success');
             $this->dispatch('transaction-updated');
         } else {
-            Transaction::create(array_merge($data, ['user_id' => auth()->id()]));
+            $service->createTransaction($data, auth()->user());
+
             $this->notify('Berhasil!', 'Data transaksi berhasil ditambahkan.', 'success');
             $this->dispatch('transaction-created');
         }
 
+        // Budget alert untuk expense
         if ($this->type === 'expense') {
-            $this->checkBudget();
+            $alert = $service->checkBudgetAlert(auth()->id(), $this->category_id);
+            if ($alert) {
+                $detail = json_encode($alert);
+                $this->js("window.dispatchEvent(new CustomEvent('budget-alert', { detail: {$detail} }));");
+            }
         }
 
         $this->resetForm();
         $this->dispatch('close-modal', 'modal-transaction');
     }
+
+    /* ------------------------------------------------------------------
+     |  Prefill & Reset
+     | ------------------------------------------------------------------ */
 
     #[\Livewire\Attributes\On('prefill-transaction')]
     public function prefillForm(array $data = []): void
@@ -158,53 +248,45 @@ class TransactionForm extends Component
         $this->category_id = $data['category_id'] ?? null;
         $this->account_id  = $data['account_id']  ?? null;
         $this->date        = $data['date']        ?? null;
+
+        $this->showNotes = ! empty($this->name);
     }
 
     #[\Livewire\Attributes\On('reset-form')]
     public function resetForm(): void
     {
-        $this->reset(['transactionId', 'amount', 'type', 'date', 'name', 'category_id', 'account_id', 'to_account_id']);
+        $this->reset([
+            'transactionId', 'amount', 'type', 'date',
+            'name', 'category_id', 'account_id', 'to_account_id',
+            'showNotes',
+        ]);
     }
 
-    private function checkBudget(): void
+    /* ------------------------------------------------------------------
+     |  Helpers (private)
+     | ------------------------------------------------------------------ */
+
+    /**
+     * Set smart defaults: tanggal hari ini, rekening & kategori terakhir.
+     */
+    private function applyDefaults(): void
     {
-        $budget = Budget::with('category')
-            ->where('user_id', auth()->id())
-            ->where('category_id', $this->category_id)
-            ->where('month', (int) now()->format('n'))
-            ->where('year', (int) now()->format('Y'))
-            ->first();
+        $service = app(TransactionService::class);
+        $user    = auth()->user();
 
-        if (! $budget) return;
+        // Default tanggal: hari ini
+        $this->date = now()->format('Y-m-d');
 
-        $spent      = $budget->spentAmount();
-        $percentage = $budget->limit_amount > 0
-            ? ($spent / $budget->limit_amount) * 100
-            : 0;
-
-        $categoryName = $budget->category->name;
-        $sisa         = max($budget->limit_amount - $spent, 0);
-        $sisaFormat   = 'Rp ' . number_format($sisa, 0, ',', '.');
-
-        if ($percentage >= 100) {
-            $detail = json_encode([
-                'type'    => 'danger',
-                'title'   => 'Aduh, kebablasan! 🚨',
-                'message' => "Pengeluaran {$categoryName} kamu sudah melebihi batas bulan ini!",
-            ]);
-        } elseif ($percentage >= 80) {
-            $detail = json_encode([
-                'type'    => 'warning',
-                'title'   => 'Hampir habis! ⚠️',
-                'message' => "Uang {$categoryName} kamu sudah " . round($percentage) . "% terpakai. Sisa {$sisaFormat}.",
-            ]);
-        } else {
-            return;
+        // Default rekening: terakhir dipakai
+        $lastAccount = $service->getLastUsedAccount($user);
+        if ($lastAccount) {
+            $this->account_id = $lastAccount->id;
         }
-
-        $this->js("window.dispatchEvent(new CustomEvent('budget-alert', { detail: {$detail} }));");
     }
 
+    /* ------------------------------------------------------------------
+     |  Render
+     | ------------------------------------------------------------------ */
 
     public function render()
     {

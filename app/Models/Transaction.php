@@ -96,7 +96,7 @@ class Transaction extends Model
      */
     public function scopeOfType(Builder $query, string $type): Builder
     {
-        return $query->where('type', $type);
+        return $query->where('transactions.type', $type);
     }
 
     public function scopeIncome(Builder $query): Builder

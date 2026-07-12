@@ -40,9 +40,9 @@
                 <label class="block text-sm font-medium text-gray-700">
                     {{ $editId ? 'Edit Kategori' : 'Kategori Baru' }}
                 </label>
-                <div class="flex flex-col sm:flex-row items-center gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
                     <!-- Color Picker & Name -->
-                    <div class="relative flex flex-1 items-center gap-3 w-full">
+                    <div class="sm:col-span-6 flex items-center gap-3 w-full">
                         <div class="relative flex-shrink-0">
                             <input
                                 wire:model="color"
@@ -56,28 +56,43 @@
                             placeholder="Nama kategori..."
                             class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
                     </div>
+
+                    <!-- Type Selector (Pemasukan / Pengeluaran) -->
+                    <div class="sm:col-span-3 w-full">
+                        <select
+                            wire:model="type"
+                            class="block w-full rounded-xl border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 bg-gray-50/50 hover:bg-white transition-colors">
+                            <option value="expense">Pengeluaran</option>
+                            <option value="income">Pemasukan</option>
+                        </select>
+                    </div>
                     
                     <!-- Action Button -->
-                    <button
-                        wire:click="{{ $editId ? 'update' : 'create' }}"
-                        class="w-full sm:w-auto flex-shrink-0 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm flex items-center justify-center gap-2
-                            {{ $editId
-                                ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                                : 'bg-slate-900 hover:bg-slate-800 text-white' }}">
-                        @if ($editId)
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            Simpan Perubahan
-                        @else
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            Tambah Baru
-                        @endif
-                    </button>
+                    <div class="sm:col-span-3 w-full">
+                        <button
+                            wire:click="{{ $editId ? 'update' : 'create' }}"
+                            class="w-full px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm flex items-center justify-center gap-2
+                                {{ $editId
+                                    ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                                    : 'bg-slate-900 hover:bg-slate-800 text-white' }}">
+                            @if ($editId)
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Simpan
+                            @else
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Tambah
+                            @endif
+                        </button>
+                    </div>
                 </div>
-                @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                <div class="flex flex-col gap-1">
+                    @error('name') <p class="text-xs text-red-500">{{ $message }}</p> @enderror
+                    @error('type') <p class="text-xs text-red-500">{{ $message }}</p> @enderror
+                </div>
             </div>
 
             <!-- DIVIDER -->
@@ -92,7 +107,13 @@
                         <div class="group flex items-center justify-between p-3 bg-white rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 hover:ring-slate-200 hover:bg-slate-50/30 transition-all duration-200">
                             <div class="flex items-center gap-3">
                                 <div class="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm" style="background: {{ $cat->color }}"></div>
-                                <span class="text-sm font-medium text-gray-700">{{ $cat->name }}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-medium text-gray-700">{{ $cat->name }}</span>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                                        {{ ($cat->type ?? 'expense') === 'income' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10' : 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/10' }}">
+                                        {{ ($cat->type ?? 'expense') === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                    </span>
+                                </div>
                             </div>
                             <div x-data="{ confirming: false }" 
                                  x-bind:class="confirming ? 'opacity-100' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100'"
