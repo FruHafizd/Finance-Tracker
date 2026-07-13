@@ -1,99 +1,82 @@
 <div>
-    @if($favorites->count() > 0)
-    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        {{-- Header --}}
-        <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
-                <h3 class="text-sm font-bold text-slate-700 tracking-tight">Transaksi Cepat</h3>
-            </div>
-            <span class="text-[11px] font-medium text-gray-400">{{ $favorites->count() }} template</span>
-        </div>
+    <div class="relative inline-flex align-middle w-full sm:w-auto" x-data="{ open: false }">
+        <!-- Tombol Utama: Tambah Transaksi -->
+        <button wire:click="$dispatch('open-create-transaction')"
+            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-[13px] font-bold rounded-l-xl transition-colors duration-150 shadow-sm ring-1 ring-inset ring-primary/20 w-full sm:w-auto border-r border-primary-hover">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+            </svg>
+            Tambah Transaksi
+        </button>
+        
+        <!-- Tombol Samping (Chevron) -->
+        <button @click="open = !open"
+            class="inline-flex items-center justify-center px-3 py-2 bg-primary hover:bg-primary-hover text-white rounded-r-xl transition-colors duration-150 shadow-sm ring-1 ring-inset ring-primary/20">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
 
-        {{-- Compact Chip List: horizontal scroll --}}
-        <div class="flex gap-2.5 overflow-x-auto pb-44 -mb-44 -mx-1 px-1"
-             style="scrollbar-width: none; -ms-overflow-style: none;">
-            <style>.overflow-x-auto::-webkit-scrollbar { display: none; }</style>
-
-            @foreach($favorites as $fav)
-            <div class="flex-shrink-0 flex items-center gap-2 bg-white rounded-xl ring-1 ring-inset ring-gray-200 pl-3 pr-1.5 py-1.5 hover:ring-gray-300 hover:shadow-sm transition-all duration-200 group"
-                 x-data="{ open: false }">
-
-                {{-- Color Dot & Info --}}
-                <div class="flex items-center gap-2.5 min-w-0">
-                    <span class="w-2 h-2 rounded-full flex-shrink-0"
-                          style="background-color: {{ $fav->category->color }}"></span>
-                    <div class="min-w-0">
-                        <p class="text-[13px] font-bold text-slate-800 truncate max-w-[100px] sm:max-w-[140px]"
-                           title="{{ $fav->name }}">{{ $fav->name }}</p>
-                        <p class="text-[11px] font-semibold {{ $fav->type === 'income' ? 'text-emerald-600' : 'text-rose-500' }}">
-                            Rp {{ number_format($fav->amount, 0, ',', '.') }}
-                        </p>
-                    </div>
-                </div>
-
-                {{-- Quick Add Button --}}
-                <button wire:click="saveNow({{ $fav->id }})"
-                        wire:loading.attr="disabled"
-                        wire:target="saveNow({{ $fav->id }})"
-                        title="Tambah transaksi sekarang"
-                        class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-900 hover:text-white transition-all duration-200 flex-shrink-0">
-                    <span wire:loading.remove wire:target="saveNow({{ $fav->id }})">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                        </svg>
-                    </span>
-                    <span wire:loading wire:target="saveNow({{ $fav->id }})">
-                        <svg class="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                        </svg>
-                    </span>
-                </button>
-
-                {{-- Three Dot Menu --}}
-                <div class="relative">
-                    <button @click="open = !open" @click.away="open = false"
-                            class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-slate-700 hover:bg-gray-100 transition-colors flex-shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                        </svg>
-                    </button>
-                    <div x-show="open" x-transition.opacity
-                         class="absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg ring-1 ring-gray-100/50 z-20 overflow-hidden"
-                         style="display: none;">
-                        <div class="py-1">
-                            <button wire:click="editFavorite({{ $fav->id }})"
-                                    class="flex items-center w-full px-4 py-2.5 text-[13px] text-gray-700 hover:bg-slate-50 hover:text-slate-900 font-semibold transition-colors">
-                                <svg class="mr-2.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                                Edit Template
-                            </button>
-                            <button wire:click="prefill({{ $fav->id }})"
-                                    class="flex items-center w-full px-4 py-2.5 text-[13px] text-gray-700 hover:bg-amber-50 hover:text-amber-700 font-semibold transition-colors">
-                                <svg class="mr-2.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                </svg>
-                                Pakai di Form
-                            </button>
-                            <button wire:click="confirmDelete({{ $fav->id }})"
-                                    class="flex items-center w-full px-4 py-2.5 text-[13px] text-rose-600 hover:bg-rose-50 font-semibold whitespace-nowrap transition-colors">
-                                <svg class="mr-2.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                                Hapus
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endforeach
+        <!-- Dropdown Menu -->
+        <div x-show="open" 
+             @click.outside="open = false"
+             x-transition:enter="transition ease-out duration-100"
+             x-transition:enter-start="transform opacity-0 scale-95"
+             x-transition:enter-end="transform opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-75"
+             x-transition:leave-start="transform opacity-100 scale-100"
+             x-transition:leave-end="transform opacity-0 scale-95"
+             class="absolute right-0 mt-10 w-72 bg-white rounded-xl shadow-xl ring-1 ring-black/5 z-50 overflow-hidden py-1"
+             style="display: none;">
+             
+             <div class="px-3 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                 Transaksi Cepat
+             </div>
+             
+             <div class="max-h-60 overflow-y-auto">
+                 @forelse($favorites as $fav)
+                     <div class="flex items-center justify-between px-3 py-2 hover:bg-gray-50 transition-colors duration-150 group">
+                         <!-- Clickable area to prefill -->
+                         <button @click="open = false" wire:click="prefill({{ $fav->id }})" class="flex items-center gap-2 min-w-0 flex-1 text-left">
+                             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $fav->category->color ?? '#94a3b8' }}"></span>
+                             <div class="min-w-0">
+                                 <p class="text-[13px] font-bold text-gray-800 truncate" title="{{ $fav->name }}">{{ $fav->name }}</p>
+                                 <p class="text-[11px] font-semibold {{ $fav->type === 'income' ? 'text-emerald-600' : 'text-rose-500' }}">
+                                     Rp {{ number_format($fav->amount, 0, ',', '.') }}
+                                     @if(!$fav->account)
+                                         <span class="text-[9px] font-medium text-gray-400 ml-1">(Tanpa Rekening)</span>
+                                     @else
+                                         <span class="text-[9px] font-medium text-gray-500 ml-1">({{ $fav->account->name }})</span>
+                                     @endif
+                                 </p>
+                             </div>
+                         </button>
+                         
+                         <!-- Edit & Delete Buttons -->
+                         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                             <!-- Edit button -->
+                             <button wire:click="editFavorite({{ $fav->id }})" @click="open = false" title="Edit Template" class="p-1 text-gray-400 hover:text-slate-700 hover:bg-gray-150 rounded-lg transition-colors">
+                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                 </svg>
+                             </button>
+                             <!-- Delete button -->
+                             <button wire:click="confirmDelete({{ $fav->id }})" @click="open = false" title="Hapus Template" class="p-1 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                 </svg>
+                             </button>
+                         </div>
+                     </div>
+                 @empty
+                     <div class="px-3 py-4 text-xs text-gray-400 text-center italic">
+                         Belum ada transaksi cepat.
+                     </div>
+                 @endforelse
+             </div>
         </div>
     </div>
-    @endif
+
 
     <!-- MODAL EDIT FAVORITE -->
     <x-modal name="modal-edit-favorite" focusable>

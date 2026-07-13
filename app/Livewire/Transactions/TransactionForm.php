@@ -249,6 +249,20 @@ class TransactionForm extends Component
         $this->account_id  = $data['account_id']  ?? null;
         $this->date        = $data['date']        ?? null;
 
+        if (empty($this->account_id)) {
+            $service = app(TransactionService::class);
+            $user    = auth()->user();
+            $lastAccount = $service->getLastUsedAccount($user);
+            if ($lastAccount) {
+                $this->account_id = $lastAccount->id;
+            } else {
+                $firstAccount = \App\Models\Account::where('user_id', $user->id)->first();
+                if ($firstAccount) {
+                    $this->account_id = $firstAccount->id;
+                }
+            }
+        }
+
         $this->showNotes = ! empty($this->name);
     }
 

@@ -9,6 +9,7 @@ use App\Models\FavoriteTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Repositories\TransactionRepository;
+use App\Repositories\FavoriteTransactionRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -16,7 +17,8 @@ use Illuminate\Support\Collection;
 class TransactionService
 {
     public function __construct(
-        protected TransactionRepository $repository
+        protected TransactionRepository $repository,
+        protected FavoriteTransactionRepository $favoriteRepository
     ) {}
 
     /* ==================================================================
@@ -273,7 +275,11 @@ class TransactionService
     {
         $trx = Transaction::findOrFail($transactionId);
 
-        $fav = FavoriteTransaction::firstOrCreate(
+        if ($trx->type === 'transfer') {
+            return 'invalid_type';
+        }
+
+        $fav = $this->favoriteRepository->firstOrCreate(
             [
                 'user_id' => auth()->id(),
                 'name'    => $trx->name,

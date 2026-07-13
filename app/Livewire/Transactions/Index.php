@@ -6,10 +6,22 @@ use App\Livewire\Concerns\RefreshesOnTransactionChange;
 use App\Services\TransactionService;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Computed;
 
 class Index extends Component
 {
     use WithPagination, \App\Traits\WithNotifications, RefreshesOnTransactionChange;
+
+    public function __get($property)
+    {
+        if ($property === 'summary') {
+            return app(TransactionService::class)->getSummary($this->currentFilters());
+        }
+        if ($property === 'transactions') {
+            return app(TransactionService::class)->getPaginatedTransactions($this->currentFilters())['transactions'];
+        }
+        return parent::__get($property);
+    }
 
     /* ------------------------------------------------------------------
      |  State
@@ -121,26 +133,11 @@ class Index extends Component
 
         if ($status === 'created') {
             $this->dispatch('favorite-created');
-
-            $this->js("
-                window.dispatchEvent(new CustomEvent('notify', {
-                    detail: {
-                        type: 'success',
-                        title: 'Berhasil ditambahkan!',
-                        message: 'Transaksi telah disimpan ke daftar Transaksi Cepat.'
-                    }
-                }));
-            ");
+            $this->notify('Berhasil ditambahkan!', 'Transaksi telah disimpan ke daftar Transaksi Cepat.', 'success');
+        } elseif ($status === 'invalid_type') {
+            $this->notify('Gagal!', 'Transaksi transfer tidak dapat dijadikan Transaksi Cepat.', 'danger');
         } else {
-            $this->js("
-                window.dispatchEvent(new CustomEvent('notify', {
-                    detail: {
-                        type: 'warning',
-                        title: 'Sudah Ada!',
-                        message: 'Transaksi ini sudah ada di daftar Transaksi Cepat Anda.'
-                    }
-                }));
-            ");
+            $this->notify('Sudah Ada!', 'Transaksi ini sudah ada di daftar Transaksi Cepat Anda.', 'warning');
         }
     }
 
@@ -166,14 +163,13 @@ class Index extends Component
 
     public function render(TransactionService $service)
     {
-        $filters = $this->currentFilters();
-
-        $data = $service->getPaginatedTransactions($filters);
+        $transactions = $this->transactions;
+        $grouped = $transactions->getCollection()->groupBy(fn($item) => $item->date->format('Y-m-d'));
 
         return view('livewire.transactions.index', [
-            'transactions' => $data['transactions'],
-            'grouped'      => $data['grouped'],
-            'summary'      => $service->getSummary($filters),
+            'transactions' => $transactions,
+            'grouped'      => $grouped,
+            'summary'      => $this->summary,
             'categories'   => $service->getCategories(),
         ])->layout('layouts.app', ['title' => 'Riwayat Transaksi']);
     }

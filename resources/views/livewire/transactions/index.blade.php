@@ -16,9 +16,6 @@
         {{-- Summary Cards --}}
         @include('livewire.transactions.partials._summary-cards')
 
-        {{-- Quick Transaction --}}
-        <livewire:transactions.quick-transaction />
-
         {{-- Main Table Section --}}
         <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-bg-sidebar overflow-hidden shadow-sm rounded-2xl ring-1 ring-inset ring-border">

@@ -32,13 +32,7 @@
                 </button>
 
                 {{-- Tambah Transaksi --}}
-                <button wire:click="$dispatch('open-create-transaction')"
-                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-[13px] font-bold rounded-xl transition-colors duration-150 shadow-sm ring-1 ring-inset ring-primary/20 w-full sm:w-auto">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Tambah Transaksi
-                </button>
+                <livewire:transactions.quick-transaction />
             </div>
         </div>
 
