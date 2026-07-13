@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Livewire\Transactions;
-use App\Models\Category as Categories;
+use App\Services\CategoryService;
 use App\Traits\WithNotifications;
 use Livewire\Component;
 
@@ -35,19 +35,18 @@ class Category extends Component
 
     public function loadCategories()
     {
-        $this->categories = Categories::where('user_id', auth()->id())->get();
+        $this->categories = app(CategoryService::class)->getAllByUser(auth()->id());
     }
 
     public function create()
     {
         $this->validate();
 
-        Categories::create([
-            'user_id' => auth()->id(),
-            'name' => strip_tags($this->name),
+        app(CategoryService::class)->createCategory([
+            'name'  => $this->name,
             'color' => $this->color,
-            'type' => $this->type,
-        ]);
+            'type'  => $this->type,
+        ], auth()->id());
 
         $this->reset(['name', 'type']);
         $this->type = 'expense'; // restore default
@@ -58,7 +57,7 @@ class Category extends Component
 
     public function startEdit($id)
     {
-        $category = Categories::find($id);
+        $category = app(CategoryService::class)->findById($id);
 
         $this->editId = $id;
         $this->name = $category->name;
@@ -70,10 +69,10 @@ class Category extends Component
     {
         $this->validate();
 
-        Categories::where('id', $this->editId)->update([
-            'name' => $this->name,
+        app(CategoryService::class)->updateCategory($this->editId, [
+            'name'  => $this->name,
             'color' => $this->color,
-            'type' => $this->type,
+            'type'  => $this->type,
         ]);
 
         $this->reset(['name', 'type', 'editId']);
@@ -87,37 +86,16 @@ class Category extends Component
     {
         $this->errorMessage = '';
 
-        $userId          = auth()->id();
-        $transactionCount = \App\Models\Transaction::where('category_id', $id)->where('user_id', $userId)->count();
-        $hasBudgets      = \App\Models\Budget::where('category_id', $id)->where('user_id', $userId)->exists();
-        $hasFavorites    = \App\Models\FavoriteTransaction::where('category_id', $id)->where('user_id', $userId)->exists();
+        $result = app(CategoryService::class)->deleteCategory($id, auth()->id());
 
-        if ($transactionCount > 0 || $hasBudgets || $hasFavorites) {
-            $reasons = [];
-            
-            if ($transactionCount > 0) {
-                $reasons[] = "{$transactionCount} transaksi (termasuk transaksi di bulan-bulan sebelumnya)";
-            }
-            if ($hasBudgets) {
-                $reasons[] = "budget";
-            }
-            if ($hasFavorites) {
-                $reasons[] = "transaksi favorit";
-            }
-
-            $this->errorMessage = 'Kategori ini tidak dapat dihapus karena masih digunakan oleh ' . implode(' dan ', $reasons) . '.';
+        if (! $result['success']) {
+            $this->errorMessage = $result['message'];
             $this->notify('Gagal!', $this->errorMessage, 'danger');
             return;
         }
 
-        try {
-            Categories::findOrFail($id)->delete();
-            $this->notify('Dihapus!', 'Kategori berhasil dihapus.', 'success');
-            $this->loadCategories();
-        } catch (\Exception $e) {
-            $this->notify('Gagal!', 'Terjadi kesalahan sistem.', 'danger');
-            $this->errorMessage = 'Terjadi kesalahan, kategori gagal dihapus.';
-        }
+        $this->notify('Dihapus!', $result['message'], 'success');
+        $this->loadCategories();
     }
 
     public function render()
