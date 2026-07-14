@@ -63,4 +63,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(FinancialReminder::class);
     }
 
+    public function telegramAccount()
+    {
+        return $this->hasOne(TelegramAccount::class);
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
 }

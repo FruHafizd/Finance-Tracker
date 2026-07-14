@@ -11,6 +11,9 @@ $app = Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'telegram/webhook',
+        ]);
         $middleware->web(append: [
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':60,1',
         ]);

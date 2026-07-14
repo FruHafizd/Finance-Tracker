@@ -58,4 +58,7 @@ Route::get('/auth/google/callback', [App\Http\Controllers\Auth\GoogleController:
 Route::view('/privacy-policy', 'legal.privacy')->name('legal.privacy');
 Route::view('/terms-of-service', 'legal.terms')->name('legal.terms');
 
+Route::post('/telegram/webhook', [\App\Http\Controllers\TelegramWebhookController::class, 'handle'])
+    ->middleware('throttle:30,1');
+
 require __DIR__ . '/auth.php';
