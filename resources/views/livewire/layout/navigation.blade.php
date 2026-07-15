@@ -1,7 +1,7 @@
 <?php
 
 use App\Livewire\Actions\Logout;
-use App\Models\Budget;
+use App\Services\BudgetService;
 use Livewire\Volt\Component;
 
 new class extends Component
@@ -15,7 +15,7 @@ new class extends Component
 
     public function loadExceededCount(): void
     {
-        $this->exceededCount = Budget::getExceededBudgets(auth()->id())->count();
+        $this->exceededCount = app(BudgetService::class)->getExceededBudgetsCount(auth()->id());
     }
 
     public function logout(Logout $logout): void

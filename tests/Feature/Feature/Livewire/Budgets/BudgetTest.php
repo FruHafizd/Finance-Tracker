@@ -74,8 +74,8 @@ class BudgetTest extends TestCase
         ]);
 
         Livewire::actingAs($this->user)
-            ->test(\App\Livewire\Budgets\Delete::class)
-            ->call('setBudget', $budget->id)
+            ->test(BudgetIndex::class)
+            ->call('confirmDelete', $budget->id)
             ->call('delete')
             ->assertDispatched('budget-deleted');
 

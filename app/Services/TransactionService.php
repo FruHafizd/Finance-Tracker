@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Models\Account;
-use App\Models\Budget;
 use App\Models\Category;
 use App\Models\FavoriteTransaction;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Repositories\BudgetRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\FavoriteTransactionRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -18,7 +18,8 @@ class TransactionService
 {
     public function __construct(
         protected TransactionRepository $repository,
-        protected FavoriteTransactionRepository $favoriteRepository
+        protected FavoriteTransactionRepository $favoriteRepository,
+        protected BudgetRepository $budgetRepository,
     ) {}
 
     /* ==================================================================
@@ -111,12 +112,12 @@ class TransactionService
      */
     public function checkBudgetAlert(int $userId, int $categoryId): ?array
     {
-        $budget = Budget::with('category')
-            ->where('user_id', $userId)
-            ->where('category_id', $categoryId)
-            ->where('month', (int) now()->format('n'))
-            ->where('year', (int) now()->format('Y'))
-            ->first();
+        $budget = $this->budgetRepository->findForCategoryInMonth(
+            $userId,
+            $categoryId,
+            (int) now()->format('n'),
+            (int) now()->format('Y')
+        );
 
         if (! $budget) {
             return null;

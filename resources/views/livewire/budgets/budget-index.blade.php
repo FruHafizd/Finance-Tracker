@@ -7,10 +7,6 @@
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            @php
-                $exceededBudgets = \App\Models\Budget::getExceededBudgets(auth()->id());
-            @endphp
-
             @if ($exceededBudgets->isNotEmpty())
                 <div class="rounded-xl border border-red-200 bg-red-50 p-4">
                     <div class="flex items-start gap-3">

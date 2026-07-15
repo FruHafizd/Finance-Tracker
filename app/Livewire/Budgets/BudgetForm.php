@@ -2,8 +2,7 @@
 
 namespace App\Livewire\Budgets;
 
-use App\Models\Budget;
-use App\Models\Category;
+use App\Services\BudgetService;
 use App\Traits\WithNotifications;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -49,13 +48,11 @@ class BudgetForm extends Component
         $this->dispatch('open-modal', 'modal-budget');    
     }
 
-    public function openEdit($id): void 
+    public function openEdit($id, BudgetService $service): void 
     {
         $this->resetForm();
         
-        $budget = Budget::with('category')
-            ->where('user_id', Auth::id())
-            ->findOrFail($id);
+        $budget = $service->getBudgetForEdit($id, Auth::id());
 
         $this->budgetId     = $budget->id;
         $this->category_id  = $budget->category_id;
@@ -66,7 +63,7 @@ class BudgetForm extends Component
         $this->dispatch('open-modal', 'modal-budget');
     }
     
-    public function save(): void 
+    public function save(BudgetService $service): void 
     {
         $this->validate();
         
@@ -81,28 +78,15 @@ class BudgetForm extends Component
         ];
 
         if ($this->isEditing()) {
-            Budget::where('user_id', Auth::id())
-            ->findOrFail($this->budgetId)
-            ->update([
+            $service->updateBudget($this->budgetId, [
                 'limit_amount' => (int) $this->limit_amount,
-            ]);
+            ], Auth::id());
 
             $this->notify('Berhasil!', 'Budget berhasil diperbarui!', 'success');
             $this->dispatch('close-modal', 'budget-updated');
             $this->dispatch('budget-updated');  
-        }else {
-            $exists = Budget::where('user_id', Auth::id())
-                ->where('category_id', $this->category_id)
-                ->where('month', $month)
-                ->where('year', $year)
-                ->exists();
-
-            if ($exists) {
-                $this->addError('category_id', 'Kategori ini sudah memiliki budget di bulan ini.');
-                return;
-            }
-
-            Budget::create(array_merge($data, ['user_id' => auth()->id()]));
+        } else {
+            $service->createBudget($data, Auth::id());
             $this->notify('Berhasil!', 'Budget berhasil dibuat', 'success');
             $this->dispatch('budget-created');
         }
@@ -117,18 +101,10 @@ class BudgetForm extends Component
         $this->reset(['budgetId', 'limit_amount', 'category_id', 'categoryName']);
     }
 
-    public function render()
+    public function render(BudgetService $service)
     {   
-        // Ambil kategori yang belum punya budget bulan ini
-        $usedCategoryIds = Budget::where('user_id', Auth::id())
-            ->where('month', (int) now()->format('n'))
-            ->where('year', (int) now()->format('Y'))
-            ->pluck('category_id');
+        $categories = $service->getAvailableCategories(Auth::id());
 
-        $categories = Category::where('user_id', Auth::id())
-            ->whereNotIn('id', $usedCategoryIds)
-            ->orderBy('name')
-            ->get();
         return view('livewire.budgets.budget-form', compact('categories'));
     }
 }

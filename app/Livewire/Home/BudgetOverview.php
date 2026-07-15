@@ -25,7 +25,7 @@ class BudgetOverview extends Component
     public function render(BudgetService $service)
     {
         return view('livewire.home.budget-overview', [
-            'budgets' => $service->getCurrentMonthBudgets(),
+            'budgets' => $service->getCurrentMonthBudgets(auth()->id()),
         ]);
     }
 }

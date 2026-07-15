@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Budgets;
 
-use App\Models\Budget;
+use App\Services\BudgetService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -13,7 +13,6 @@ class BudgetIndex extends Component
     public int $month;
     public int $year;
     public ?int $deleteId = null;
-    // public string $flashMessage = '';
 
     protected $listeners = [
         'budget-created' => '$refresh',
@@ -36,12 +35,9 @@ class BudgetIndex extends Component
         $this->dispatch('open-modal', 'modal-delete-budget');
     }
 
-    public function delete(): void
+    public function delete(BudgetService $service): void
     {
-        $budget = Budget::where('user_id', Auth::id())
-            ->findOrFail($this->deleteId);
-        
-        $budget->delete();
+        $service->deleteBudget($this->deleteId, Auth::id());
 
         $this->deleteId = null;
         $this->dispatch('close-modal', 'modal-delete-budget');
@@ -49,15 +45,12 @@ class BudgetIndex extends Component
         $this->dispatch('budget-deleted');
     }
 
-    public function render()
+    public function render(BudgetService $service)
     {   
-        $budgets = Budget::with('category')
-            ->where('user_id', Auth::id())
-            ->where('month', $this->month)
-            ->where('year', $this->year)
-            ->get();
+        $budgets = $service->getBudgetsForUser(Auth::id(), $this->month, $this->year);
+        $exceededBudgets = $service->getExceededBudgets(Auth::id());
 
-        return view('livewire.budgets.budget-index', compact('budgets'))
+        return view('livewire.budgets.budget-index', compact('budgets', 'exceededBudgets'))
             ->layout('layouts.app', ['title' => 'Budget Transaksi']);
     }
 }

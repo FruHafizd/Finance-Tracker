@@ -2,12 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Budget;
 use App\Models\Transaction;
+use App\Repositories\BudgetRepository;
 use Carbon\Carbon;
 
 class FinancialScoreService
 {
+    public function __construct(
+        protected BudgetRepository $budgetRepository
+    ) {}
+
     public function calculateCurrentMonthScore($userId)
     {
         $now = Carbon::now();
@@ -17,10 +21,11 @@ class FinancialScoreService
         $expense = (float) Transaction::currentMonth()->expense()->sum('amount');
 
         // 2. Data Budget
-        $totalBudget = Budget::where('user_id', $userId)
-            ->where('month', $now->month)
-            ->where('year', $now->year)
-            ->sum('limit_amount');
+        $totalBudget = $this->budgetRepository->getTotalLimitForMonth(
+            $userId,
+            $now->month,
+            $now->year
+        );
 
         // 3. Consistency (Transaction Count)
         $transactionCount = Transaction::currentMonth()->count();
