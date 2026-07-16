@@ -2,7 +2,8 @@
 
 namespace App\Livewire\Accounts;
 
-use App\Models\Account;
+use App\Exceptions\AccountHasTransactionsException;
+use App\Services\AccountService;
 use App\Traits\WithNotifications;
 use Livewire\Component;
 
@@ -24,24 +25,21 @@ class AccountList extends Component
     public string $sortDir = 'asc';
     public ?int $deleteId = null;
 
+    protected AccountService $accountService;
+
+    public function boot(AccountService $accountService): void
+    {
+        $this->accountService = $accountService;
+    }
+
     public function getAccountsProperty()
     {
-        $allowedSortColumns = ['name', 'provider', 'balance', 'sort_order'];
-        $sortColumn = in_array($this->sortBy, $allowedSortColumns) ? $this->sortBy : 'sort_order';
-        $sortDirection = in_array(strtolower($this->sortDir), ['asc', 'desc']) ? $this->sortDir : 'asc';
-
-        return Account::query()
-            ->when($this->activeTab !== 'semua', function ($query) {
-                $query->where('type', $this->activeTab);
-            })
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('provider', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->orderBy($sortColumn, $sortDirection)
-            ->get();
+        return $this->accountService->getFilteredAccounts(
+            $this->activeTab,
+            $this->search,
+            $this->sortBy,
+            $this->sortDir,
+        );
     }
 
     public function setSort(string $field): void
@@ -62,59 +60,12 @@ class AccountList extends Component
 
     public function getSummaryProperty()
     {
-        $all = Account::all();
-        $totalNow = $all->sum('balance');
-
-        $startOfMonth = now()->startOfMonth();
-        $endOfMonth   = now()->endOfMonth();
-
-        $incomeThisMonth = \App\Models\Transaction::whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->where('type', 'income')
-            ->sum('amount');
-
-        $expenseThisMonth = \App\Models\Transaction::whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->where('type', 'expense')
-            ->sum('amount');
-
-        $netChangeThisMonth = $incomeThisMonth - $expenseThisMonth;
-
-        $types = ['tabungan', 'ewallet', 'tunai'];
-        $summary = [
-            'total'     => $totalNow,
-            'netChange' => $netChangeThisMonth,
-        ];
-
-        foreach ($types as $type) {
-            $accountIds = $all->where('type', $type)->pluck('id');
-            $currentBalance = $all->where('type', $type)->sum('balance');
-
-            $incomeType = \App\Models\Transaction::whereIn('account_id', $accountIds)
-                ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                ->where('type', 'income')
-                ->sum('amount');
-
-            $expenseType = \App\Models\Transaction::whereIn('account_id', $accountIds)
-                ->whereBetween('date', [$startOfMonth, $endOfMonth])
-                ->where('type', 'expense')
-                ->sum('amount');
-
-            $summary[$type] = $currentBalance;
-            $summary[$type . '_change'] = $incomeType - $expenseType;
-        }
-
-        return $summary;
+        return $this->accountService->getMonthlySummary();
     }
 
     public function getAccountPercentagesProperty(): array
     {
-        $all = Account::all();
-        $total = $all->sum('balance');
-
-        if ($total <= 0) return [];
-
-        return $all->mapWithKeys(function ($account) use ($total) {
-            return [$account->id => round(($account->balance / $total) * 100, 1)];
-        })->toArray();
+        return $this->accountService->getAccountPercentages();
     }
 
     public function confirmDelete(int $id): void
@@ -125,14 +76,14 @@ class AccountList extends Component
 
     public function delete(): void
     {
-        $account = Account::findOrFail($this->deleteId);
+        $account = $this->accountService->findOrFail($this->deleteId);
 
-        if ($account->transactions()->exists() || \App\Models\Transaction::where('to_account_id', $this->deleteId)->exists()) {
-            $this->notify('Gagal menghapus', "Rekening {$account->name} tidak dapat dihapus karena masih memiliki riwayat transaksi.", 'error');
+        try {
+            $this->accountService->deleteAccount($account->id);
+        } catch (AccountHasTransactionsException $exception) {
+            $this->notify('Gagal menghapus', $exception->getMessage(), 'error');
             return;
         }
-
-        $account->delete();
 
         $this->deleteId = null;
         $this->dispatch('close-modal', 'modal-delete-rekening');
@@ -142,6 +93,6 @@ class AccountList extends Component
 
     public function render()
     {
-        return view('livewire.accounts.account-list')->layout('layouts.app', ['title' => 'Rekening']);;
+        return view('livewire.accounts.account-list')->layout('layouts.app', ['title' => 'Rekening']);
     }
 }
