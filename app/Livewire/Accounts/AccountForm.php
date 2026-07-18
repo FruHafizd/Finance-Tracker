@@ -49,10 +49,14 @@ class AccountForm extends Component
         $this->accountService = $accountService;
     }
 
-    public function openForm(?int $id = null): void
+    public function openForm(?int $id = null, ?string $type = null): void
     {
         $this->resetForm();
         $this->accountId = $id;
+
+        if ($type) {
+            $this->type = $type;
+        }
 
         if ($id) {
             $account = $this->accountService->findOrFail($id);
