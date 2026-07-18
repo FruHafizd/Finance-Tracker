@@ -7,10 +7,13 @@ use Livewire\Volt\Component;
 new class extends Component
 {
     public int $exceededCount = 0;
+    public bool $telegramLinked = false;
 
     public function mount(): void
     {
         $this->loadExceededCount();
+        $this->telegramLinked = auth()->user()->telegramAccount()
+            ->whereNotNull('telegram_chat_id')->exists();
     }
 
     public function loadExceededCount(): void
@@ -114,6 +117,25 @@ new class extends Component
         </svg>
         <span class="lg:block md:hidden block truncate">Kalender Keuangan</span>
     </button>
+
+    <x-nav-link :href="route('settings.data')" :active="request()->routeIs('settings.data')" wire:navigate>
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M12 12v9m0-9l-3 3m3-3l3 3" />
+        </svg>
+        <span class="lg:block md:hidden block truncate">{{ __('Backup dan Restore') }}</span>
+    </x-nav-link>
+
+    <x-nav-link :href="route('profile')" :active="request()->routeIs('profile')" wire:navigate>
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+        </svg>
+        <div class="flex items-center justify-between w-full lg:flex md:hidden flex">
+            <span class="truncate">{{ __('Integrasi Telegram') }}</span>
+            @if (!$telegramLinked)
+                <span class="w-2 h-2 rounded-full bg-[#EF4444] flex-shrink-0 ml-2"></span>
+            @endif
+        </div>
+    </x-nav-link>
   </nav>
 
   <!-- User Card (sticky bottom) -->
@@ -121,10 +143,18 @@ new class extends Component
     <x-dropdown align="top" width="48">
         <x-slot name="trigger">
             <button class="w-full flex items-center gap-3 focus:outline-none rounded-lg p-1 hover:bg-[#F1F5F9] transition-colors">
-                <div class="w-9 h-9 shrink-0 rounded-full bg-[#0EA5E9] text-white flex items-center justify-center text-sm font-bold shadow-sm"
-                     x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
-                     x-text="name.charAt(0).toUpperCase()"
-                     x-on:profile-updated.window="name = $event.detail.name">
+                <div class="relative">
+                    <div class="w-9 h-9 shrink-0 rounded-full bg-[#0EA5E9] text-white flex items-center justify-center text-sm font-bold shadow-sm"
+                         x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
+                         x-text="name.charAt(0).toUpperCase()"
+                         x-on:profile-updated.window="name = $event.detail.name">
+                    </div>
+                    @if (!$telegramLinked)
+                        <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#EF4444]"></span>
+                        </span>
+                    @endif
                 </div>
                 <div class="text-left flex-1 min-w-0 lg:block md:hidden block">
                     <p class="text-sm font-semibold text-[#0F172A] truncate" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></p>
