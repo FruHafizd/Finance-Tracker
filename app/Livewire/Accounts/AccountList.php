@@ -31,6 +31,10 @@ class AccountList extends Component
     public function boot(AccountService $accountService): void
     {
         $this->accountService = $accountService;
+    }
+
+    public function mount(): void
+    {
         $this->initializeExpandedGroups();
     }
 
