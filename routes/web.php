@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/accounts', AccountList::class)->name('account.index');
     Route::get('/data', \App\Livewire\Settings\DataManagement::class)->name('settings.data');
+    Route::get('/telegram', \App\Livewire\Settings\TelegramLinkSettings::class)->name('telegram');
 
 });
 

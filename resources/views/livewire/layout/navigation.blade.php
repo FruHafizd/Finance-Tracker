@@ -125,7 +125,7 @@ new class extends Component
         <span class="lg:block md:hidden block truncate">{{ __('Backup dan Restore') }}</span>
     </x-nav-link>
 
-    <x-nav-link :href="route('profile')" :active="request()->routeIs('profile')" wire:navigate>
+    <x-nav-link :href="route('telegram')" :active="request()->routeIs('telegram')" wire:navigate>
         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
         </svg>
@@ -149,12 +149,6 @@ new class extends Component
                          x-text="name.charAt(0).toUpperCase()"
                          x-on:profile-updated.window="name = $event.detail.name">
                     </div>
-                    @if (!$telegramLinked)
-                        <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#EF4444]"></span>
-                        </span>
-                    @endif
                 </div>
                 <div class="text-left flex-1 min-w-0 lg:block md:hidden block">
                     <p class="text-sm font-semibold text-[#0F172A] truncate" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></p>
