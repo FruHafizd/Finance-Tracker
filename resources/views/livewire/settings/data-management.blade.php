@@ -11,13 +11,14 @@
         {{-- Stats Grid --}}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
 
-            {{-- Stat 1 --}}
+            {{-- Stat 1: Transaksi --}}
             <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <div class="flex items-start justify-between mb-3">
+                <div class="flex items-start justify-between">
                     <span class="text-sm text-slate-500">Transaksi</span>
                     <div class="w-9 h-9 bg-sky-50 rounded-xl flex items-center justify-center text-sky-600 shrink-0">
-                        <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6 2a1 1 0 00-1 1v18a1 1 0 001.496.868L9 20.5l2.504 1.368a1 1 0 00.992 0L15 20.5l2.504 1.368A1 1 0 0019 21V3a1 1 0 00-1-1H6zm2 5a1 1 0 011-1h6a1 1 0 110 2H9a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H9a1 1 0 01-1-1zm0 4a1 1 0 011-1h3a1 1 0 110 2H9a1 1 0 01-1-1z"/>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 2v6h6M16 13H8M16 17H8" />
                         </svg>
                     </div>
                 </div>
@@ -25,13 +26,14 @@
                 <p class="text-xs text-slate-400 mt-1">Total tercatat</p>
             </div>
 
-            {{-- Stat 2 --}}
+            {{-- Stat 2: Kategori --}}
             <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <div class="flex items-start justify-between mb-3">
+                <div class="flex items-start justify-between">
                     <span class="text-sm text-slate-500">Kategori</span>
                     <div class="w-9 h-9 bg-sky-50 rounded-xl flex items-center justify-center text-sky-600 shrink-0">
-                        <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12.586 2.586A2 2 0 0011.172 2H4a2 2 0 00-2 2v7.172a2 2 0 00.586 1.414l8 8a2 2 0 002.828 0l7.172-7.172a2 2 0 000-2.828l-8-8zM7 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01" />
                         </svg>
                     </div>
                 </div>
@@ -39,13 +41,14 @@
                 <p class="text-xs text-slate-400 mt-1">Kategori aktif</p>
             </div>
 
-            {{-- Stat 3 --}}
+            {{-- Stat 3: Rekening --}}
             <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <div class="flex items-start justify-between mb-3">
+                <div class="flex items-start justify-between">
                     <span class="text-sm text-slate-500">Rekening</span>
                     <div class="w-9 h-9 bg-sky-50 rounded-xl flex items-center justify-center text-sky-600 shrink-0">
-                        <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 8h20L12 2zM4 10v8H3a1 1 0 000 2h18a1 1 0 000-2h-1v-8h-2v8h-3v-8h-2v8h-2v-8H9v8H6v-8H4z"/>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                            <rect x="1" y="4" width="22" height="16" rx="2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M1 10h22" />
                         </svg>
                     </div>
                 </div>
@@ -172,7 +175,7 @@
 
         </div>
 
-        {{-- Riwayat Backup & Backup Otomatis --}}
+        {{-- Riwayat Backup & Backup Terakhir --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 
             {{-- Riwayat Backup --}}
@@ -192,7 +195,7 @@
                 @else
                     <div class="space-y-2">
                         @foreach ($backups as $index => $item)
-                            <div class="flex items-center gap-3 p-3 border border-slate-100 rounded-xl hover:border-slate-300 transition-colors">
+                            <div wire:key="backup-{{ $item['path'] }}" class="flex items-center gap-3 p-3 border border-slate-100 rounded-xl hover:border-slate-300 transition-colors">
                                 <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 {{ $index === 0 ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-400' }}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         @if ($index === 0)
@@ -250,11 +253,11 @@
         {{-- Footer Security Note --}}
         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 flex items-start gap-3">
             <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-sky-600 shrink-0">
-                <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2l8 3v6c0 5-3.4 8.9-8 11-4.6-2.1-8-6-8-11V5l8-3zm0 4.2L7 8v3c0 3.6 2.1 6.5 5 7.9 2.9-1.4 5-4.3 5-7.9V8l-5-1.8z"/>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l8 3v6c0 5-3.4 8.9-8 11-4.6-2.1-8-6-8-11V5l8-3z" />
                 </svg>
             </div>
-            <p class="text-sm text-slate-600 leading-relaxed">
+            <p class="text-sm text-slate-600 leading-relaxed mt-1">
                 <span class="font-semibold text-slate-800">Catatan keamanan.</span>
                 Seluruh proses backup dan restore dilakukan secara lokal. Berkas Anda tidak disimpan secara permanen di server kami.
             </p>
