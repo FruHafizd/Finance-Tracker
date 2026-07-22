@@ -111,12 +111,12 @@ new class extends Component
 
     <p class="px-3 mt-6 mb-2 text-xs font-semibold text-[#64748B] uppercase tracking-wider lg:block md:hidden block">Lainnya</p>
 
-    <button @click="showCalendar = true; sidebarOpen = false" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#334155] transition-all duration-200">
+    <x-nav-link :href="route('financial-calendar.index')" :active="request()->routeIs('financial-calendar.index')" wire:navigate>
         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
         </svg>
         <span class="lg:block md:hidden block truncate">Kalender Keuangan</span>
-    </button>
+    </x-nav-link>
 
     <x-nav-link :href="route('settings.data')" :active="request()->routeIs('settings.data')" wire:navigate>
         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

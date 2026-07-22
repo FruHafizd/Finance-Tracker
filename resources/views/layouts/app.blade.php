@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
     <head>
         <meta name="google-site-verification" content="XDUltp0hE8n1iQSBjhJ339PM7d_XqldKzRBP33wC-m4" />
         <meta charset="utf-8">
@@ -16,13 +16,13 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="font-sans antialiased text-[#0F172A]" x-data="{ sidebarOpen: false, showCalendar: false }">
-        <div class="min-h-screen bg-[#F8FAFC] flex">
+    <body class="font-sans antialiased text-[#0F172A] h-full" x-data="{ sidebarOpen: false, showCalendar: false }">
+        <div class="h-full bg-[#F8FAFC] flex">
             <!-- Sidebar Navigation -->
             <livewire:layout.navigation />
 
             <!-- Main Content Area -->
-            <div class="flex-1 lg:ml-64 md:ml-20 flex flex-col min-h-screen">
+            <div class="flex-1 lg:ml-64 md:ml-20 flex flex-col h-full min-h-0">
                 <!-- Mobile top bar (hamburger + logo) -->
                 <header class="md:hidden sticky top-0 z-40 bg-white border-b border-[#E2E8F0] px-4 h-14 flex items-center">
                     <button @click="sidebarOpen = true" class="text-[#64748B] hover:text-[#0F172A] focus:outline-none p-1 -ml-1 rounded-md">
@@ -43,7 +43,7 @@
                     </header>
                 @endif
 
-                <main class="flex-1 p-4 sm:p-6 lg:p-8">
+                <main class="flex-1 {{ request()->is('financial-calendar') ? 'p-0 flex flex-col min-h-0 overflow-hidden' : 'p-4 sm:p-6 lg:p-8' }}">
                     {{ $slot }}
                 </main>
             </div>
@@ -173,8 +173,6 @@
             }
         </style>
 
-        {{-- Financial Calendar Slide-over --}}
-        <livewire:financial-calendar />
 
         @livewireScripts
         @stack('scripts')
