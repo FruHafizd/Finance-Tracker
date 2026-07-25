@@ -22,7 +22,6 @@ class Transaction extends Model
         'amount',
         'type',
         'date',
-        'recurring_transactions_id',
         'category_id',
         'account_id',
         'to_account_id',
