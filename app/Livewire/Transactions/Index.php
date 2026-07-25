@@ -56,6 +56,14 @@ class Index extends Component
     {
         $this->filterYear  = date('Y');
         $this->filterMonth = date('n');
+
+        // Cek apakah ada data prefill dari kalender reminder
+        $prefill = session('prefill_transaction');
+        if ($prefill) {
+            // Dispatch event ke TransactionForm setelah halaman selesai render
+            $this->dispatch('prefill-transaction', data: $prefill);
+            $this->dispatch('open-modal', 'modal-transaction');
+        }
     }
 
     /* ------------------------------------------------------------------

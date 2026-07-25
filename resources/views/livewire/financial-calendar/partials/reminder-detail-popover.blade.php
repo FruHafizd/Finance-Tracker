@@ -50,10 +50,6 @@
                  :style="!isMobile ? 'top:' + pTop + 'px; left:' + pLeft + 'px;' : ''">
                 <!-- Action Buttons & Close -->
                 <div class="absolute top-3 right-3 flex items-center gap-1">
-                    <!-- Edit Placeholder -->
-                    <button type="button" disabled class="w-10 h-10 flex items-center justify-center text-text-muted opacity-50 cursor-not-allowed hover:bg-bg rounded-lg transition-colors" title="Edit (Coming Soon)">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    </button>
                     <!-- Delete -->
                     <button type="button" wire:click="confirmDelete({{ $reminder->id }})" class="w-10 h-10 flex items-center justify-center text-text-muted hover:text-danger hover:bg-danger/10 rounded-lg transition-colors" title="Hapus">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -91,6 +87,22 @@
                 <div class="mt-4 pt-3 border-t border-border flex justify-between items-end">
                     <span class="text-xs text-text-muted font-medium mb-1">Nominal</span>
                     <span class="text-xl font-bold text-text">Rp {{ $reminder->amount_formatted }}</span>
+                </div>
+
+                {{-- Tombol Tambah ke Transaksi --}}
+                <div class="mt-3 pt-3 border-t border-border">
+                    <button type="button"
+                        wire:click="convertToTransaction({{ $reminder->id }})"
+                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 
+                               bg-primary hover:opacity-90 text-white text-sm font-semibold 
+                               rounded-xl transition-all shadow-sm hover:shadow-md"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Tambah ke Transaksi
+                    </button>
                 </div>
             </div>
         </div>

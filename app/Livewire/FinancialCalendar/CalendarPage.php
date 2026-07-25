@@ -11,6 +11,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Carbon\Carbon;
 
+use App\Models\Category;
+
 #[Layout('layouts.app')]
 class CalendarPage extends Component
 {
@@ -195,6 +197,53 @@ class CalendarPage extends Component
             'Pemasukan' => ['bg' => 'bg-[#EAF3DE]', 'text' => 'text-[#27500A]', 'dot' => 'bg-[#27500A]'],
             default => ['bg' => 'bg-gray-100', 'text' => 'text-gray-600', 'dot' => 'bg-gray-600'],
         };
+    }
+
+    /**
+     * Convert reminder menjadi transaksi — redirect ke halaman transaksi
+     * dengan data pre-filled.
+     */
+    public function convertToTransaction(int $reminderId): void
+    {
+        $reminder = FinancialReminder::where('user_id', Auth::id())
+            ->findOrFail($reminderId);
+
+        // Mapping kategori reminder (string enum) → tipe transaksi
+        $type = $reminder->category === 'Pemasukan' ? 'income' : 'expense';
+
+        // Mapping kategori reminder (string) → category_id
+        // Cari kategori user yang namanya sama dengan kategori reminder
+        $category = Category::withoutGlobalScopes()
+            ->where('user_id', Auth::id())
+            ->where('name', $reminder->category)
+            ->where('type', $type)
+            ->first();
+
+        // Jika tidak ada kategori yang cocok, cari tanpa filter type
+        if (!$category) {
+            $category = Category::withoutGlobalScopes()
+                ->where('user_id', Auth::id())
+                ->where('name', $reminder->category)
+                ->first();
+        }
+
+        // Bangun tanggal dari day/month/year
+        $date = sprintf('%04d-%02d-%02d', $reminder->year, $reminder->month, $reminder->day);
+
+        // Simpan data prefill ke session agar bisa diambil di halaman transaksi
+        session()->flash('prefill_transaction', [
+            'name'        => $reminder->description,
+            'amount'      => $reminder->amount,
+            'type'        => $type,
+            'category_id' => $category?->id,
+            'date'        => $date,
+        ]);
+
+        // Tutup popover
+        $this->selectedReminderId = null;
+
+        // Redirect ke halaman transaksi
+        $this->redirect(route('transaction.index'), navigate: true);
     }
 
     public function render()
