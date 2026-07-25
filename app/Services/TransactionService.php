@@ -171,6 +171,14 @@ class TransactionService
     {
         $query = Transaction::with('category');
 
+        $search = $filters['search'] ?? '';
+        if ($search) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('transactions.name', 'like', '%' . $search . '%')
+                  ->orWhere('transactions.amount', 'like', '%' . $search . '%');
+            });
+        }
+
         // Range tanggal → abaikan filter year & month
         $startDate = $filters['startDate'] ?? '';
         $endDate   = $filters['endDate']   ?? '';
@@ -249,10 +257,20 @@ class TransactionService
      */
     public function getPaginatedTransactions(array $filters, int $perPage = 10): array
     {
-        $transactions = $this->buildFilteredQuery($filters)
-            ->orderBy('date', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+        $query = $this->buildFilteredQuery($filters);
+
+        $sortBy = $filters['sortBy'] ?? 'latest';
+        if ($sortBy === 'oldest') {
+            $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
+        } elseif ($sortBy === 'amount_desc') {
+            $query->orderBy('amount', 'desc');
+        } elseif ($sortBy === 'amount_asc') {
+            $query->orderBy('amount', 'asc');
+        } else {
+            $query->orderBy('date', 'desc')->orderBy('created_at', 'desc');
+        }
+
+        $transactions = $query->paginate($perPage);
 
         $grouped = $transactions->getCollection()
             ->groupBy(fn($item) => $item->date->format('Y-m-d'));

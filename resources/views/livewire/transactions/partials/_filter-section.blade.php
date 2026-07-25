@@ -2,7 +2,7 @@
     Filter Section — Header Aksi + Filter Controls
     ============================================================ --}}
 
-<div class="bg-bg-sidebar px-5 sm:px-7 py-6">
+<div class="bg-bg-sidebar px-5 sm:px-7 py-6" x-data="{ showAdvanced: false }">
     <div class="flex flex-col space-y-6">
 
         {{-- Header + Action Buttons --}}
@@ -39,107 +39,115 @@
         {{-- Divider --}}
         <div class="border-t border-border"></div>
 
-        {{-- Filter Controls Grid --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 items-end bg-bg/50 p-4 rounded-xl ring-1 ring-inset ring-border/50">
+        {{-- Baris Utama Filter --}}
+        <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            {{-- Search Input (Paling lebar) --}}
+            <div class="relative w-full lg:flex-1">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <i class="ti ti-search text-text-muted text-lg"></i>
+                </span>
+                <input type="text" 
+                    wire:model.live.debounce.500ms="search"
+                    placeholder="Cari transaksi, catatan, atau nominal..."
+                    class="w-full rounded-xl border border-border bg-white pl-10 pr-4 py-2.5 text-[13px] font-medium text-text placeholder-text-muted focus:border-primary focus:ring-1 focus:ring-primary transition-shadow duration-150 outline-none" />
+            </div>
 
-            {{-- Filter Tahun --}}
-            <div>
-                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Tahun</label>
-                <select wire:model.live="filterYear"
-                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-border bg-bg-sidebar px-3.5 py-2.5 text-[13px] font-medium text-text focus:ring-2 focus:ring-inset focus:ring-primary transition-shadow">
-                    <option value="">Semua</option>
-                    @for ($year = date('Y'); $year >= 2020; $year--)
-                        <option value="{{ $year }}">{{ $year }}</option>
-                    @endfor
+            {{-- Controls Group --}}
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto flex-shrink-0">
+                {{-- Dropdown Quick-Date --}}
+                <select wire:model.live="quickDate"
+                    class="rounded-xl border border-border bg-white px-3.5 py-2.5 text-[13px] font-semibold text-text focus:border-primary focus:ring-1 focus:ring-primary transition-shadow outline-none cursor-pointer">
+                    <option value="this_month">Bulan ini</option>
+                    <option value="last_month">Bulan lalu</option>
+                    <option value="last_3_months">3 bulan terakhir</option>
+                    <option value="this_year">Tahun ini</option>
+                    <option value="custom">Rentang custom</option>
                 </select>
-            </div>
 
-            {{-- Filter Bulan --}}
-            <div>
-                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Bulan</label>
-                <select wire:model.live="filterMonth"
-                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-border bg-bg-sidebar px-3.5 py-2.5 text-[13px] font-medium text-text focus:ring-2 focus:ring-inset focus:ring-primary transition-shadow">
-                    <option value="">Semua</option>
-                    <option value="1">Januari</option>
-                    <option value="2">Februari</option>
-                    <option value="3">Maret</option>
-                    <option value="4">April</option>
-                    <option value="5">Mei</option>
-                    <option value="6">Juni</option>
-                    <option value="7">Juli</option>
-                    <option value="8">Agustus</option>
-                    <option value="9">September</option>
-                    <option value="10">Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                </select>
-            </div>
-
-            {{-- Filter Dari Tanggal --}}
-            <div>
-                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Dari</label>
-                <input type="date" wire:model.live="startDate"
-                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-border bg-bg-sidebar px-3.5 py-2.5 text-[13px] font-medium text-text focus:ring-2 focus:ring-inset focus:ring-primary transition-shadow" />
-            </div>
-
-            {{-- Filter Sampai Tanggal --}}
-            <div>
-                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Sampai</label>
-                <input type="date" wire:model.live="endDate"
-                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-border bg-bg-sidebar px-3.5 py-2.5 text-[13px] font-medium text-text focus:ring-2 focus:ring-inset focus:ring-primary transition-shadow" />
-            </div>
-
-            {{-- Filter Tipe --}}
-            <div>
-                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Tipe</label>
+                {{-- Dropdown Tipe --}}
                 <select wire:model.live="filterType"
-                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-border bg-bg-sidebar px-3.5 py-2.5 text-[13px] font-medium text-text focus:ring-2 focus:ring-inset focus:ring-primary transition-shadow">
-                    <option value="">Semua</option>
+                    class="rounded-xl border border-border bg-white px-3.5 py-2.5 text-[13px] font-semibold text-text focus:border-primary focus:ring-1 focus:ring-primary transition-shadow outline-none cursor-pointer">
+                    <option value="">Semua Tipe</option>
                     <option value="income">Pemasukan</option>
                     <option value="expense">Pengeluaran</option>
+                    <option value="transfer">Transfer</option>
                 </select>
-            </div>
 
-            {{-- Filter Kategori --}}
-            <div>
-                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Kategori</label>
+                {{-- Dropdown Kategori --}}
                 <select wire:model.live="filterCategory"
-                    class="w-full rounded-xl border-0 ring-1 ring-inset ring-border bg-bg-sidebar px-3.5 py-2.5 text-[13px] font-medium text-text focus:ring-2 focus:ring-inset focus:ring-primary transition-shadow">
-                    <option value="">Semua</option>
+                    class="rounded-xl border border-border bg-white px-3.5 py-2.5 text-[13px] font-semibold text-text focus:border-primary focus:ring-1 focus:ring-primary transition-shadow outline-none cursor-pointer truncate max-w-[150px]">
+                    <option value="">Semua Kategori</option>
                     @foreach ($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
-            </div>
 
-            {{-- Tombol Reset --}}
-            <div>
-                <label class="block text-[11px] font-bold text-transparent mb-1.5 uppercase tracking-wide select-none">-</label>
-                <button wire:click="resetFilters"
-                    class="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-border/50 hover:bg-border border-0 text-text-muted hover:text-text rounded-xl text-[13px] font-bold transition-colors duration-150 ring-1 ring-inset ring-text-muted/10">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Reset
+                {{-- Tombol Filter Lanjutan --}}
+                <button type="button"
+                    @click="showAdvanced = !showAdvanced"
+                    :class="showAdvanced || $wire.quickDate === 'custom' ? 'bg-primary text-white border-primary' : 'bg-white text-text-muted border-border hover:text-text'"
+                    class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 border rounded-xl text-[13px] font-bold transition-all duration-150 shadow-sm cursor-pointer">
+                    <i class="ti ti-adjustments-horizontal text-base"></i>
+                    <span>Filter Lanjutan</span>
                 </button>
             </div>
-
         </div>
 
-        {{-- Date Range Indicator --}}
-        @if($startDate || $endDate)
-            <div class="flex items-center gap-2 mt-2 px-1">
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-text bg-primary-light ring-1 ring-inset ring-primary/20 px-3 py-1 rounded-lg">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    {{ $startDate ? \Carbon\Carbon::parse($startDate)->format('d M Y') : '...' }}
-                    –
-                    {{ $endDate ? \Carbon\Carbon::parse($endDate)->format('d M Y') : '...' }}
-                </span>
-                <span class="text-[11px] font-semibold text-text-muted">Filter cepat dinonaktifkan sementara</span>
+        {{-- Baris Chip Filter Aktif --}}
+        @if(count($this->activeFilters) > 0)
+            <div class="flex flex-wrap items-center gap-2 mt-2">
+                <span class="text-[11px] font-bold text-text-muted uppercase tracking-wider mr-1">Filter Aktif:</span>
+                @foreach($this->activeFilters as $chip)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg ring-1 ring-inset ring-primary/20 transition-all duration-150">
+                        {{ $chip['label'] }}
+                        <button type="button" wire:click="removeFilter('{{ $chip['key'] }}')" class="hover:text-danger transition-colors focus:outline-none cursor-pointer">
+                            <i class="ti ti-x font-bold"></i>
+                        </button>
+                    </span>
+                @endforeach
+                <button type="button" wire:click="resetFilters" class="text-xs font-bold text-danger hover:text-danger/80 transition-colors ml-2 cursor-pointer">
+                    Reset Semua
+                </button>
             </div>
         @endif
+
+        {{-- Panel Filter Lanjutan (Collapsible) --}}
+        <div x-show="showAdvanced || $wire.quickDate === 'custom'" 
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+            class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white border border-border p-5 rounded-2xl shadow-sm mt-3"
+            x-cloak>
+            
+            {{-- Dari Tanggal --}}
+            <div>
+                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Dari Tanggal</label>
+                <input type="date" wire:model.live="startDate"
+                    class="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-[13px] font-medium text-text focus:border-primary focus:ring-1 focus:ring-primary transition-shadow outline-none" />
+            </div>
+
+            {{-- Sampai Tanggal --}}
+            <div>
+                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Sampai Tanggal</label>
+                <input type="date" wire:model.live="endDate"
+                    class="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-[13px] font-medium text-text focus:border-primary focus:ring-1 focus:ring-primary transition-shadow outline-none" />
+            </div>
+
+            {{-- Urutkan --}}
+            <div>
+                <label class="block text-[11px] font-bold text-text-muted mb-1.5 uppercase tracking-wide">Urutkan</label>
+                <select wire:model.live="sortBy"
+                    class="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-[13px] font-medium text-text focus:border-primary focus:ring-1 focus:ring-primary transition-shadow outline-none cursor-pointer">
+                    <option value="latest">Terbaru</option>
+                    <option value="oldest">Terlama</option>
+                    <option value="amount_desc">Nominal Tertinggi</option>
+                    <option value="amount_asc">Nominal Terendah</option>
+                </select>
+            </div>
+        </div>
+
     </div>
 </div>
