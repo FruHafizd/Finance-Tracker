@@ -27,11 +27,15 @@
                         <div class="p-2 rounded-xl text-xs font-semibold" style="background-color: {{ $transaction->category->color ?? '#F1F5F9' }}20; color: {{ $transaction->category->color ?? '#64748B' }}">
                             @if($transaction->type === 'income')
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                </svg>
+                            @elseif($transaction->type === 'transfer')
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                 </svg>
                             @else
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                                 </svg>
                             @endif
                         </div>
@@ -45,8 +49,8 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-sm font-bold {{ $transaction->type === 'income' ? 'text-emerald-600' : 'text-rose-600' }}">
-                            {{ $transaction->type === 'income' ? '+' : '-' }}Rp {{ number_format($transaction->amount, 0, ',', '.') }}
+                        <p class="text-sm font-bold {{ $transaction->type === 'income' ? 'text-emerald-600' : ($transaction->type === 'transfer' ? 'text-blue-600' : 'text-rose-600') }}">
+                            {{ $transaction->type === 'income' ? '+' : ($transaction->type === 'transfer' ? '⇅ ' : '-') }}Rp {{ number_format($transaction->amount, 0, ',', '.') }}
                         </p>
                     </div>
                 </div>
