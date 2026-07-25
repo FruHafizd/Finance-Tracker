@@ -9,10 +9,8 @@
                 <circle cx="50" cy="50" r="42" fill="none" stroke="#E2E8F0" stroke-width="16" />
                 @foreach ($chartData as $item)
                     <circle
-                        cx="50"
-                        cy="50"
-                        r="42"
-                        fill="none"
+                        wire:key="chart-circle-{{ $item['name'] }}"
+                        cx="50" cy="50" r="42" fill="none"
                         stroke="{{ $item['color'] }}"
                         stroke-width="16"
                         stroke-dasharray="{{ $item['dasharray'] }}"
@@ -28,7 +26,9 @@
         </div>
         <ul class="mt-5 space-y-2">
             @foreach ($chartData as $item)
-                <li class="flex items-center justify-between gap-3 text-xs">
+                <li 
+                wire:key="chart-legend-{{ $item['name'] }}"
+                class="flex items-center justify-between gap-3 text-xs">
                     <span class="flex items-center gap-2 min-w-0"><span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $item['color'] }}"></span><span class="text-text truncate">{{ $item['name'] }}</span></span>
                     <span class="text-right flex-shrink-0"><span class="block text-text font-medium">{{ number_format($item['percentage'], 1) }}%</span><span class="block text-[11px] text-text-muted">Rp {{ number_format($item['allocation'], 0, ',', '.') }}</span></span>
                 </li>
