@@ -51,7 +51,7 @@ new class extends Component
 >
   <!-- Logo Area -->
   <div class="h-14 flex items-center px-4 border-b border-[#E2E8F0] shrink-0">
-    <a href="{{ route('home') }}" wire:navigate class="flex items-center overflow-hidden">
+    <a href="{{ route('home') }}" wire:navigate class="flex items-center">
       <x-application-logo />
     </a>
     <!-- Mobile close button -->
