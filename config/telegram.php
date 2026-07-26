@@ -225,4 +225,26 @@ return [
     |
     */
     'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Telegram Alert Settings
+    |--------------------------------------------------------------------------
+    |
+    | Konfigurasi untuk fitur push notification alert via Telegram.
+    |
+    */
+
+    'alerts' => [
+        // Threshold persentase budget yang memicu alert (dalam persen)
+        // Contoh: [80, 100] artinya alert dikirim saat budget terpakai 80% dan 100%
+        'budget_thresholds' => [80, 100],
+
+        // Berapa hari sebelum jatuh tempo untuk mengirim reminder
+        // Contoh: [3, 1] artinya reminder dikirim H-3 dan H-1
+        'due_date_reminder_days' => [3, 1],
+    ],
+
+    // Secret token untuk proteksi endpoint cron
+    'cron_secret' => env('TELEGRAM_CRON_SECRET'),
 ];

@@ -15,7 +15,8 @@ class Budget extends Model
         'category_id',
         'limit_amount',
         'month',
-        'year'
+        'year',
+        'last_alert_threshold',
     ];
 
     protected static function booted()

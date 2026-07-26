@@ -16,10 +16,12 @@ class FinancialReminder extends Model
         'description',
         'amount',
         'remind_before',
+        'last_reminder_sent_at',
     ];
 
     protected $casts = [
         'amount' => 'integer',
+        'last_reminder_sent_at' => 'datetime',
     ];
 
     protected $appends = [

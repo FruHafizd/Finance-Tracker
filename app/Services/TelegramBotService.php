@@ -228,6 +228,23 @@ class TelegramBotService
     }
 
     /**
+     * Kirim pesan Telegram ke chat ID tertentu (plain text, tanpa parse_mode).
+     * Return true jika berhasil. Throw exception jika gagal — caller yang handle.
+     *
+     * Digunakan oleh TelegramAlertService untuk notifikasi push.
+     * Berbeda dengan reply() yang menelan exception.
+     */
+    public function sendMessage(int $chatId, string $text): bool
+    {
+        \Telegram\Bot\Laravel\Facades\Telegram::sendMessage([
+            'chat_id' => $chatId,
+            'text'    => $text,
+        ]);
+
+        return true;
+    }
+
+    /**
      * Send a reply to the specified chat ID.
      */
     public function reply(int $chatId, string $text): void

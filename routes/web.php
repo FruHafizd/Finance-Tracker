@@ -63,4 +63,24 @@ Route::view('/terms-of-service', 'legal.terms')->name('legal.terms');
 Route::post('/telegram/webhook', [\App\Http\Controllers\TelegramWebhookController::class, 'handle'])
     ->middleware('throttle:30,1');
 
+// Cron endpoint untuk Telegram alerts (dipanggil oleh cron-job.org / external cron service)
+Route::get('/api/cron/telegram-alerts', function (\Illuminate\Http\Request $request) {
+    // Validasi secret token via query parameter ?secret=xxx
+    $secret     = config('telegram.cron_secret');
+    $queryToken = $request->input('secret');
+
+    if (empty($secret) || $queryToken !== $secret) {
+        \Illuminate\Support\Facades\Log::warning('Unauthorized access attempt to cron/telegram-alerts endpoint.');
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    // Panggil artisan command
+    \Illuminate\Support\Facades\Artisan::call('telegram:send-alerts');
+
+    return response()->json([
+        'status'  => 'OK',
+        'output'  => \Illuminate\Support\Facades\Artisan::output(),
+    ]);
+})->middleware('throttle:6,1'); // Max 6 request per menit
+
 require __DIR__ . '/auth.php';
