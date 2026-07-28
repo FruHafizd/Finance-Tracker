@@ -80,6 +80,13 @@ new class extends Component
         <span class="lg:block md:hidden block truncate">{{ __('Transaksi') }}</span>
     </x-nav-link>
 
+    <x-nav-link :href="route('account.index')" :active="request()->routeIs('account.index')" wire:navigate>
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+        </svg>
+        <span class="lg:block md:hidden block truncate">{{ __('Rekening') }}</span>
+    </x-nav-link>
+
     <x-nav-link :href="route('budget.index')" :active="request()->routeIs('budget.index')" wire:navigate>
         <div class="relative flex items-center">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,21 +109,14 @@ new class extends Component
         </div>
     </x-nav-link>
 
-    <x-nav-link :href="route('account.index')" :active="request()->routeIs('account.index')" wire:navigate>
-        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-        </svg>
-        <span class="lg:block md:hidden block truncate">{{ __('Rekening') }}</span>
-    </x-nav-link>
-
-    <p class="px-3 mt-6 mb-2 text-xs font-semibold text-[#64748B] uppercase tracking-wider lg:block md:hidden block">Lainnya</p>
-
     <x-nav-link :href="route('financial-calendar.index')" :active="request()->routeIs('financial-calendar.index')" wire:navigate>
         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
         </svg>
         <span class="lg:block md:hidden block truncate">Kalender Keuangan</span>
     </x-nav-link>
+
+    <p class="px-3 mt-6 mb-2 text-xs font-semibold text-[#64748B] uppercase tracking-wider lg:block md:hidden block">Lainnya</p>
 
     <x-nav-link :href="route('settings.data')" :active="request()->routeIs('settings.data')" wire:navigate>
         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
