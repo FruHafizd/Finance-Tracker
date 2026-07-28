@@ -25,7 +25,7 @@
         @livewireStyles
     </head>
     <body class="font-sans antialiased text-text h-full" x-data="{ sidebarOpen: false, showCalendar: false }">
-        <div class="h-full bg-bg flex">
+        <div class="{{ request()->is('financial-calendar') ? 'h-full' : 'min-h-screen' }} bg-bg flex">
             <!-- Sidebar Navigation -->
             <livewire:layout.navigation />
 
