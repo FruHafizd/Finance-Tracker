@@ -29,12 +29,19 @@ export default {
                 danger: {
                     DEFAULT: '#EF4444', // Badge notifikasi / error
                 },
+                mint: {
+                    DEFAULT: '#10B981', // Angka pemasukan / status positif
+                },
                 border: {
                     DEFAULT: '#E2E8F0', // Border separator
                 }
             },
+            borderRadius: {
+                card: '10px',
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
             },
         },
     },

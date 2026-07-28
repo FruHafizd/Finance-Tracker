@@ -24,27 +24,27 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="font-sans antialiased text-[#0F172A] h-full" x-data="{ sidebarOpen: false, showCalendar: false }">
-        <div class="h-full bg-[#F8FAFC] flex">
+    <body class="font-sans antialiased text-text h-full" x-data="{ sidebarOpen: false, showCalendar: false }">
+        <div class="h-full bg-bg flex">
             <!-- Sidebar Navigation -->
             <livewire:layout.navigation />
 
             <!-- Main Content Area -->
             <div class="flex-1 lg:ml-64 md:ml-20 flex flex-col h-full min-h-0">
                 <!-- Mobile top bar (hamburger + logo) -->
-                <header class="md:hidden sticky top-0 z-40 bg-white border-b border-[#E2E8F0] px-4 h-14 flex items-center">
-                    <button @click="sidebarOpen = true" class="text-[#64748B] hover:text-[#0F172A] focus:outline-none p-1 -ml-1 rounded-md">
+                <header class="md:hidden sticky top-0 z-40 bg-bg-sidebar border-b border-border px-4 h-14 flex items-center">
+                    <button @click="sidebarOpen = true" class="text-text-muted hover:text-text focus:outline-none p-1 -ml-1 rounded-md">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
                     <div class="ml-3 flex items-center">
-                        <x-application-logo class="block h-8 w-auto fill-current text-gray-800" />
+                        <x-application-logo class="block h-8 w-auto fill-current text-text" />
                     </div>
                 </header>
 
                 @if (isset($header))
-                    <header class="bg-white shadow-sm border-b border-[#E2E8F0]">
+                    <header class="bg-bg-sidebar shadow-sm border-b border-border">
                         <div class="py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                         </div>
@@ -93,8 +93,8 @@
                 >
                     <div
                         :class="{
-                            'bg-white/90 border-emerald-500/30 shadow-emerald-500/10': toast.type === 'success',
-                            'bg-white/90 border-red-500/30 shadow-red-500/10': toast.type === 'danger',
+                            'bg-white/90 border-mint/30 shadow-mint/10': toast.type === 'success',
+                            'bg-white/90 border-danger/30 shadow-danger/10': toast.type === 'danger',
                             'bg-white/90 border-amber-500/30 shadow-amber-500/10': toast.type !== 'success' && toast.type !== 'danger'
                         }"
                         class="backdrop-blur-xl border-2 rounded-2xl p-4 shadow-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
@@ -103,8 +103,8 @@
                             <!-- Icon with soft glow background -->
                             <div
                                 :class="{
-                                    'bg-emerald-100 text-emerald-600 ring-emerald-50': toast.type === 'success',
-                                    'bg-red-100 text-red-600 ring-red-50': toast.type === 'danger',
+                                    'bg-mint/10 text-mint ring-mint/5': toast.type === 'success',
+                                    'bg-danger/10 text-danger ring-danger/5': toast.type === 'danger',
                                     'bg-amber-100 text-amber-600 ring-amber-50': toast.type !== 'success' && toast.type !== 'danger'
                                 }"
                                 class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ring-4"
@@ -141,7 +141,7 @@
                                     x-text="toast.title"
                                 ></h3>
                                 <p
-                                    class="text-gray-600 text-xs mt-1 leading-relaxed font-medium"
+                                    class="text-text-muted text-xs mt-1 leading-relaxed font-medium"
                                     x-text="toast.message"
                                 ></p>
                             </div>
@@ -149,7 +149,7 @@
                             <!-- Close Button -->
                             <button
                                 @click="remove(toast.id)"
-                                class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 hover:bg-gray-100 p-1.5 rounded-lg"
+                                class="flex-shrink-0 text-text-muted hover:text-text transition-colors bg-bg hover:bg-border/60 p-1.5 rounded-lg"
                             >
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -158,11 +158,11 @@
                         </div>
 
                         <!-- Modern Progress Bar -->
-                        <div class="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-100/50">
+                        <div class="absolute bottom-0 left-0 right-0 h-1.5 bg-border/50">
                             <div
                                 :class="{
-                                    'bg-emerald-500': toast.type === 'success',
-                                    'bg-red-500': toast.type === 'danger',
+                                    'bg-mint': toast.type === 'success',
+                                    'bg-danger': toast.type === 'danger',
                                     'bg-amber-500': toast.type !== 'success' && toast.type !== 'danger'
                                 }"
                                 class="h-full transition-all duration-100"
