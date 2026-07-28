@@ -20,8 +20,12 @@
         </div>
 
         <div class="hidden md:flex items-center gap-4">
-            <a href="{{ route('login') }}" class="px-5 py-3 text-sm font-semibold text-text-muted hover:text-text">Masuk</a>
-            <a href="{{ route('register') }}" class="px-5 py-3 rounded-full text-sm font-bold bg-primary text-white hover:bg-primary-hover transition">Mulai Gratis</a>
+            @guest
+                <a href="{{ route('login') }}" class="px-5 py-3 text-sm font-semibold text-text-muted hover:text-text">Masuk</a>
+                <a href="{{ route('register') }}" class="px-5 py-3 rounded-full text-sm font-bold bg-primary text-white hover:bg-primary-hover transition">Mulai Gratis</a>
+            @else
+                <a href="{{ route('home') }}" class="px-5 py-3 rounded-full text-sm font-bold bg-primary text-white hover:bg-primary-hover transition">Dashboard</a>
+            @endguest
         </div>
 
         {{-- Mobile menu toggle — pakai checkbox hack, tidak butuh Alpine/JS --}}
@@ -36,8 +40,12 @@
         <a href="#fitur" class="px-2 py-3 font-semibold rounded-lg hover:bg-primary-light hover:text-primary-hover">Fitur</a>
         <a href="#cara-kerja" class="px-2 py-3 font-semibold rounded-lg hover:bg-primary-light hover:text-primary-hover">Cara Kerja</a>
         <a href="#faq" class="px-2 py-3 font-semibold rounded-lg hover:bg-primary-light hover:text-primary-hover">FAQ</a>
-        <a href="{{ route('login') }}" class="px-2 py-3 font-semibold">Masuk</a>
-        <a href="{{ route('register') }}" class="mt-1 px-5 py-3 rounded-full text-center font-bold bg-primary text-white">Mulai Gratis</a>
+        @guest
+            <a href="{{ route('login') }}" class="px-2 py-3 font-semibold">Masuk</a>
+            <a href="{{ route('register') }}" class="mt-1 px-5 py-3 rounded-full text-center font-bold bg-primary text-white">Mulai Gratis</a>
+        @else
+            <a href="{{ route('home') }}" class="mt-1 px-5 py-3 rounded-full text-center font-bold bg-primary text-white">Dashboard</a>
+        @endguest
     </div>
 </nav>
 
@@ -56,7 +64,11 @@
                 Finansiku nyatet tiap rupiah yang masuk dan keluar, terus ngasih kamu satu tampilan jelas ke mana perginya.
             </p>
             <div class="flex gap-3.5 flex-wrap">
-                <a href="{{ route('register') }}" class="px-6 py-3.5 rounded-full font-bold text-white bg-primary hover:bg-primary-hover transition">Coba Gratis, 30 Detik Doang</a>
+                @guest
+                    <a href="{{ route('register') }}" class="px-6 py-3.5 rounded-full font-bold text-white bg-primary hover:bg-primary-hover transition">Coba Gratis, 30 Detik Doang</a>
+                @else
+                    <a href="{{ route('home') }}" class="px-6 py-3.5 rounded-full font-bold text-white bg-primary hover:bg-primary-hover transition">Ke Dashboard</a>
+                @endguest
                 <a href="#cara-kerja" class="px-6 py-3.5 rounded-full font-semibold text-text-muted hover:text-text">Lihat Cara Kerjanya</a>
             </div>
         </div>
@@ -332,10 +344,17 @@
                 Rp 0
             </div>
 
-            <a href="{{ route('register') }}"
-               class="inline-flex items-center justify-center px-8 py-4 rounded-full font-bold text-primary-hover bg-white hover:bg-primary-light transition shadow-lg">
-                Mulai Sekarang — Gratis
-            </a>
+            @guest
+                <a href="{{ route('register') }}"
+                   class="inline-flex items-center justify-center px-8 py-4 rounded-full font-bold text-primary-hover bg-white hover:bg-primary-light transition shadow-lg">
+                    Mulai Sekarang — Gratis
+                </a>
+            @else
+                <a href="{{ route('home') }}"
+                   class="inline-flex items-center justify-center px-8 py-4 rounded-full font-bold text-primary-hover bg-white hover:bg-primary-light transition shadow-lg">
+                    Ke Dashboard
+                </a>
+            @endguest
         </div>
     </div>
 </section>
