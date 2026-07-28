@@ -15,8 +15,8 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('user_id')->constrained()->cascadeOnDelete();
                 $table->foreignId('category_id')->constrained('categories')->restrictOnDelete();
-                $table->foreignId('account_id')->constrained()->restrictOnDelete();
-                $table->foreignId('to_account_id')->nullable()->constrained('accounts')->restrictOnDelete();
+                $table->foreignId('account_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('to_account_id')->nullable()->constrained('accounts')->cascadeOnDelete();
 
                 $table->string("name");
                 $table->unsignedInteger("amount");
