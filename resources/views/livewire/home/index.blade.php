@@ -72,6 +72,9 @@
 
     {{-- Transaction Form Modal --}}
     <livewire:transactions.transaction-form />
+    
+    {{-- Category Modal --}}
+    <livewire:transactions.category />
 </div>
 
 
