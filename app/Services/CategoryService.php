@@ -43,9 +43,23 @@ class CategoryService
      */
     public function createCategory(array $data, int $userId): Category
     {
+        $cleanName = strip_tags($data['name']);
+
+        // Validasi: User tidak boleh membuat kategori yang namanya sama dengan kategori sistem
+        $systemCategoryExists = Category::where('user_id', $userId)
+            ->where('is_system', true)
+            ->whereRaw('LOWER(name) = ?', [strtolower($cleanName)])
+            ->exists();
+
+        if ($systemCategoryExists) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'name' => 'Kategori ini sudah disediakan oleh sistem.'
+            ]);
+        }
+
         return $this->repository->create([
             'user_id' => $userId,
-            'name'    => strip_tags($data['name']),
+            'name'    => $cleanName,
             'color'   => $data['color'],
             'type'    => $data['type'],
         ]);
@@ -58,6 +72,14 @@ class CategoryService
      */
     public function updateCategory(int $categoryId, array $data): bool
     {
+        $category = $this->repository->findOrFail($categoryId);
+
+        if ($category->isSystem()) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'name' => 'Kategori sistem tidak dapat diedit.'
+            ]);
+        }
+
         return $this->repository->update($categoryId, [
             'name'  => $data['name'],
             'color' => $data['color'],
@@ -72,6 +94,15 @@ class CategoryService
      */
     public function deleteCategory(int $categoryId, int $userId): array
     {
+        $category = $this->repository->findOrFail($categoryId);
+
+        if ($category->isSystem()) {
+            return [
+                'success' => false,
+                'message' => 'Kategori sistem tidak dapat dihapus.',
+            ];
+        }
+
         // Cek dependensi sebelum hapus
         $dependencyCheck = $this->checkDependencies($categoryId, $userId);
 
@@ -83,7 +114,7 @@ class CategoryService
         }
 
         try {
-            $category = $this->repository->findOrFail($categoryId);
+
             $this->repository->delete($category);
 
             return [
@@ -137,5 +168,43 @@ class CategoryService
             'canDelete' => true,
             'reason'    => '',
         ];
+    }
+
+    /**
+     * Seed kategori default sistem untuk user.
+     */
+    public function seedDefaultCategories(int $userId): void
+    {
+        $categories = [
+            // Pemasukan
+            ["name" => "Pemasukan", "color" => "#22c55e", "type" => "income"],
+            ["name" => "Gaji", "color" => "#16a34a", "type" => "income"],
+            
+            // Pengeluaran
+            ["name" => "Makanan", "color" => "#f97316", "type" => "expense"],
+            ["name" => "Minuman", "color" => "#fb923c", "type" => "expense"],
+            ["name" => "Transportasi", "color" => "#3b82f6", "type" => "expense"],
+            ["name" => "Belanja", "color" => "#ef4444", "type" => "expense"],
+            ["name" => "Hiburan", "color" => "#a855f7", "type" => "expense"],
+            ["name" => "Kesehatan", "color" => "#14b8a6", "type" => "expense"],
+            ["name" => "Pendidikan", "color" => "#6366f1", "type" => "expense"],
+            ["name" => "Tagihan", "color" => "#f43f5e", "type" => "expense"],
+            ["name" => "Investasi", "color" => "#0ea5e9", "type" => "expense"],
+            ["name" => "Tabungan", "color" => "#10b981", "type" => "expense"],
+        ];
+
+        foreach ($categories as $cat) {
+            Category::firstOrCreate(
+                [
+                    "user_id" => $userId,
+                    "name"    => $cat["name"],
+                    "type"    => $cat["type"],
+                ],
+                [
+                    "color"     => $cat["color"],
+                    "is_system" => true,
+                ]
+            )->update(["is_system" => true]); // Memastikan yang sudah ada (misal Gaji) diubah jadi system
+        }
     }
 }

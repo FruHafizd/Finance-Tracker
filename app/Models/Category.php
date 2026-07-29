@@ -15,6 +15,11 @@ class Category extends Model
         'name',
         'type',
         'color',
+        'is_system',
+    ];
+
+    protected $casts = [
+        'is_system' => 'boolean',
     ];
 
     protected static function booted()
@@ -35,4 +40,18 @@ class Category extends Model
         return $this->hasOne(Budget::class);    
     }
 
+    public function isSystem(): bool
+    {
+        return $this->is_system;
+    }
+
+    public function scopeSystem(Builder $query): Builder
+    {
+        return $query->where('is_system', true);
+    }
+
+    public function scopeUserOwned(Builder $query): Builder
+    {
+        return $query->where('is_system', false);
+    }
 }

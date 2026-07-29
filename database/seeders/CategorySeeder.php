@@ -14,23 +14,11 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::first();
+        $users = User::all();
+        $categoryService = app(\App\Services\CategoryService::class);
 
-        $categories = [
-            ["name" => "Gaji", "color" => "#22c55e", "type" => "income"],
-            ["name" => "Makanan", "color" => "#f97316", "type" => "expense"],
-            ["name" => "Transportasi", "color" => "#3b82f6", "type" => "expense"],
-            ["name" => "Hiburan", "color" => "#a855f7", "type" => "expense"],
-            ["name" => "Belanja", "color" => "#ef4444", "type" => "expense"],
-        ];
-
-        foreach ($categories as $cat) {
-            Category::create([
-                "user_id" => $user->id,
-                "name" => $cat["name"],
-                "color" => $cat["color"],
-                "type" => $cat["type"],
-            ]);
+        foreach ($users as $user) {
+            $categoryService->seedDefaultCategories($user->id);
         }
     }
 }

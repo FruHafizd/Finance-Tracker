@@ -26,6 +26,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'auto_backup_enabled',
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            app(\App\Services\CategoryService::class)->seedDefaultCategories($user->id);
+        });
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

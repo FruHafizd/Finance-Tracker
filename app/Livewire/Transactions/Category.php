@@ -59,6 +59,12 @@ class Category extends Component
     {
         $category = app(CategoryService::class)->findById($id);
 
+        if ($category->isSystem()) {
+            $this->errorMessage = 'Kategori sistem tidak dapat diedit.';
+            $this->notify('Gagal!', $this->errorMessage, 'danger');
+            return;
+        }
+
         $this->editId = $id;
         $this->name = $category->name;
         $this->color = $category->color;
