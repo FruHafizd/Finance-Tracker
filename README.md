@@ -22,7 +22,7 @@ Berikut adalah fitur-fitur utama yang tersedia dalam aplikasi:
 Aplikasi ini memanfaatkan arsitektur database relasional dengan tabel-tabel utama berikut:
 
 - **`users`**
-  Tabel induk menyimpan data autentikasi dan informasi akun user, mencakup field *last_review_seen* dsb.
+  Tabel induk menyimpan data autentikasi dan informasi akun user.
 
 - **`accounts`**
   Menyimpan daftar dompet keuangan user.

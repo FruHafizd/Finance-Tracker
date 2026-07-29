@@ -72,11 +72,6 @@
 
     {{-- Transaction Form Modal --}}
     <livewire:transactions.transaction-form />
-
-    {{-- Month in Review Story --}}
-    @if($showReview)
-        <x-story-modal :reviewData="$reviewData" />
-    @endif
 </div>
 
 
