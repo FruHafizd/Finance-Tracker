@@ -2,14 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Models\FavoriteTransaction;
 use App\Repositories\FavoriteTransactionRepository;
+use App\Repositories\TransactionRepository;
 use Illuminate\Support\Collection;
 
 class FavoriteTransactionService
 {
     public function __construct(
-        protected FavoriteTransactionRepository $repository
+        protected FavoriteTransactionRepository $repository,
+        protected TransactionRepository $transactionRepository
     ) {}
 
     public function getFavoritesForUser(int $userId): Collection
@@ -38,5 +41,22 @@ class FavoriteTransactionService
     {
         $favorite = $this->repository->findOrFailForUser($id, $userId);
         $this->repository->delete($favorite);
+    }
+
+    /**
+     * Ambil kategori yang difilter berdasarkan jenis transaksi.
+     * Menggunakan logic yang sama dengan TransactionService.
+     */
+    public function getFilteredCategories(int $userId, string $transactionType): Collection
+    {
+        return $this->transactionRepository->getCategoriesForType($userId, $transactionType);
+    }
+
+    /**
+     * Ambil semua kategori milik user (untuk fallback ketika type belum dipilih).
+     */
+    public function getAllCategories(int $userId): Collection
+    {
+        return Category::where('user_id', $userId)->orderBy('name')->get();
     }
 }
