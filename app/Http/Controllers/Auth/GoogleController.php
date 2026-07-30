@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
@@ -46,14 +47,16 @@ class GoogleController extends Controller
                 }
                 Auth::login($user);
             } else {
-                // Create a new user
-                $newUser = User::create([
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'google_id' => $googleUser->id,
-                    'password' => Hash::make(Str::random(24)),
-                    'email_verified_at' => now(),
-                ]);
+                // Create a new user inside a transaction
+                $newUser = DB::transaction(function () use ($googleUser) {
+                    return User::create([
+                        'name' => $googleUser->name,
+                        'email' => $googleUser->email,
+                        'google_id' => $googleUser->id,
+                        'password' => Hash::make(Str::random(24)),
+                        'email_verified_at' => now(),
+                    ]);
+                });
 
                 Auth::login($newUser);
             }
