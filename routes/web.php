@@ -64,7 +64,7 @@ Route::post('/telegram/webhook', [\App\Http\Controllers\TelegramWebhookControlle
     ->middleware('throttle:30,1');
 
 // Cron endpoint untuk Telegram alerts (dipanggil oleh cron-job.org / external cron service)
-Route::get('/api/cron/telegram-alerts', function (\Illuminate\Http\Request $request) {
+Route::get('/cron/telegram-alerts', function (\Illuminate\Http\Request $request) {
     // Validasi secret token via query parameter ?secret=xxx
     $secret     = config('telegram.cron_secret');
     $queryToken = $request->input('secret');
