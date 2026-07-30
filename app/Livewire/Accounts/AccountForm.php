@@ -3,7 +3,7 @@
 namespace App\Livewire\Accounts;
 
 use App\Enums\AccountProvider;
-use App\Models\Account;
+use App\Services\AccountService;
 use App\Traits\WithNotifications;
 use Livewire\Component;
 
@@ -18,6 +18,8 @@ class AccountForm extends Component
     public string $provider = '';
     public float  $balance  = 0;
     public string $color    = '#475569';
+
+    protected AccountService $accountService;
 
     protected function rules(): array
     {
@@ -42,13 +44,22 @@ class AccountForm extends Component
         'open-account-form' => 'openForm',
     ];
 
-    public function openForm(?int $id = null): void
+    public function boot(AccountService $accountService): void
+    {
+        $this->accountService = $accountService;
+    }
+
+    public function openForm(?int $id = null, ?string $type = null): void
     {
         $this->resetForm();
         $this->accountId = $id;
 
+        if ($type) {
+            $this->type = $type;
+        }
+
         if ($id) {
-            $account = Account::findOrFail($id);
+            $account = $this->accountService->findOrFail($id);
 
             $this->name     = $account->name;
             $this->type     = $account->type;
@@ -84,16 +95,13 @@ class AccountForm extends Component
         ];
 
         if ($this->accountId) {
-            $account = Account::findOrFail($this->accountId);
-            $account->update($data);
+            $account = $this->accountService->updateAccount($this->accountId, $data);
             $title   = 'Rekening diperbarui';
             $message = "Rekening {$account->name} berhasil diperbarui.";
         } else {
-            $data['user_id']    = auth()->id();
-            $data['sort_order'] = Account::where('user_id', auth()->id())->max('sort_order') + 1;
-            $account            = Account::create($data);
-            $title              = 'Rekening ditambahkan';
-            $message            = "Rekening {$account->name} berhasil ditambahkan.";
+            $account = $this->accountService->createAccount($data);
+            $title   = 'Rekening ditambahkan';
+            $message = "Rekening {$account->name} berhasil ditambahkan.";
         }
 
         $this->dispatch('close-modal', 'modal-account');

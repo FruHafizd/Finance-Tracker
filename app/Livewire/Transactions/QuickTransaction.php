@@ -2,18 +2,19 @@
 
 namespace App\Livewire\Transactions;
 
-use App\Models\Category;
-use App\Models\FavoriteTransaction;
-use App\Models\Transaction;
+use App\Models\Account;
+use App\Services\FavoriteTransactionService;
+use App\Services\TransactionService;
 use App\Traits\WithNotifications;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class QuickTransaction extends Component
 {
     use WithNotifications;
+    
     public $favorites = [];
-    public $categories = [];
     public ?int $deleteId = null;
     
     // Properties for editing favorite transaction
@@ -34,51 +35,66 @@ class QuickTransaction extends Component
     #[Validate('required', as: 'rekening')]
     public $editAccountId = '';
 
-    public $accounts = [];
-
     protected $listeners = [
         'favorite-created' => 'loadFavorites',
-        'category-created' => 'loadCategories',
-        'account-saved'    => 'loadAccounts',
-        'account-deleted'  => 'loadAccounts',
+        'category-created' => '$refresh',
+        'account-saved'    => '$refresh',
+        'account-deleted'  => '$refresh',
     ];
 
     public function mount()
     {
-        $this->loadCategories();
-        $this->loadAccounts();
         $this->loadFavorites();
     }
 
-    public function loadAccounts()
+    #[Computed]
+    public function accounts()
     {
-        $this->accounts = \App\Models\Account::where('user_id', auth()->id())->get();
+        return Account::where('user_id', auth()->id())->get();
     }
 
-    public function loadCategories()
+    /**
+     * Kategori yang difilter berdasarkan jenis transaksi yang dipilih.
+     * Jika type belum dipilih, tampilkan semua kategori.
+     */
+    #[Computed]
+    public function filteredCategories()
     {
-        $this->categories = Category::where('user_id', auth()->id())->get();
+        $service = app(FavoriteTransactionService::class);
+
+        if (! $this->editType) {
+            return $service->getAllCategories(auth()->id());
+        }
+
+        return $service->getFilteredCategories(auth()->id(), $this->editType);
     }
 
     public function loadFavorites()
     {
-        $this->favorites = FavoriteTransaction::with(['category', 'account'])->get();
+        $this->favorites = app(FavoriteTransactionService::class)->getFavoritesForUser(auth()->id());
+    }
+
+    /**
+     * Saat user mengganti jenis transaksi, reset kategori yang dipilih.
+     */
+    public function updatedEditType($value): void
+    {
+        $this->editCategoryId = null;
     }
 
     // 1-click langsung save, date = hari ini
     public function saveNow(int $favoriteId)
     {
-        $fav = FavoriteTransaction::findOrFail($favoriteId);
+        $fav = app(FavoriteTransactionService::class)->getFavoriteForUser($favoriteId, auth()->id());
 
-        Transaction::create([
-            'user_id'     => auth()->id(),
+        app(TransactionService::class)->createTransaction([
             'category_id' => $fav->category_id,
             'account_id'  => $fav->account_id,
             'name'        => $fav->name,
             'amount'      => $fav->amount,
             'type'        => $fav->type,
             'date'        => now()->toDateString(),
-        ]);
+        ], auth()->user());
 
         $this->dispatch('transaction-created');
         $this->notify('Transaksi Sukses!', '1 Transaksi cepat berhasil ditambahkan ke catatan.', 'success');
@@ -87,7 +103,7 @@ class QuickTransaction extends Component
     // Kirim data ke modal Create supaya pre-filled
     public function prefill(int $favoriteId)
     {
-        $fav = FavoriteTransaction::findOrFail($favoriteId);
+        $fav = app(FavoriteTransactionService::class)->getFavoriteForUser($favoriteId, auth()->id());
 
         $this->dispatch('prefill-transaction', data: [
             'name'        => $fav->name,
@@ -104,7 +120,7 @@ class QuickTransaction extends Component
     // Load data template favorit untuk diubah
     public function editFavorite(int $favoriteId)
     {
-        $fav = FavoriteTransaction::findOrFail($favoriteId);
+        $fav = app(FavoriteTransactionService::class)->getFavoriteForUser($favoriteId, auth()->id());
         
         $this->editId = $fav->id;
         $this->editName = $fav->name;
@@ -121,14 +137,13 @@ class QuickTransaction extends Component
     {
         $this->validate();
         
-        $fav = FavoriteTransaction::findOrFail($this->editId);
-        $fav->update([
+        app(FavoriteTransactionService::class)->updateFavorite($this->editId, [
             'name' => $this->editName,
             'amount' => $this->editAmount,
             'type' => $this->editType,
             'category_id' => $this->editCategoryId,
             'account_id' => $this->editAccountId,
-        ]);
+        ], auth()->id());
         
         $this->loadFavorites();
         $this->dispatch('close-modal', 'modal-edit-favorite');
@@ -144,7 +159,7 @@ class QuickTransaction extends Component
     // Hapus dari favorite
     public function delete(): void
     {
-        FavoriteTransaction::findOrFail($this->deleteId)->delete();
+        app(FavoriteTransactionService::class)->deleteFavorite($this->deleteId, auth()->id());
         $this->deleteId = null;
         $this->loadFavorites();
         $this->dispatch('close-modal', 'modal-delete-favorit');

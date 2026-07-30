@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
     <head>
         <meta name="google-site-verification" content="XDUltp0hE8n1iQSBjhJ339PM7d_XqldKzRBP33wC-m4" />
         <meta charset="utf-8">
@@ -8,31 +8,53 @@
 
         <title>{{ $title ?? config('app.name') }}</title>
 
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="icon" href="{{ asset('favicon.ico') }}">
+        <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="font-sans antialiased" x-data="{ showCalendar: false }">
-       <div class="min-h-screen bg-gray-50 flex flex-col">
+    <body class="font-sans antialiased text-text h-full" x-data="{ sidebarOpen: false, showCalendar: false }">
+        <div class="{{ request()->is('financial-calendar') ? 'h-full' : 'min-h-screen' }} bg-bg flex">
+            <!-- Sidebar Navigation -->
             <livewire:layout.navigation />
 
-            @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+            <!-- Main Content Area -->
+            <div class="flex-1 lg:ml-64 md:ml-20 flex flex-col h-full min-h-0">
+                <!-- Mobile top bar (hamburger + logo) -->
+                <header class="md:hidden sticky top-0 z-40 bg-bg-sidebar border-b border-border px-4 h-14 flex items-center">
+                    <button @click="sidebarOpen = true" class="text-text-muted hover:text-text focus:outline-none p-1 -ml-1 rounded-md">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <div class="ml-3 flex items-center">
+                        <x-application-logo class="block h-8 w-auto fill-current text-text" />
                     </div>
                 </header>
-            @endif
 
-            <main class="flex-1">
-                {{ $slot }}
-            </main>
+                @if (isset($header))
+                    <header class="bg-bg-sidebar shadow-sm border-b border-border">
+                        <div class="py-6 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endif
 
-            <x-footer />
+                <main class="flex-1 {{ request()->is('financial-calendar') ? 'p-0 flex flex-col min-h-0 overflow-hidden' : 'p-4 sm:p-6 lg:p-8' }}">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
 
         {{-- Budget Alert Toast --}}
@@ -71,8 +93,8 @@
                 >
                     <div
                         :class="{
-                            'bg-white/90 border-emerald-500/30 shadow-emerald-500/10': toast.type === 'success',
-                            'bg-white/90 border-red-500/30 shadow-red-500/10': toast.type === 'danger',
+                            'bg-white/90 border-mint/30 shadow-mint/10': toast.type === 'success',
+                            'bg-white/90 border-danger/30 shadow-danger/10': toast.type === 'danger',
                             'bg-white/90 border-amber-500/30 shadow-amber-500/10': toast.type !== 'success' && toast.type !== 'danger'
                         }"
                         class="backdrop-blur-xl border-2 rounded-2xl p-4 shadow-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
@@ -81,8 +103,8 @@
                             <!-- Icon with soft glow background -->
                             <div
                                 :class="{
-                                    'bg-emerald-100 text-emerald-600 ring-emerald-50': toast.type === 'success',
-                                    'bg-red-100 text-red-600 ring-red-50': toast.type === 'danger',
+                                    'bg-mint/10 text-mint ring-mint/5': toast.type === 'success',
+                                    'bg-danger/10 text-danger ring-danger/5': toast.type === 'danger',
                                     'bg-amber-100 text-amber-600 ring-amber-50': toast.type !== 'success' && toast.type !== 'danger'
                                 }"
                                 class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ring-4"
@@ -119,7 +141,7 @@
                                     x-text="toast.title"
                                 ></h3>
                                 <p
-                                    class="text-gray-600 text-xs mt-1 leading-relaxed font-medium"
+                                    class="text-text-muted text-xs mt-1 leading-relaxed font-medium"
                                     x-text="toast.message"
                                 ></p>
                             </div>
@@ -127,7 +149,7 @@
                             <!-- Close Button -->
                             <button
                                 @click="remove(toast.id)"
-                                class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 hover:bg-gray-100 p-1.5 rounded-lg"
+                                class="flex-shrink-0 text-text-muted hover:text-text transition-colors bg-bg hover:bg-border/60 p-1.5 rounded-lg"
                             >
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -136,11 +158,11 @@
                         </div>
 
                         <!-- Modern Progress Bar -->
-                        <div class="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-100/50">
+                        <div class="absolute bottom-0 left-0 right-0 h-1.5 bg-border/50">
                             <div
                                 :class="{
-                                    'bg-emerald-500': toast.type === 'success',
-                                    'bg-red-500': toast.type === 'danger',
+                                    'bg-mint': toast.type === 'success',
+                                    'bg-danger': toast.type === 'danger',
                                     'bg-amber-500': toast.type !== 'success' && toast.type !== 'danger'
                                 }"
                                 class="h-full transition-all duration-100"
@@ -159,11 +181,8 @@
             }
         </style>
 
-        {{-- Financial Calendar Slide-over --}}
-        <livewire:financial-calendar />
 
         @livewireScripts
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         @stack('scripts')
     </body>
 </html>

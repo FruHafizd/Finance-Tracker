@@ -22,7 +22,6 @@ class Transaction extends Model
         'amount',
         'type',
         'date',
-        'recurring_transactions_id',
         'category_id',
         'account_id',
         'to_account_id',
@@ -56,4 +55,56 @@ class Transaction extends Model
         return $this->belongsTo(Account::class, 'to_account_id');
     }
 
+    /* ------------------------------------------------------------------ */
+    /*  Query Scopes                                                      */
+    /* ------------------------------------------------------------------ */
+
+    /**
+     * Filter transaksi bulan ini.
+     */
+    public function scopeCurrentMonth(Builder $query): Builder
+    {
+        return $query->whereBetween('date', [
+            now()->startOfMonth(),
+            now()->endOfMonth(),
+        ]);
+    }
+
+    /**
+     * Filter transaksi bulan lalu.
+     */
+    public function scopePreviousMonth(Builder $query): Builder
+    {
+        return $query->whereBetween('date', [
+            now()->subMonth()->startOfMonth(),
+            now()->subMonth()->endOfMonth(),
+        ]);
+    }
+
+    /**
+     * Filter transaksi berdasarkan bulan & tahun tertentu.
+     */
+    public function scopeForMonth(Builder $query, int $month, int $year): Builder
+    {
+        return $query->whereMonth('date', $month)
+                     ->whereYear('date', $year);
+    }
+
+    /**
+     * Filter berdasarkan tipe (income / expense).
+     */
+    public function scopeOfType(Builder $query, string $type): Builder
+    {
+        return $query->where('transactions.type', $type);
+    }
+
+    public function scopeIncome(Builder $query): Builder
+    {
+        return $query->ofType('income');
+    }
+
+    public function scopeExpense(Builder $query): Builder
+    {
+        return $query->ofType('expense');
+    }
 }

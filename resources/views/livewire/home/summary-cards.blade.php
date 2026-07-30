@@ -63,24 +63,23 @@ $cards = [
     } else {
         $valueStr = 'Rp ' . number_format($card['value'], 0, ',', '.');
     }
-
     // Penentuan styling card berdasarkan tipe (Income/Expense/Balance)
     if ($card['key'] === 'income') {
         $cardBg = 'bg-white rounded-2xl p-5 shadow-sm ring-1 ring-inset ring-gray-100 hover:shadow-md transition-shadow duration-200 flex flex-col justify-between';
-        $labelColor = 'text-gray-500';
-        $valueColor = 'text-gray-900';
+        $labelColor = 'text-slate-500';
+        $valueColor = 'text-slate-900';
         $iconBg = 'bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-100/50';
     } elseif ($card['key'] === 'expense') {
         $cardBg = 'bg-white rounded-2xl p-5 shadow-sm ring-1 ring-inset ring-gray-100 hover:shadow-md transition-shadow duration-200 flex flex-col justify-between';
-        $labelColor = 'text-gray-500';
-        $valueColor = 'text-gray-900';
+        $labelColor = 'text-slate-500';
+        $valueColor = 'text-slate-900';
         $iconBg = 'bg-rose-50 text-rose-600 ring-1 ring-inset ring-rose-100/50';
     } else {
-        // Balance (Saldo Bersih)
-        $cardBg = 'bg-slate-900 rounded-2xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col justify-between';
-        $labelColor = 'text-slate-300';
+        // Balance (Saldo Bersih) - Menggunakan tema primary modern (#0EA5E9) agar memukau dan konsisten
+        $cardBg = 'bg-gradient-to-br from-sky-500 to-sky-600 rounded-2xl p-5 shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col justify-between text-white';
+        $labelColor = 'text-sky-100';
         $valueColor = 'text-white';
-        $iconBg = 'bg-slate-700/50 text-white border border-slate-600/30';
+        $iconBg = 'bg-white/20 text-white border border-white/10 backdrop-blur-sm';
     }
 @endphp
 
@@ -100,7 +99,7 @@ $cards = [
 
     <div class="flex items-center gap-2.5 min-h-[28px]">
         @if(!$card['hasPrev'])
-            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-slate-400' : 'text-gray-400' }}">— Belum ada data bulan lalu</span>
+            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-sky-200' : 'text-slate-400' }}">— Belum ada data bulan lalu</span>
         @elseif($card['key'] === 'balance')
             <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md ring-1 ring-inset bg-white/20 text-white ring-white/30 backdrop-blur-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
@@ -108,9 +107,9 @@ $cards = [
                 </svg>
                 {{ $isUp ? '+' : '-' }}Rp {{ number_format(abs($diff), 0, ',', '.') }}
             </span>
-            <span class="text-xs font-medium text-slate-400">dari bulan lalu</span>
+            <span class="text-xs font-medium text-sky-100">dari bulan lalu</span>
         @elseif($card['change'] === null)
-            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-slate-400' : 'text-gray-400' }}">— Belum ada data bulan lalu</span>
+            <span class="text-xs font-medium italic {{ $card['key'] === 'balance' ? 'text-sky-200' : 'text-slate-400' }}">— Belum ada data bulan lalu</span>
         @else
             <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md ring-1 ring-inset {{ $badgeClass }}">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
@@ -118,9 +117,10 @@ $cards = [
                 </svg>
                 {{ $isUp ? '+' : '' }}{{ $card['change'] }}%
             </span>
-            <span class="text-xs font-medium text-gray-500">dari bulan lalu</span>
+            <span class="text-xs font-medium text-slate-500 font-medium">dari bulan lalu</span>
         @endif
     </div>
 </div>
+
 @endforeach
 </div>

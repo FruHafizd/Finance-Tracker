@@ -23,8 +23,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'google_id',
-        'last_review_seen',
+        'auto_backup_enabled',
     ];
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            app(\App\Services\CategoryService::class)->seedDefaultCategories($user->id);
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -63,4 +70,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(FinancialReminder::class);
     }
 
+    public function telegramAccount()
+    {
+        return $this->hasOne(TelegramAccount::class);
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
 }

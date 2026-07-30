@@ -61,30 +61,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Breakdown Stats -->
-    <div class="mt-6 pt-6 border-t border-gray-100">
-        @if($scoreData['has_transactions'])
-            <div class="grid grid-cols-3 gap-4">
-                <div class="text-center">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Simpanan</p>
-                    <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['savings'] }}</p>
-                </div>
-                <div class="text-center border-x border-gray-100 px-2">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Anggaran</p>
-                    <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['budget'] }}</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Aktivitas</p>
-                    <p class="text-sm font-bold text-gray-700">{{ $scoreData['breakdown']['consistency'] }}</p>
-                </div>
-            </div>
-        @else
-            <div class="flex flex-col items-center justify-center text-center px-4 py-2">
-                <p class="text-[11px] font-semibold text-gray-400 leading-relaxed italic">
-                    Catat pemasukan dan pengeluaran pertamamu di bulan ini untuk melihat analisis skor finansialmu.
-                </p>
-            </div>
-        @endif
-    </div>
 </div>
+

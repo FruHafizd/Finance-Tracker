@@ -102,7 +102,7 @@ class TransactionCrudTest extends TestCase
     }
 
     #[Test]
-    public function validasi_name_wajib_diisi(): void
+    public function name_transaksi_adalah_optional(): void
     {
         Livewire::actingAs($this->user)
             ->test(TransactionForm::class)
@@ -112,7 +112,7 @@ class TransactionCrudTest extends TestCase
             ->set('category_id', $this->cat->id)
             ->set('date',        now()->format('Y-m-d'))
             ->call('save')
-            ->assertHasErrors(['name' => 'required']);
+            ->assertHasNoErrors(['name']);
     }
 
     #[Test]

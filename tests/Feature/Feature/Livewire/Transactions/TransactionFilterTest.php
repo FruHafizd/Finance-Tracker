@@ -163,7 +163,7 @@ class TransactionFilterTest extends TestCase
     #[Test]
     public function filter_range_tampilkan_data_dalam_range(): void
     {
-        $this->income(1_000_000, '2025-03-10');
+        $this->income(1_500_000, '2025-03-10');
         $this->income(2_000_000, '2025-05-20');
         $this->income(3_000_000, '2025-07-01'); // di luar range
 
@@ -171,7 +171,7 @@ class TransactionFilterTest extends TestCase
             ->test(Index::class)
             ->set('startDate', '2025-03-01')
             ->set('endDate',   '2025-05-31')
-            ->assertSee('1.000.000')
+            ->assertSee('1.500.000')
             ->assertSee('2.000.000')
             ->assertDontSee('3.000.000');
     }

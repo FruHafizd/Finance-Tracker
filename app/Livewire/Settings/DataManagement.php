@@ -2,12 +2,11 @@
 
 namespace App\Livewire\Settings;
 
-use App\Models\Account;
-use App\Models\Category;
-use App\Models\Transaction;
+use App\Services\Backup\BackupService;
+use App\Services\Backup\BackupStorageService;
+use App\Services\Backup\RestoreService;
 use App\Traits\WithNotifications;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -16,166 +15,140 @@ class DataManagement extends Component
     use WithFileUploads, WithNotifications;
 
     public $jsonFile;
-    public $transactionCount;
-    public $categoryCount;
-    public $accountCount;
+    public $stats = [];
+    public $backups = [];
+    public $autoBackupEnabled = false;
+    
+    // UI states
+    public $showRestoreConfirm = false;
+    public $isProcessing = false;
 
-    public function mount()
+    public function mount(BackupService $backupService, BackupStorageService $storageService)
     {
-        $this->loadStats();
+        $this->loadData($backupService, $storageService);
+        $this->autoBackupEnabled = (bool) (auth()->user()->auto_backup_enabled ?? false);
     }
 
-    public function loadStats()
-    {
-        // Global scopes handle user_id filtering automatically
-        $this->transactionCount = Transaction::count();
-        $this->categoryCount = Category::count();
-        $this->accountCount = Account::count();
-    }
-
-    /**
-     * Backup data to JSON with security scoping.
-     */
-    public function backup()
+    public function loadData(BackupService $backupService, BackupStorageService $storageService)
     {
         $userId = auth()->id();
-        
-        $data = [
-            'accounts' => Account::all()->map(fn($item) => $this->sanitizeForExport($item)),
-            'categories' => Category::all()->map(fn($item) => $this->sanitizeForExport($item)),
-            'transactions' => Transaction::all()->map(fn($item) => $this->sanitizeForExport($item)),
-            'metadata' => [
-                'exported_at' => now()->toDateTimeString(),
-                'version' => '1.0.0',
-                'user_id' => $userId, // Included for verification, but ignored on restore
-            ],
-        ];
-
-        $fileName = 'finansiku-backup-' . now()->format('Ymd-His') . '.json';
-        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-
-        return response()->streamDownload(function () use ($json) {
-            echo $json;
-        }, $fileName);
+        $this->stats = $backupService->getStats($userId);
+        $this->backups = $storageService->listBackups($userId);
     }
 
-    /**
-     * Restore data from JSON with heavy security sanitization and mapping.
-     */
-    public function restore()
+    public function backup(BackupService $backupService, BackupStorageService $storageService)
     {
-        $this->validate([
-            'jsonFile' => 'required|file|mimes:json|max:5120',
-        ]);
-
-        $content = file_get_contents($this->jsonFile->getRealPath());
-        $data = json_decode($content, true);
-
-        if (!$this->isValidBackupFormat($data)) {
-            session()->flash('error', 'Berkas JSON tidak valid atau korup.');
+        $userId = auth()->id();
+        $maxAttempts = config('backup.rate_limit.max_backups_per_hour', 5);
+        
+        // Rate Limiter per User, maskimal attempts / jam
+        if (RateLimiter::tooManyAttempts('backup:' . $userId, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn('backup:' . $userId);
+            $this->notify('Gagal!', "Terlalu sering melakukan backup. Coba lagi dalam {$seconds} detik.", 'error');
             return;
         }
 
+        $this->isProcessing = true;
+
         try {
-            DB::beginTransaction();
-
-            $userId = auth()->id();
-            $accountMap = [];
-            $categoryMap = [];
-
-            // 1. Restore Accounts (Minimalist Slate Context)
-            foreach ($data['accounts'] as $item) {
-                $clean = $this->sanitizeIncomingAccount($item);
-                $oldId = $clean['old_id'];
-                unset($clean['old_id']);
-                
-                $clean['user_id'] = $userId; // RIGID SECURITY: Enforce current user
-                $new = Account::create($clean);
-                $accountMap[$oldId] = $new->id;
-            }
-
-            // 2. Restore Categories
-            foreach ($data['categories'] as $item) {
-                $clean = $this->sanitizeIncomingCategory($item);
-                $oldId = $clean['old_id'];
-                unset($clean['old_id']);
-                
-                $clean['user_id'] = $userId;
-                $new = Category::create($clean);
-                $categoryMap[$oldId] = $new->id;
-            }
-
-            // 3. Restore Transactions (Relational Mapping)
-            foreach ($data['transactions'] as $item) {
-                $clean = $this->sanitizeIncomingTransaction($item);
-                $clean['user_id'] = $userId;
-                
-                // Relational Mapping Logic
-                $clean['account_id'] = $accountMap[$clean['account_id']] ?? null;
-                $clean['category_id'] = $categoryMap[$clean['category_id']] ?? null;
-                
-                if (isset($clean['to_account_id'])) {
-                    $clean['to_account_id'] = $accountMap[$clean['to_account_id']] ?? null;
-                }
-
-                Transaction::create($clean);
-            }
-
-            DB::commit();
-            $this->loadStats();
-            $this->jsonFile = null;
-            $this->notify('Berhasil!', 'Data berhasil dipulihkan secara aman.', 'success');
-
+            $backupInfo = $backupService->generateBackup($userId);
+            RateLimiter::hit('backup:' . $userId, 3600); // 1 jam rate limit
+            
+            $this->loadData($backupService, $storageService);
+            $this->notify('Berhasil!', 'Backup berhasil dibuat.', 'success');
+            
+            return $storageService->download($backupInfo['path'], $userId);
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Security-Hardened Restore Failed: ' . $e->getMessage());
-            $this->notify('Gagal!', 'Gagal memproses data: Pastikan berkas benar.', 'error');
+            $this->notify('Gagal!', 'Terjadi kesalahan saat memproses backup.', 'error');
+        } finally {
+            $this->isProcessing = false;
         }
     }
 
-    private function isValidBackupFormat($data)
+    public function confirmRestore()
     {
-        return $data && isset($data['accounts'], $data['categories'], $data['transactions']);
+        $maxSize = config('backup.upload.max_size_kb', 10240);
+        
+        $this->validate([
+            'jsonFile' => 'required|file|extensions:backup|max:' . $maxSize,
+        ]);
+        
+        // Buka modal konfirmasi UI ketimbang langsung destroy/restore
+        $this->showRestoreConfirm = true;
     }
 
-    private function sanitizeForExport($item)
+    public function cancelRestore()
     {
-        return $item->makeHidden(['deleted_at', 'created_at', 'updated_at'])->toArray();
+        $this->showRestoreConfirm = false;
+        $this->jsonFile = null;
     }
 
-    private function sanitizeIncomingAccount($data)
+    public function restore(RestoreService $restoreService, BackupService $backupService, BackupStorageService $storageService)
     {
-        return [
-            'old_id' => $data['id'] ?? 0,
-            'name' => strip_tags($data['name'] ?? 'Account'),
-            'type' => strip_tags($data['type'] ?? 'Cash'),
-            'provider' => strip_tags($data['provider'] ?? ''),
-            'balance' => (float)($data['balance'] ?? 0),
-            'color' => strip_tags($data['color'] ?? '#000000'),
-            'sort_order' => (int)($data['sort_order'] ?? 0),
-        ];
+        if (!$this->jsonFile) {
+            $this->notify('Gagal!', 'Tidak ada file backup yang dipilih.', 'error');
+            return;
+        }
+
+        $userId = auth()->id();
+        $maxAttempts = config('backup.rate_limit.max_restores_per_hour', 3);
+
+        if (RateLimiter::tooManyAttempts('restore:' . $userId, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn('restore:' . $userId);
+            $this->notify('Gagal!', "Terlalu sering melakukan restore. Coba lagi dalam {$seconds} detik.", 'error');
+            $this->showRestoreConfirm = false;
+            return;
+        }
+
+        $this->isProcessing = true;
+        $this->showRestoreConfirm = false;
+
+        try {
+            $content = file_get_contents($this->jsonFile->getRealPath());
+            
+            $result = $restoreService->restore($content, $userId);
+            
+            RateLimiter::hit('restore:' . $userId, 3600); // 1 jam rate limit
+
+            if ($result['success']) {
+                $this->loadData($backupService, $storageService);
+                $this->jsonFile = null;
+                $this->notify('Berhasil!', $result['message'], 'success');
+            } else {
+                $this->notify('Gagal!', $result['message'], 'error');
+            }
+        } catch (\Exception $e) {
+            $this->notify('Gagal!', 'Terjadi kesalahan sistem saat restore data.', 'error');
+        } finally {
+            $this->isProcessing = false;
+        }
     }
 
-    private function sanitizeIncomingCategory($data)
+    public function downloadBackup(string $path, BackupStorageService $storageService)
     {
-        return [
-            'old_id' => $data['id'] ?? 0,
-            'name' => strip_tags($data['name'] ?? 'Category'),
-            'color' => strip_tags($data['color'] ?? '#000000'),
-        ];
+        return $storageService->download($path, auth()->id());
     }
 
-    private function sanitizeIncomingTransaction($data)
+    public function deleteBackup(string $path, BackupStorageService $storageService, BackupService $backupService)
     {
-        return [
-            'name' => strip_tags($data['name'] ?? 'Transaction'),
-            'amount' => (float)($data['amount'] ?? 0),
-            'type' => strip_tags($data['type'] ?? 'expense'),
-            'date' => strip_tags($data['date'] ?? now()->toDateTimeString()),
-            'category_id' => $data['category_id'] ?? null,
-            'account_id' => $data['account_id'] ?? null,
-            'to_account_id' => $data['to_account_id'] ?? null,
-        ];
+        if ($storageService->delete($path, auth()->id())) {
+            $this->loadData($backupService, $storageService);
+            $this->notify('Terhapus', 'Berkas backup telah dihapus.', 'success');
+        } else {
+            $this->notify('Gagal', 'Berkas backup gagal dihapus atau tidak ditemukan.', 'error');
+        }
+    }
+
+    public function toggleAutoBackup()
+    {
+        $this->autoBackupEnabled = !$this->autoBackupEnabled;
+
+        auth()->user()->update([
+            'auto_backup_enabled' => $this->autoBackupEnabled,
+        ]);
+        
+        $status = $this->autoBackupEnabled ? 'diaktifkan' : 'dinonaktifkan';
+        $this->notify('Berhasil!', "Auto backup telah {$status}.", 'success');
     }
 
     public function render()

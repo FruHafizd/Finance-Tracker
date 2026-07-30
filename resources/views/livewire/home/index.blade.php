@@ -1,76 +1,81 @@
+@php
+    $hour = now()->hour;
+    if ($hour >= 5 && $hour < 11) {
+        $greeting = 'Selamat Pagi';
+    } elseif ($hour >= 11 && $hour < 15) {
+        $greeting = 'Selamat Siang';
+    } elseif ($hour >= 15 && $hour < 19) {
+        $greeting = 'Selamat Sore';
+    } else {
+        $greeting = 'Selamat Malam';
+    }
+@endphp
 <div>
-    {{-- ===== HERO BANNER BARU ===== --}}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10 transition-all duration-500">
-        <div class="relative overflow-hidden rounded-3xl bg-white border border-gray-200 p-8 sm:p-10 shadow-sm group">
-            {{-- Subtle Decorative elements --}}
-            <div class="absolute -top-24 -right-24 w-64 h-64 bg-gray-50 rounded-full blur-3xl pointer-events-none group-hover:bg-gray-100 transition-colors duration-700"></div>
-            <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-slate-50 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-8">
-                <div class="space-y-4">
-                    <div class="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full text-slate-600 text-xs font-semibold uppercase tracking-wider">
-                        <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
-                        </span>
-                        Dashboard Personal
-                    </div>
-                    <div>
-                        <p class="text-slate-500 text-lg font-medium">Selamat datang kembali 👋</p>
-                        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
-                            {{ auth()->user()->name }}
-                        </h1>
-                        <p class="text-slate-600 text-sm sm:text-base max-w-md mt-4 leading-relaxed">
-                            Kelola arus kas Anda dengan presisi. Ringkasan aktivitas keuangan Anda bulan ini sudah siap ditinjau.
-                        </p>
-                    </div>
-                </div>
-
-                {{-- Date Badge --}}
-                <div class="flex flex-col items-start sm:items-end gap-3">
-                    <div class="bg-gray-50 border border-gray-100 p-4 rounded-2xl flex items-center gap-4 shadow-inner hover:bg-gray-100 transition-all duration-300">
-                        <div class="w-12 h-12 bg-slate-900 rounded-xl flex flex-col items-center justify-center text-white shadow-lg">
-                            <span class="text-[10px] font-bold uppercase leading-none">{{ now()->translatedFormat('M') }}</span>
-                            <span class="text-xl font-black leading-none">{{ now()->format('d') }}</span>
-                        </div>
-                        <div>
-                            <p class="text-slate-900 font-bold text-lg">{{ now()->translatedFormat('F Y') }}</p>
-                            <p class="text-slate-500 text-xs font-medium">Periode aktif berjalan</p>
-                        </div>
-                    </div>
-                </div>
+    <x-slot name="header">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{{ $greeting }}</h3>
+                <h2 class="font-extrabold text-2xl text-slate-800 leading-tight mt-0.5">
+                    {{ auth()->user()->name }}
+                </h2>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-slate-400">Periode Berjalan:</span>
+                <span class="px-2.5 py-1 bg-sky-50 text-sky-600 border border-sky-100/50 rounded-lg text-xs font-bold shadow-sm">
+                    {{ now()->translatedFormat('d F Y') }}
+                </span>
             </div>
         </div>
-    </div>
-    {{-- ===== END HERO BANNER ===== --}}
+    </x-slot>
 
-    <div class="py-6 sm:py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <div class="pt-2 pb-6">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-            {{-- Summary Cards --}}
+            {{-- 1. Ringkasan Cepat --}}
             <div>
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 ml-1">Ringkasan Cepat</h3>
+                <div class="flex items-center justify-between mb-3 ml-1">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Ringkasan Cepat</h3>
+                    <button wire:click="$dispatch('open-create-transaction')" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white text-[11px] font-bold rounded-lg shadow-sm hover:shadow transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Transaksi
+                    </button>
+                </div>
                 <livewire:home.summary-cards />
             </div>
 
-            {{-- Charts & Score --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-1 order-2 lg:order-1">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 ml-1">Kesehatan Keuangan</h3>
-                    <livewire:home.financial-score />
+            {{-- 2. Main Content Grid --}}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {{-- Left Side: Recent Transactions & Budget Overview (takes 7 cols out of 12 on large screens) --}}
+                <div class="lg:col-span-7 space-y-6">
+                    <livewire:home.recent-transactions />
+                    
+                    {{-- Budget Bulanan --}}
+                    <livewire:home.budget-overview />
                 </div>
-                <div class="lg:col-span-2 order-1 lg:order-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 ml-1">Analisis Pengeluaran</h3>
-                    <livewire:home.expense-chart />
+
+                {{-- Right Side: Financial Score & Custom Category Expense Bars (takes 5 cols out of 12) --}}
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">Kesehatan Keuangan</h3>
+                        <livewire:home.financial-score />
+                    </div>
+                    <div>
+                        <livewire:home.expense-chart />
+                    </div>
                 </div>
             </div>
-
 
         </div>
     </div>
 
-    {{-- Month in Review Story --}}
-    @if($showReview)
-        <x-story-modal :reviewData="$reviewData" />
-    @endif
+    {{-- Transaction Form Modal --}}
+    <livewire:transactions.transaction-form />
+    
+    {{-- Category Modal --}}
+    <livewire:transactions.category />
 </div>
+
+
+

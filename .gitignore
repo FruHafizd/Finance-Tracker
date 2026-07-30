@@ -26,3 +26,8 @@ Homestead.yaml
 Thumbs.db
 laravel-scheduler.bat
 /bootstrap/cache/*.php
+.antigravitycli
+color.txt
+.gemini
+/graphify-out
+GEMINI.md
